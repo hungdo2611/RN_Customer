@@ -1,5 +1,15 @@
-import store from './src/store/store';
-import { registerScreens } from './src/RegisterScreen'
+import { registerScreens, constant_name } from './src/registerScreen'
+import { Navigation } from 'react-native-navigation';
+import React, { PureComponent } from 'react';
 
-registerScreens(Provider, store)
+registerScreens();
 
+Navigation.events().registerAppLaunchedListener(async () => {
+    Navigation.setRoot({
+        root: {
+            component: {
+                name: constant_name.LOGIN_SCREEN,
+            },
+        },
+    });
+});
