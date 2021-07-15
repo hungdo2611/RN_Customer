@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { scale } from '../../ultis/scale'
+import { scale } from '../../../ultis/scale'
 const { width, height } = Dimensions.get("window");
 export default StyleSheet.create({
   container: {
