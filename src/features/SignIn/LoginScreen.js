@@ -4,25 +4,15 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ImageBackground,
-  TextInput,
-  ScrollView,
-  TouchableWithoutFeedback,
   Dimensions,
-  Alert
 } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient';
 
 import { connect } from 'react-redux'
-import Action from './redux/actions'
 
 
 import { scale } from '../../ultis/scale'
-import {
-  TextField,
-  FilledTextField,
-  OutlinedTextField,
-} from 'react-native-material-textfield'
+
+import { pushToEnterPhoneNumberScreen } from '../../NavigationController'
 
 const { width, height } = Dimensions.get('window')
 
@@ -36,6 +26,12 @@ class LoginScreen extends React.Component {
   }
   async componentDidMount() {
 
+  }
+  onClickPhoneNumber = () => {
+    const { componentId } = this.props;
+    console.log("hungdv", componentId)
+
+    pushToEnterPhoneNumberScreen(componentId);
   }
   render() {
     const window = Dimensions.get('window');
@@ -66,8 +62,9 @@ class LoginScreen extends React.Component {
         </View>
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: width / 2 + scale(50), justifyContent: 'center', alignItems: 'center' }}>
           <Image style={{ width: width / 1.2, height: width / 1.2, resizeMode: "cover" }} source={require('./res/logo_trans.png')} />
-          <Text style={{ fontSize: scale(15) }}>Enter your phone number to continue</Text>
+          <Text style={{ fontSize: scale(14) }}>Enter your phone number to continue</Text>
           <TouchableOpacity
+            onPress={this.onClickPhoneNumber}
             activeOpacity={1}
             style={{
               flexDirection: 'row',
