@@ -9,11 +9,13 @@ import {
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
     Keyboard,
-    StyleSheet
+    StyleSheet,
+    Alert
 } from 'react-native'
 
 import { connect } from 'react-redux'
-
+import auth from '@react-native-firebase/auth';
+import firebase from '@react-native-firebase/app'
 
 import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -30,10 +32,16 @@ class OTPScreen extends React.Component {
         this.state = {
             enableButton: false,
             countTime: 0,
+            confirm: null,
+            code: ''
         };
     }
     async componentDidMount() {
+        const { phone } = this.props;
+
         this.startTimer();
+        const confirmation = await auth().signInWithPhoneNumber(`+84${phone}`);
+        this.setState({ confirm: confirmation })
     }
     onBack = () => {
         const { componentId } = this.props
@@ -51,6 +59,18 @@ class OTPScreen extends React.Component {
     };
     reSendOTP = () => {
         console.log("reSendOTP")
+    }
+    confirmCode = async (code) => {
+        const { confirm } = this.state;
+        try {
+            let data = await confirm.confirm(code);
+            const idTokenResult = await firebase.auth().currentUser.getIdTokenResult();
+            console.log('User JWT: ', idTokenResult.token);
+
+            console.log("confirmCode", data)
+        } catch (error) {
+            Alert.alert('Mã OTP không đúng hoặc hết hạn')
+        }
     }
     render() {
         const { enableButton, countTime } = this.state;
@@ -82,7 +102,7 @@ class OTPScreen extends React.Component {
                             codeInputFieldStyle={styles.underlineStyleBase}
                             codeInputHighlightStyle={styles.underlineStyleHighLighted}
                             onCodeFilled={(code) => {
-                                console.log(`Code is ${code}, you are good to go!`)
+                                this.confirmCode(code)
                             }}
                         />
                         <View style={{ flexDirection: 'row' }}>
@@ -96,7 +116,7 @@ class OTPScreen extends React.Component {
                     <TouchableOpacity
                         disabled={!enableButton}
                         activeOpacity={0.6}
-                        onPress={this.onContinue}
+                        onPress={this.confirmCode}
                         style={{
                             margin: scale(20),
                             marginBottom: scale(25),
@@ -129,10 +149,13 @@ const styles = StyleSheet.create({
         width: 35,
         height: 35,
         borderWidth: 1,
+        color: "black"
     },
 
     underlineStyleHighLighted: {
         borderColor: "#03DAC6",
+        color: "black"
+
     },
 });
 

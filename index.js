@@ -11,10 +11,12 @@ Navigation.setDefaultOptions({
                 x: {
                     from: 2000,
                     to: 0,
-                    duration: 500,
+                    duration: 800,
+                    interpolation: "accelerate",
+                    startDelay: 0,
+
                 },
             },
-            waitForRender: true,
         },
         pop: {
             enabled: 'true',
@@ -22,7 +24,10 @@ Navigation.setDefaultOptions({
                 x: {
                     from: 0,
                     to: 2000,
-                    duration: 500,
+                    duration: 800,
+                    interpolation: "accelerate",
+                    startDelay: 0,
+
                 },
             },
         },
