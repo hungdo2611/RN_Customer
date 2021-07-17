@@ -10,7 +10,8 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     StyleSheet,
-    Alert
+    Alert,
+    SafeAreaView
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -81,59 +82,61 @@ class OTPScreen extends React.Component {
         const phoneNumber = parsePhoneNumber(phone, 'VN')
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView
-                    style={{
-                        flex: 1,
-                        justifyContent: "space-between",
-                    }}
-                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-                    <View style={{ margin: scale(12) }}>
-                        <Icon
-                            onPress={this.onBack}
-                            name="arrowleft"
-                            size={scale(18)}
-                        />
-                        <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Xác nhận mã OTP</Text>
-                        <Text style={{ fontSize: scale(14), marginTop: scale(10), color: color.GRAY_COLOR }}>Nhập mã 6 số được gửi cho bạn tại </Text>
-                        <Text style={{ fontSize: scale(15), marginBottom: scale(10) }}>{phoneNumber.formatNational()}</Text>
-                        <OTPInputView
-                            style={{ width: '100%', height: scale(130) }}
-                            pinCount={6}
-                            // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                            // onCodeChanged = {code => { this.setState({code})}}
-                            autoFocusOnLoad
-                            codeInputFieldStyle={styles.underlineStyleBase}
-                            codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                            onCodeFilled={(code) => {
-                                this.confirmCode(code)
-                            }}
-                        />
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text>Bạn không nhận được mã?</Text>
-                            <TouchableOpacity onPress={this.reSendOTP} style={{ alignItems: "center" }} disabled={countTime > 0} activeOpacity={1}>
-                                <Text style={{ fontWeight: '700' }}> Gửi lại {countTime > 0 ? `(${countTime})` : ''}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-                    <TouchableOpacity
-                        disabled={!enableButton}
-                        activeOpacity={0.6}
-                        onPress={this.confirmCode}
+                <SafeAreaView style={{ flex: 1 }}>
+                    <KeyboardAvoidingView
                         style={{
-                            margin: scale(20),
-                            marginBottom: scale(25),
-                            height: scale(40),
-                            borderRadius: scale(6),
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: enableButton ? color.MAIN_COLOR : '#d1d1d1'
+                            flex: 1,
+                            justifyContent: "space-between",
+                        }}
+                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                        <View style={{ margin: scale(12) }}>
+                            <Icon
+                                onPress={this.onBack}
+                                name="arrowleft"
+                                size={scale(18)}
+                            />
+                            <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Xác nhận mã OTP</Text>
+                            <Text style={{ fontSize: scale(14), marginTop: scale(10), color: color.GRAY_COLOR }}>Nhập mã 6 số được gửi cho bạn tại </Text>
+                            <Text style={{ fontSize: scale(15), marginBottom: scale(10) }}>{phoneNumber.formatNational()}</Text>
+                            <OTPInputView
+                                style={{ width: '100%', height: scale(130) }}
+                                pinCount={6}
+                                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+                                // onCodeChanged = {code => { this.setState({code})}}
+                                autoFocusOnLoad
+                                codeInputFieldStyle={styles.underlineStyleBase}
+                                codeInputHighlightStyle={styles.underlineStyleHighLighted}
+                                onCodeFilled={(code) => {
+                                    this.confirmCode(code)
+                                }}
+                            />
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text>Bạn không nhận được mã?</Text>
+                                <TouchableOpacity onPress={this.reSendOTP} style={{ alignItems: "center" }} disabled={countTime > 0} activeOpacity={1}>
+                                    <Text style={{ fontWeight: '700' }}> Gửi lại {countTime > 0 ? `(${countTime})` : ''}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
 
-                        }}>
-                        <Text style={{ color: '#FFFFFF', fontSize: scale(14), fontWeight: '600' }}>Xác thực</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            disabled={!enableButton}
+                            activeOpacity={0.6}
+                            onPress={this.confirmCode}
+                            style={{
+                                margin: scale(20),
+                                marginBottom: scale(25),
+                                height: scale(40),
+                                borderRadius: scale(6),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: enableButton ? color.MAIN_COLOR : '#d1d1d1'
 
-                </KeyboardAvoidingView>
+                            }}>
+                            <Text style={{ color: '#FFFFFF', fontSize: scale(14), fontWeight: '600' }}>Xác thực</Text>
+                        </TouchableOpacity>
+
+                    </KeyboardAvoidingView>
+                </SafeAreaView>
             </TouchableWithoutFeedback>
         )
     }

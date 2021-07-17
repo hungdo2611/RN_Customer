@@ -8,7 +8,8 @@ import {
     TextInput,
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    SafeAreaView
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -57,79 +58,81 @@ class EnterPhoneNumber extends React.Component {
         const { enableButton, isvalidate, phone } = this.state
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView
-                    style={{
-                        flex: 1,
-                        justifyContent: "space-between",
-                    }}
-                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-                    <View style={{ margin: scale(12) }}>
-                        <Icon
-                            onPress={this.onBack}
-                            name="arrowleft"
-                            size={scale(18)}
-                        />
-                        <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Nhập số điện thoại để tiếp tục</Text>
-                        <View style={{
-                            alignItems: 'center'
-                        }}
-                        >
-                            <View style={{
-                                marginTop: 5,
-                                height: scale(40),
-                                borderRadius: 6,
-                                borderWidth: 1.3,
-                                borderColor: isvalidate ? color.MAIN_COLOR : color.RED_COLOR,
-                                flexDirection: 'row',
-                                alignItems: 'center'
-                            }}>
-                                <Image style={{ width: scale(17), height: scale(14), marginLeft: scale(12) }} source={require('./res/ic_flag_vn.png')} />
-                                <Text style={{ fontSize: scale(13), marginLeft: scale(5) }}>+84</Text>
-                                <View style={{ width: 1, height: scale(16), backgroundColor: 'gray', marginHorizontal: scale(8) }} />
-                                <TextInput
-                                    ref={ref => this.InputPhone = ref}
-                                    keyboardType='number-pad'
-                                    placeholder="Số điện thoại"
-                                    style={{ fontSize: scale(14), color: 'black', padding: 5, height: scale(40), flex: 1 }}
-                                    onChangeText={vl => {
-                                        this.setState({ phone: vl, enableButton: vl ? true : false, isvalidate: true })
-                                    }}
-                                    value={phone}
-
-                                >
-
-                                </TextInput>
-                                {phone !== '' && <Icon
-                                    onPress={this.onClearText}
-                                    name="closecircle"
-                                    size={scale(13)}
-                                    color="#BABABA"
-                                    style={{ marginHorizontal: scale(10) }}
-                                />}
-                            </View>
-                        </View>
-                        {!isvalidate && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>Số điện thoại không đúng. Hãy thử lại</Text>}
-
-                    </View>
-
-                    <TouchableOpacity
-                        disabled={!enableButton}
-                        activeOpacity={0.6}
-                        onPress={this.onContinue}
+                <SafeAreaView style={{flex: 1}}>
+                    <KeyboardAvoidingView
                         style={{
-                            margin: scale(20),
-                            marginBottom: scale(25),
-                            height: scale(40),
-                            borderRadius: scale(6),
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: enableButton ? color.MAIN_COLOR : '#d1d1d1'
+                            flex: 1,
+                            justifyContent: "space-between",
+                        }}
+                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                        <View style={{ margin: scale(12) }}>
+                            <Icon
+                                onPress={this.onBack}
+                                name="arrowleft"
+                                size={scale(18)}
+                            />
+                            <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Nhập số điện thoại để tiếp tục</Text>
+                            <View style={{
+                                alignItems: 'center'
+                            }}
+                            >
+                                <View style={{
+                                    marginTop: 5,
+                                    height: scale(40),
+                                    borderRadius: 6,
+                                    borderWidth: 1.3,
+                                    borderColor: isvalidate ? color.MAIN_COLOR : color.RED_COLOR,
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}>
+                                    <Image style={{ width: scale(17), height: scale(14), marginLeft: scale(12) }} source={require('./res/ic_flag_vn.png')} />
+                                    <Text style={{ fontSize: scale(13), marginLeft: scale(5) }}>+84</Text>
+                                    <View style={{ width: 1, height: scale(16), backgroundColor: 'gray', marginHorizontal: scale(8) }} />
+                                    <TextInput
+                                        ref={ref => this.InputPhone = ref}
+                                        keyboardType='number-pad'
+                                        placeholder="Số điện thoại"
+                                        style={{ fontSize: scale(14), color: 'black', padding: 5, height: scale(40), flex: 1 }}
+                                        onChangeText={vl => {
+                                            this.setState({ phone: vl, enableButton: vl ? true : false, isvalidate: true })
+                                        }}
+                                        value={phone}
 
-                        }}>
-                        <Text style={{ color: '#FFFFFF', fontSize: scale(14), fontWeight: '600' }}>Tiếp tục</Text>
-                    </TouchableOpacity>
+                                    >
 
-                </KeyboardAvoidingView>
+                                    </TextInput>
+                                    {phone !== '' && <Icon
+                                        onPress={this.onClearText}
+                                        name="closecircle"
+                                        size={scale(13)}
+                                        color="#BABABA"
+                                        style={{ marginHorizontal: scale(10) }}
+                                    />}
+                                </View>
+                            </View>
+                            {!isvalidate && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>Số điện thoại không đúng. Hãy thử lại</Text>}
+
+                        </View>
+
+                        <TouchableOpacity
+                            disabled={!enableButton}
+                            activeOpacity={0.6}
+                            onPress={this.onContinue}
+                            style={{
+                                margin: scale(20),
+                                marginBottom: scale(25),
+                                height: scale(40),
+                                borderRadius: scale(6),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: enableButton ? color.MAIN_COLOR : '#d1d1d1'
+
+                            }}>
+                            <Text style={{ color: '#FFFFFF', fontSize: scale(14), fontWeight: '600' }}>Tiếp tục</Text>
+                        </TouchableOpacity>
+
+                    </KeyboardAvoidingView>
+                </SafeAreaView>
             </TouchableWithoutFeedback>
         )
     }
