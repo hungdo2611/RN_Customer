@@ -17,9 +17,10 @@ import { connect } from 'react-redux'
 import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
-import { phoneValidate } from '../../ultis/validate'
 import { color } from '../../constant/color'
 import { pushToOTPScreen } from '../../NavigationController';
+import { isValidPhoneNumber } from 'libphonenumber-js'
+
 const { width, height } = Dimensions.get('window')
 
 class EnterPhoneNumber extends React.Component {
@@ -39,9 +40,10 @@ class EnterPhoneNumber extends React.Component {
         Navigation.pop(componentId)
     }
     onContinue = () => {
-        const { phone } = this.state;
+        let { phone } = this.state;
         const { componentId } = this.props;
-        const isvalidate = phoneValidate(phone);
+
+        const isvalidate = isValidPhoneNumber(phone, 'VN');
         if (!isvalidate) {
             this.setState({ isvalidate: isvalidate, enableButton: false })
             return

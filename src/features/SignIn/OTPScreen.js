@@ -23,6 +23,7 @@ import { Navigation } from 'react-native-navigation';
 import { phoneValidate } from '../../ultis/validate'
 import { color } from '../../constant/color'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import parsePhoneNumber from 'libphonenumber-js'
 
 const { width, height } = Dimensions.get('window')
 
@@ -37,11 +38,13 @@ class OTPScreen extends React.Component {
         };
     }
     async componentDidMount() {
-        const { phone } = this.props;
-
         this.startTimer();
-        const confirmation = await auth().signInWithPhoneNumber(`+84${phone}`);
+        let { phone } = this.props;
+        const phoneNumber = parsePhoneNumber(phone, 'VN')
+        const confirmation = await auth().signInWithPhoneNumber(phoneNumber.number);
         this.setState({ confirm: confirmation })
+
+
     }
     onBack = () => {
         const { componentId } = this.props
@@ -75,7 +78,7 @@ class OTPScreen extends React.Component {
     render() {
         const { enableButton, countTime } = this.state;
         const { phone } = this.props;
-        const formatPhone = phone ? [phone.slice(0, 3), phone.slice(3, 6), phone.slice(6)].join(' ') : '';
+        const phoneNumber = parsePhoneNumber(phone, 'VN')
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView
@@ -92,9 +95,9 @@ class OTPScreen extends React.Component {
                         />
                         <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Xác nhận mã OTP</Text>
                         <Text style={{ fontSize: scale(14), marginTop: scale(10), color: color.GRAY_COLOR }}>Nhập mã 6 số được gửi cho bạn tại </Text>
-                        <Text style={{ fontSize: scale(15), marginBottom: scale(10) }}>{formatPhone}</Text>
+                        <Text style={{ fontSize: scale(15), marginBottom: scale(10) }}>{phoneNumber.formatNational()}</Text>
                         <OTPInputView
-                            style={{ width: '100%', height: 200 }}
+                            style={{ width: '100%', height: scale(130) }}
                             pinCount={6}
                             // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
                             // onCodeChanged = {code => { this.setState({code})}}
