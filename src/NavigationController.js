@@ -39,3 +39,41 @@ export function pushToOTPScreen(componentId, props) {
         },
     });
 }
+export function pushToEnterPass(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.ENTER_PASS_SCREEN}_id`,
+            name: constant_name.ENTER_PASS_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
+export function pushToEnterInfo(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.ENTER_INFO}_id`,
+            name: constant_name.ENTER_INFO,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}

@@ -20,21 +20,20 @@ import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
 import { color } from '../../constant/color'
-import { pushToOTPScreen, pushToEnterPass } from '../../NavigationController';
+import { pushToOTPScreen } from '../../NavigationController';
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import { checkPhoneExist } from '../../api/loginApi'
 import _ from 'lodash';
-import { typeOTP } from './constant'
+
 const { width, height } = Dimensions.get('window')
 
-class EnterPhoneNumber extends React.Component {
+class EnterPass extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            phone: '',
-            enableButton: false,
             isvalidate: true,
-            isloading: false,
+            password: '',
+            security: true,
         };
     }
     async componentDidMount() {
@@ -45,32 +44,22 @@ class EnterPhoneNumber extends React.Component {
         Navigation.pop(componentId)
     }
     onContinue = async () => {
-        let { phone } = this.state;
+        let { password } = this.state;
         const { componentId } = this.props;
 
-        const isvalidate = isValidPhoneNumber(phone, 'VN');
-        if (!isvalidate) {
+        if (password.length < 6) {
             this.setState({ isvalidate: isvalidate, enableButton: false })
             return
         }
         this.setState({ isloading: true })
-        let checkPhone = await checkPhoneExist(phone)
-        setTimeout(() => {
-            this.setState({ isloading: false })
-        }, 1000)
 
-        console.log("checkPhone", checkPhone)
-        if (checkPhone && checkPhone.data && checkPhone.err == false) {
-            pushToEnterPass(componentId, { phone: phone })
-        } else {
-            pushToOTPScreen(componentId, { phone: phone, type: typeOTP.REGISTER });
-        }
     }
-    onClearText = () => {
-        this.setState({ phone: '' })
+    onShowOrHidePass = () => {
+        this.setState({ security: !this.state.security })
     }
     render() {
-        const { enableButton, isvalidate, phone, isloading } = this.state
+        const { enableButton, isvalidate, isloading, password, security } = this.state;
+        const { phone } = this.props;
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <SafeAreaView style={{ flex: 1 }}>
@@ -86,7 +75,8 @@ class EnterPhoneNumber extends React.Component {
                                 name="arrowleft"
                                 size={scale(18)}
                             />
-                            <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Nhập số điện thoại để tiếp tục</Text>
+                            <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Nhập mật khẩu</Text>
+                            <Text style={{ fontSize: scale(15), marginTop: scale(10), marginBottom: scale(10), fontWeight: "500", color: color.GRAY_COLOR }}>Số điện thoại đăng ký của bạn là {phone}</Text>
                             <View style={{
                                 alignItems: 'center'
                             }}
@@ -100,33 +90,30 @@ class EnterPhoneNumber extends React.Component {
                                     flexDirection: 'row',
                                     alignItems: 'center'
                                 }}>
-                                    <Image style={{ width: scale(17), height: scale(14), marginLeft: scale(12) }} source={require('./res/ic_flag_vn.png')} />
-                                    <Text style={{ fontSize: scale(13), marginLeft: scale(5) }}>+84</Text>
-                                    <View style={{ width: 1, height: scale(16), backgroundColor: 'gray', marginHorizontal: scale(8) }} />
+
                                     <TextInput
                                         ref={ref => this.InputPhone = ref}
-                                        keyboardType='number-pad'
-                                        placeholder="Số điện thoại"
-                                        style={{ fontSize: scale(14), color: 'black', padding: 5, height: scale(40), flex: 1 }}
+                                        secureTextEntry={security}
+                                        placeholder="Mật khẩu"
+                                        style={{ fontSize: scale(14), color: 'black', padding: 5, height: scale(40), flex: 1, paddingLeft: scale(12) }}
                                         onChangeText={vl => {
-                                            this.setState({ phone: vl, enableButton: vl ? true : false, isvalidate: true })
+                                            this.setState({ password: vl, enableButton: vl.length > 5 ? true : false, isvalidate: true })
                                         }}
-                                        value={phone}
+                                        value={password}
 
                                     >
 
                                     </TextInput>
-                                    {phone !== '' && <Icon
-                                        onPress={this.onClearText}
-                                        name="closecircle"
-                                        size={scale(13)}
+                                    {password !== '' && <Icon
+                                        onPress={this.onShowOrHidePass}
+                                        name="eye"
+                                        size={scale(16)}
                                         color="#BABABA"
                                         style={{ marginHorizontal: scale(10) }}
                                     />}
                                 </View>
                             </View>
-                            {!isvalidate && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>Số điện thoại không đúng. Hãy thử lại</Text>}
-                            {isloading && <ActivityIndicator size="large" color={color.MAIN_COLOR} style={{ padding: scale(5), marginTop: scale(10) }} />}
+                            {!isvalidate && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>Mật khẩu phải chứa ít nhất 6 ký tự</Text>}
 
                         </View>
 
@@ -173,5 +160,5 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnterPhoneNumber)
+export default connect(mapStateToProps, mapDispatchToProps)(EnterPass)
 

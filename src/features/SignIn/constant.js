@@ -1,0 +1,4 @@
+export const typeOTP = {
+    REGISTER: 'REGISTER',
+    FORGOT_PASSWORD: 'FORGOT_PASSWORF'
+}

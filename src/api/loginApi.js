@@ -3,14 +3,14 @@ import ApiService from './ApiService'
 
 const api = ApiService()
 export const checkPhoneExist = (phone) => {
-    return apiAuthen.makeRequest({
+    return api.makeRequest({
         url: `/users/exist/${phone}`,
         method: 'GET',
     })
 }
 export const registerAPI = (body) => {
-    return apiAuthen.makeRequest({
-        url: `/users/exist/${phone}`,
+    return api.makeRequest({
+        url: `/users/register`,
         method: 'POST',
         data: body
     })

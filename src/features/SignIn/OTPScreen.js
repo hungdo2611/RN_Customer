@@ -11,7 +11,8 @@ import {
     Keyboard,
     StyleSheet,
     Alert,
-    SafeAreaView
+    SafeAreaView,
+    ActivityIndicator
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -21,10 +22,12 @@ import firebase from '@react-native-firebase/app'
 import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
-import { phoneValidate } from '../../ultis/validate'
 import { color } from '../../constant/color'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { registerAPI } from '../../api/loginApi'
 import parsePhoneNumber from 'libphonenumber-js'
+import { typeOTP } from './constant'
+import { pushToEnterInfo } from '../../NavigationController';
 
 const { width, height } = Dimensions.get('window')
 
@@ -35,7 +38,8 @@ class OTPScreen extends React.Component {
             enableButton: false,
             countTime: 0,
             confirm: null,
-            code: ''
+            code: '',
+            isloading: false,
         };
     }
     async componentDidMount() {
@@ -52,7 +56,7 @@ class OTPScreen extends React.Component {
         Navigation.pop(componentId)
     }
     startTimer = () => {
-        this.setState({ countTime: 5 })
+        this.setState({ countTime: 60 })
         this.clockCall = setInterval(() => {
             this.decrementClock();
         }, 1000);
@@ -61,23 +65,47 @@ class OTPScreen extends React.Component {
         if (this.state.countTime === 1) clearInterval(this.clockCall)
         this.setState((prevstate) => ({ countTime: prevstate.countTime - 1 }));
     };
-    reSendOTP = () => {
+    reSendOTP = async () => {
+        let { phone } = this.props;
+        const phoneNumber = parsePhoneNumber(phone, 'VN')
+        const confirmation = await auth().signInWithPhoneNumber(phoneNumber.number);
+        this.setState({ confirm: confirmation })
         console.log("reSendOTP")
     }
     confirmCode = async (code) => {
         const { confirm } = this.state;
+        const { phone, type, componentId } = this.props;
+        this.setState({ isloading: true })
         try {
             let data = await confirm.confirm(code);
             const idTokenResult = await firebase.auth().currentUser.getIdTokenResult();
-            console.log('User JWT: ', idTokenResult.token);
+            const body = {
+                phone: phone,
+                token: idTokenResult.token
+            }
+            if (type == typeOTP.REGISTER) {
+                const register = await registerAPI(body)
+                setTimeout(() => {
+                    this.setState({ isloading: false })
+                }, 1000)
 
-            console.log("confirmCode", data)
+                if (register && register.data && !register.err) {
+                    pushToEnterInfo(componentId)
+                }
+            }
+            if (type == typeOTP.FORGOT_PASSWORD) {
+
+            }
+
         } catch (error) {
-            Alert.alert('Mã OTP không đúng hoặc hết hạn')
+            console.log('error', error);
+            this.OTPView.focusField(0)
+            this.setState({ isloading: false, code: '' });
+            Alert.alert('Mã OTP không đúng hoặc hết hạn');
         }
     }
     render() {
-        const { enableButton, countTime } = this.state;
+        const { enableButton, countTime, isloading } = this.state;
         const { phone } = this.props;
         const phoneNumber = parsePhoneNumber(phone, 'VN')
         return (
@@ -100,9 +128,13 @@ class OTPScreen extends React.Component {
                             <Text style={{ fontSize: scale(15), marginBottom: scale(10) }}>{phoneNumber.formatNational()}</Text>
                             <OTPInputView
                                 style={{ width: '100%', height: scale(130) }}
+                                ref={ref => this.OTPView = ref}
+                                code={this.state.code}
                                 pinCount={6}
                                 // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                                // onCodeChanged = {code => { this.setState({code})}}
+                                onCodeChanged={code => {
+                                    this.setState({ code })
+                                }}
                                 autoFocusOnLoad
                                 codeInputFieldStyle={styles.underlineStyleBase}
                                 codeInputHighlightStyle={styles.underlineStyleHighLighted}
@@ -116,12 +148,14 @@ class OTPScreen extends React.Component {
                                     <Text style={{ fontWeight: '700' }}> Gửi lại {countTime > 0 ? `(${countTime})` : ''}</Text>
                                 </TouchableOpacity>
                             </View>
+                            {isloading && <ActivityIndicator size="large" color={color.MAIN_COLOR} style={{ padding: scale(5), marginTop: scale(10) }} />}
+
                         </View>
 
                         <TouchableOpacity
-                            disabled={!enableButton}
+                            disabled={!enableButton || isloading}
                             activeOpacity={0.6}
-                            onPress={this.confirmCode}
+                            onPress={() => this.confirmCode(this.state.code)}
                             style={{
                                 margin: scale(20),
                                 marginBottom: scale(25),
@@ -129,9 +163,10 @@ class OTPScreen extends React.Component {
                                 borderRadius: scale(6),
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: enableButton ? color.MAIN_COLOR : '#d1d1d1'
-
+                                backgroundColor: enableButton && !isloading ? color.MAIN_COLOR : '#d1d1d1',
+                                flexDirection: 'row'
                             }}>
+                            {isloading && <ActivityIndicator size="small" color="#FFFFFF" style={{ padding: scale(5) }} />}
                             <Text style={{ color: '#FFFFFF', fontSize: scale(14), fontWeight: '600' }}>Xác thực</Text>
                         </TouchableOpacity>
 
