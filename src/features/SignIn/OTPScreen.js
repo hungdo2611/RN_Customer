@@ -27,8 +27,8 @@ import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { registerAPI } from '../../api/loginApi'
 import parsePhoneNumber from 'libphonenumber-js'
 import { typeOTP } from './constant'
-import { pushToEnterInfo } from '../../NavigationController';
-
+import { pushToEnterInfo, pushToResetPass } from '../../NavigationController';
+import { setToken } from '../../model'
 const { width, height } = Dimensions.get('window')
 
 class OTPScreen extends React.Component {
@@ -90,11 +90,12 @@ class OTPScreen extends React.Component {
                 }, 1000)
 
                 if (register && register.data && !register.err) {
+                    setToken(register.token);
                     pushToEnterInfo(componentId)
                 }
             }
             if (type == typeOTP.FORGOT_PASSWORD) {
-
+                pushToResetPass(componentId, { phone: phone, tokenfirebase: idTokenResult.token })
             }
 
         } catch (error) {

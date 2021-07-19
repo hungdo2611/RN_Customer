@@ -15,3 +15,25 @@ export const registerAPI = (body) => {
         data: body
     })
 }
+export const loginAPI = (body) => {
+    return api.makeRequest({
+        url: `/users/login`,
+        method: 'POST',
+        data: body
+    })
+}
+export const updateInfoAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/users/profile`,
+        method: 'POST',
+        data: body
+    })
+}
+
+export const resetPassAPI = (body) => {
+    return api.makeRequest({
+        url: `/users/reset/password`,
+        method: 'POST',
+        data: body
+    })
+}

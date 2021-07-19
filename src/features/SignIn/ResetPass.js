@@ -10,7 +10,8 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     SafeAreaView,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -20,14 +21,14 @@ import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
 import { color } from '../../constant/color'
-import { loginAPI } from '../../api/loginApi'
+import { resetPassAPI } from '../../api/loginApi'
 import _ from 'lodash';
 import { setToken, setLocalData } from '../../model'
 import { typeOTP } from './constant'
-import { pushToOTPScreen, setRootToHome } from '../../NavigationController'
+import { setRootToHome } from '../../NavigationController'
 const { width, height } = Dimensions.get('window')
 
-class EnterPass extends React.Component {
+class ResetPass extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -47,7 +48,7 @@ class EnterPass extends React.Component {
     }
     onContinue = async () => {
         let { password } = this.state;
-        const { componentId, phone } = this.props;
+        const { componentId, phone, tokenfirebase } = this.props;
         this.setState({ isloading: true })
 
         if (password.length < 6) {
@@ -57,18 +58,19 @@ class EnterPass extends React.Component {
 
         const body = {
             phone: phone,
-            password: password
+            password: password,
+            token: tokenfirebase
         }
-        let requestLogin = await loginAPI(body)
-        console.log("requestLogin", requestLogin)
-        if (requestLogin && requestLogin.data && !requestLogin.err) {
+        let requestReset = await resetPassAPI(body)
+        console.log("requestReset", requestReset)
+        if (requestReset && requestReset.data && !requestReset.err) {
             //Login OK
-            setToken(requestLogin.token)
-            setLocalData(JSON.stringify(requestLogin.data))
+            setToken(requestReset.token)
+            setLocalData(JSON.stringify(requestReset.data))
             setTimeout(() => { this.setState({ isloading: false }) }, 1000)
             setRootToHome()
         } else {
-            this.setState({ err_wrongpass: true, isloading: false, isvalidate: false })
+            Alert.alert("Đã có lỗi xảy ra. Vui lòng thử lại sau")
         }
 
     }
@@ -76,7 +78,6 @@ class EnterPass extends React.Component {
         this.setState({ security: !this.state.security })
     }
     resetPass = () => {
-        const { componentId, phone } = this.props;
         pushToOTPScreen(componentId, { phone: phone, type: typeOTP.FORGOT_PASSWORD });
 
     }
@@ -98,7 +99,7 @@ class EnterPass extends React.Component {
                                 name="arrowleft"
                                 size={scale(18)}
                             />
-                            <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Nhập mật khẩu</Text>
+                            <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Đặt lại mật khẩu</Text>
                             <Text style={{ fontSize: scale(15), marginTop: scale(10), marginBottom: scale(10), fontWeight: "500", color: color.GRAY_COLOR }}>Số điện thoại đăng ký của bạn là {phone}</Text>
                             <View style={{
                                 alignItems: 'center'
@@ -137,9 +138,7 @@ class EnterPass extends React.Component {
                                 </View>
                             </View>
                             {!isvalidate && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>{err_wrongpass ? 'Mật khẩu không đúng vui lòng thử lại' : 'Mật khẩu phải chứa ít nhất 6 ký tự'}</Text>}
-                            <TouchableOpacity onPress={this.resetPass} activeOpacity={0.6} style={{ marginTop: scale(20) }}>
-                                <Text style={{ textDecorationLine: 'underline' }}>Quên mật khẩu</Text>
-                            </TouchableOpacity>
+
                         </View>
 
                         <TouchableOpacity
@@ -185,5 +184,5 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnterPass)
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPass)
 

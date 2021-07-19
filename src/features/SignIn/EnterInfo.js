@@ -10,7 +10,9 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     SafeAreaView,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert,
+    BackHandler
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -20,9 +22,8 @@ import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
 import { color } from '../../constant/color'
-import { pushToOTPScreen } from '../../NavigationController';
-import { isValidPhoneNumber } from 'libphonenumber-js'
-import { checkPhoneExist } from '../../api/loginApi'
+import { updateInfoAPI } from '../../api/loginApi'
+import { setRootToHome } from '../../NavigationController'
 import _ from 'lodash';
 
 const { width, height } = Dimensions.get('window')
@@ -42,19 +43,36 @@ class EnterInfo extends React.Component {
     }
     async componentDidMount() {
         this.InputName.focus();
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+
     }
-    onBack = () => {
-        const { componentId } = this.props
-        Navigation.pop(componentId)
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+    handleBackButtonClick = () => {
+        return true
     }
     onContinue = async () => {
-        let { password } = this.state;
+        let { password, name } = this.state;
         const { componentId } = this.props;
         if (password.length < 6) {
             this.setState({ isvalidate: false })
         }
         this.setState({ isloading: true })
-
+        let requestUpdate = await updateInfoAPI({
+            name: name,
+            password: password
+        })
+        console.log("requestUpdate", requestUpdate)
+        setTimeout(() => {
+            this.setState({ isloading: false })
+        }, 1000)
+        if (requestUpdate && requestUpdate.data && !requestUpdate.err) {
+            //success
+            setRootToHome()
+        } else {
+            Alert.alert("Đã có lỗi xảy ra vui lòng thử lại sau")
+        }
     }
     onShowOrHidePass = () => {
         this.setState({ security: !this.state.security })
@@ -72,11 +90,7 @@ class EnterInfo extends React.Component {
                         }}
                         behavior={Platform.OS == 'ios' ? 'padding' : ''}>
                         <View style={{ margin: scale(12) }}>
-                            <Icon
-                                onPress={this.onBack}
-                                name="arrowleft"
-                                size={scale(18)}
-                            />
+
                             <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Cập nhật thông tin</Text>
                             <Text style={{ fontSize: scale(15), marginTop: scale(10), marginBottom: scale(10), fontWeight: "500" }}>Tên của bạn là gì?</Text>
                             <View style={{

@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { getToken } from '../model'
 const _makeRequest = createRequest => async args => {
     const _headers = args.headers ? args.headers : {}
     const body = args.body ? args.body : {}
@@ -22,11 +23,11 @@ const _makeRequest = createRequest => async args => {
 
 const _makeAuthRequest = createRequest => async args => {
     const requestHeaders = args.headers ? args.headers : {}
-    // const accessToken = UserData.sessionkey
 
-
+    const token = getToken();
     let headers = {
-        Authorization: `bearer ${TKModelData.tokenVTMan}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
     }
 
     args = {
@@ -52,7 +53,7 @@ const _makeAuthRequest = createRequest => async args => {
 }
 
 export default (options = {}) => {
-    let BaseURL = 'http://localhost:3000'
+    let BaseURL = 'http://10.0.2.2:3000'
 
     if (options.BaseURL)
         BaseURL = options.BaseURL

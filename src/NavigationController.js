@@ -58,6 +58,25 @@ export function pushToEnterPass(componentId, props) {
         },
     });
 }
+export function pushToResetPass(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.RESET_PASS}_id`,
+            name: constant_name.RESET_PASS,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function pushToEnterInfo(componentId, props) {
     Navigation.push(componentId, {
         component: {
@@ -75,5 +94,30 @@ export function pushToEnterInfo(componentId, props) {
                 },
             },
         },
+    });
+}
+export function setRootToHome() {
+    Navigation.setRoot({
+        root: {
+            stack: {
+                children: [
+                    {
+                        component: {
+                            name: constant_name.HOME_SCREEN,
+                            options: {
+                                topBar: {
+                                    animate: false,
+                                    visible: false,
+                                    height: 0,
+                                },
+                                bottomTabs: {
+                                    visible: false,
+                                },
+                            },
+                        },
+                    }
+                ]
+            }
+        }
     });
 }
