@@ -1,6 +1,6 @@
 import React, { useState, useEffect, PureComponent } from 'react'
 import {
-     View,
+    View,
     Text,
     Dimensions,
     KeyboardAvoidingView,
@@ -15,7 +15,6 @@ import { connect } from 'react-redux'
 
 
 import _ from 'lodash';
-
 
 const { width, height } = Dimensions.get('window')
 
@@ -41,8 +40,8 @@ class HomeScreen extends React.Component {
                             justifyContent: "space-between",
                         }}
                         behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-                        <View>
-                            <Text>Home</Text>
+                        <View style={{ flex: 1 }}>
+                          
                         </View>
                     </KeyboardAvoidingView>
                 </SafeAreaView>

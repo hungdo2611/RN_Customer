@@ -121,3 +121,29 @@ export function setRootToHome() {
         }
     });
 }
+export function setRootToLogin() {
+    Navigation.setRoot({
+        root: {
+            stack: {
+                children: [
+                    {
+                        component: {
+                            name: constant_name.LOGIN_SCREEN,
+                            options: {
+                                topBar: {
+                                    animate: false,
+                                    visible: false,
+                                    height: 0,
+                                },
+                                bottomTabs: {
+                                    visible: false,
+                                },
+                            },
+                        },
+                    }
+                ]
+            }
+        }
+    });
+}
+

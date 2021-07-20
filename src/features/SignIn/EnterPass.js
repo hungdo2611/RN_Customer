@@ -64,7 +64,7 @@ class EnterPass extends React.Component {
         if (requestLogin && requestLogin.data && !requestLogin.err) {
             //Login OK
             setToken(requestLogin.token)
-            setLocalData(JSON.stringify(requestLogin.data))
+            await setLocalData(JSON.stringify(requestLogin.data))
             setTimeout(() => { this.setState({ isloading: false }) }, 1000)
             setRootToHome()
         } else {

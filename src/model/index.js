@@ -6,7 +6,8 @@ const constant_key = {
 }
 
 export let instanceData = {
-    token: ''
+    token: '',
+    user_info: null
 }
 export const setToken = (token) => {
     instanceData.token = token;
@@ -14,6 +15,15 @@ export const setToken = (token) => {
 export const getToken = () => {
     return instanceData.token;
 }
-export const setLocalData = (data) => {
-    AsyncStorage.setItem(constant_key, data)
+export const setLocalData = async (data) => {
+    await AsyncStorage.setItem(constant_key.USER_INFO, data)
+}
+export const getLocalData = async () => {
+
+    let data = await AsyncStorage.getItem(constant_key.USER_INFO);
+    console.log("data123", data)
+    if (data) {
+        instanceData.user_info = JSON.parse(data);
+    }
+    return data;
 }
