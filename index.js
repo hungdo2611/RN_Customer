@@ -1,9 +1,16 @@
 import { registerScreens, constant_name } from './src/registerScreen'
 import { Navigation } from 'react-native-navigation';
 import React, { PureComponent } from 'react';
-
+import { getLocalData } from './src/model'
+import { setRootToLogin, setRootToHome } from './src/NavigationController'
 registerScreens();
 Navigation.setDefaultOptions({
+    statusBar: {
+        drawBehind: true,
+        style: 'dark',
+        backgroundColor: 'rgba(0,0,0,0)'
+
+    },
     animations: {
         push: {
             enabled: 'true',
@@ -34,27 +41,10 @@ Navigation.setDefaultOptions({
     },
 });
 Navigation.events().registerAppLaunchedListener(async () => {
-    Navigation.setRoot({
-        root: {
-            stack: {
-                children: [
-                    {
-                        component: {
-                            name: constant_name.LOGIN_SCREEN,
-                            options: {
-                                topBar: {
-                                    animate: false,
-                                    visible: false,
-                                    height: 0,
-                                },
-                                bottomTabs: {
-                                    visible: false,
-                                },
-                            },
-                        },
-                    }
-                ]
-            }
-        }
-    });
+    let data = await getLocalData();
+    if (data) {
+        setRootToHome();
+    } else {
+        setRootToLogin();
+    }
 });
