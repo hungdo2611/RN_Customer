@@ -37,7 +37,7 @@ class BottomTab extends PureComponent {
     const { isInCreaseHeight } = this.state;
     const { heightIncreased } = this.props;
     const heightPull = height - heightIncreased + scale(80);
-
+    console.log("heightPull", heightPull)
 
     return isInCreaseHeight ? gestureState.dy > 0 && gestureState.moveY < heightPull : gestureState.dy < 0
   }
@@ -51,7 +51,7 @@ class BottomTab extends PureComponent {
 
 
   // Check if pulled down
-  pulledDown = gestureState => gestureState.dy > 50;
+  pulledDown = gestureState => gestureState.dy > 5;
 
   tapped = gestureState => gestureState.dx === 0 && gestureState.dy === 0;
 

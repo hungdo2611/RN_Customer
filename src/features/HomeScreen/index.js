@@ -40,6 +40,10 @@ import BottomTab from './components/BottomTab';
 import { scale } from '../../ultis/scale';
 import { color } from '../../constant/color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import MainView from './MainView'
+const Stack = createStackNavigator();
 
 const styles = StyleSheet.create({
     container: {
@@ -284,7 +288,19 @@ class CreateTripScreen extends Component {
         } = this.state;
         const { destination, isLoading, origin, CaculatePoint } = this.props;
 
-        const widthBox = (width - 50) / 3
+        const TransitionScreenOptions = {
+            ...TransitionPresets.SlideFromRightIOS,
+            headerShown: false,
+        };
+        const Theme = {
+            ...DefaultTheme,
+            colors: {
+                ...DefaultTheme.colors,
+                border: 20,
+                background: '#FFFFFF',
+            },
+        };
+
         console.log('ggmap', height);
         return (
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#FFFFFF' }}>
@@ -359,7 +375,7 @@ class CreateTripScreen extends Component {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                             }}
-                            onPress={() => this.setState({ renderStep: 2 })}
+                            onPress={this.onPressMenu}
                         >
                             <Icon
                                 name='menu'
@@ -422,50 +438,22 @@ class CreateTripScreen extends Component {
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
 
                     >
-                        {renderStep == 1 && <View style={{ marginHorizontal: scale(10) }}>
-                            <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(50), marginTop: scale(20), alignItems: 'center', flexDirection: "row" }}>
-                                <Image style={{
-                                    height: scale(50),
-                                    width: scale(70),
-                                    transform: [{ rotate: '8deg' }],
-                                }} source={require('./res/ic_car_head.png')} />
-                                <View style={{ marginLeft: scale(10) }}>
-                                    <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, fontWeight: '500' }}>Địa chỉ của bạn</Text>
-                                    <Text style={{ fontSize: scale(11), fontWeight: 'bold' }}>Hà Nội</Text>
-                                </View>
-                                <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center' }}>
-                                    <View style={{ width: scale(1), height: scale(20), backgroundColor: color.GRAY_COLOR_500 }} />
-                                    <Text style={{ fontSize: scale(11), fontWeight: '600', marginHorizontal: scale(12) }}>Bản đồ</Text>
-                                </View>
-                            </View>
-                            <ScrollView scrollEnabled={isInCreaseHeight} showsVerticalScrollIndicator={false}>
 
-                                <View style={{ flexDirection: 'row', marginTop: scale(20) }}>
-
-                                    <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe Khách</Text>
-                                        <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 10, right: 10 }} source={require('./res/ic_bus.png')} />
-
-                                    </View>
-                                    <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe tiện chuyến</Text>
-                                        <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_tienchuyen.png')} />
-
-                                    </View>
-                                    <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Gửi hàng</Text>
-                                        <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_shipping.png')} />
-
-                                    </View>
-                                </View>
-
-                            </ScrollView>
-                        </View>}
-                        {renderStep == 2 && <View style={{ backgroundColor: 'red' }}></View>}
-
+                        <View style={{ marginHorizontal: scale(10), flex: 1, marginTop: scale(20) }}>
+                            <NavigationContainer theme={Theme}>
+                                <Stack.Navigator screenOptions={TransitionScreenOptions}>
+                                    <Stack.Screen name="Home">
+                                        {props => <MainView {...props} isInCreaseHeight={isInCreaseHeight} />}
+                                    </Stack.Screen>
+                                    <Stack.Screen name="Notifications" component={({ navigation }) => <View><Text>B</Text></View>} />
+                                    <Stack.Screen name="Profile" component={({ navigation }) => <View><Text>C</Text></View>} />
+                                    <Stack.Screen name="Settings" component={({ navigation }) => <View><Text>D</Text></View>} />
+                                </Stack.Navigator>
+                            </NavigationContainer>
+                        </View>
                     </BottomTab>
                 </View>
-            </View>
+            </View >
         );
     }
 }
