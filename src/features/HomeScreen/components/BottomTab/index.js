@@ -23,7 +23,7 @@ class BottomTab extends PureComponent {
       // onStartShouldSetPanResponder: (evt, gestureState) => true,
       // onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       // onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => Math.abs(gestureState.dy) > 5,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => this._onMoveShouldSetPanResponderCapture(gestureState),
       onPanResponderGrant: this._handlePanResponderGrant,
       onPanResponderMove: this.__handlePanResponderMove,
       onPanResponderTerminationRequest: (evt, gestureState) => true,
@@ -33,6 +33,15 @@ class BottomTab extends PureComponent {
     });
   }
 
+  _onMoveShouldSetPanResponderCapture = (gestureState) => {
+    const { isInCreaseHeight } = this.state;
+    const { heightIncreased } = this.props;
+    const heightPull = height - heightIncreased + scale(80);
+
+
+    return isInCreaseHeight ? gestureState.dy > 0 && gestureState.moveY < heightPull : gestureState.dy < 0
+  }
+
   componentDidMount() {
     const { IsIncreaseFromStart } = this.props;
     if (IsIncreaseFromStart) {
@@ -40,8 +49,9 @@ class BottomTab extends PureComponent {
     }
   }
 
+
   // Check if pulled down
-  pulledDown = gestureState => gestureState.dy > 0;
+  pulledDown = gestureState => gestureState.dy > 50;
 
   tapped = gestureState => gestureState.dx === 0 && gestureState.dy === 0;
 
@@ -53,14 +63,15 @@ class BottomTab extends PureComponent {
 
   _handlePanResponderEnd = (evt, gestureState) => {
     const { HeightTopDown } = this.props;
-    // console.log('gesture end ', gestureState);
-
+    console.log('gesture end ', gestureState);
     if (this.pulledDown(gestureState)) {
       if (HeightTopDown) {
         this.IncreaseHeightBtmView();
       } else {
         this.DecreaseHeightBtmView();
       }
+
+
 
       // console.log('pull down');
     }
@@ -82,28 +93,28 @@ class BottomTab extends PureComponent {
   __handlePanResponderMove = (evt, gestureState) => {
     // Update position unless we go outside of allowed range
     // this._animatedPosition.setValue(gestureState.dy);
-    const { allowIncrease, BottomViewHeight, heightIncreased } = this.props;
-    const { isInCreaseHeight } = this.state;
-    Keyboard.dismiss();
-    // console.log('move', gestureState);
-    if (isInCreaseHeight) {
-      Animated.timing(this.BottomViewHeight, {
-        toValue: heightIncreased - (gestureState.moveY - gestureState.y0),
-        duration: 0,
-        useNativeDriver: false
-      }).start();
-    } else if (allowIncrease) {
-      Animated.timing(this.BottomViewHeight, {
-        // toValue: 200 - (gestureState.moveY - gestureState.y0),
-        toValue: BottomViewHeight - (gestureState.moveY - gestureState.y0),
-        duration: 0,
-        useNativeDriver: false
-      }).start();
-    }
+    // const { allowIncrease, BottomViewHeight, heightIncreased } = this.props;
+    // const { isInCreaseHeight } = this.state;
+    // Keyboard.dismiss();
+    // // console.log('move', gestureState);
+    // if (isInCreaseHeight) {
+    //   Animated.timing(this.BottomViewHeight, {
+    //     toValue: heightIncreased - (gestureState.moveY - gestureState.y0),
+    //     duration: 0,
+    //     useNativeDriver: false
+    //   }).start();
+    // } else if (allowIncrease) {
+    //   Animated.timing(this.BottomViewHeight, {
+    //     // toValue: 200 - (gestureState.moveY - gestureState.y0),
+    //     toValue: BottomViewHeight - (gestureState.moveY - gestureState.y0),
+    //     duration: 0,
+    //     useNativeDriver: false
+    //   }).start();
+    // }
   };
 
   DecreaseHeightBtmView = () => {
-    const { BottomViewHeight } = this.props;
+    const { BottomViewHeight, onDecrease } = this.props;
     Animated.timing(this.BottomViewHeight, {
       //   toValue: 200,
       toValue: BottomViewHeight,
@@ -111,11 +122,12 @@ class BottomTab extends PureComponent {
       useNativeDriver: false
     }).start();
     this.setState({ isInCreaseHeight: false });
+    onDecrease();
     // console.log('decrease');
   };
 
   IncreaseHeightBtmView = () => {
-    const { heightIncreased, allowIncrease } = this.props;
+    const { heightIncreased, allowIncrease, onIncrease } = this.props;
     if (allowIncrease) {
       Animated.timing(this.BottomViewHeight, {
         toValue: heightIncreased,
@@ -124,6 +136,7 @@ class BottomTab extends PureComponent {
         useNativeDriver: false,
       }).start();
       this.setState({ isInCreaseHeight: true });
+      onIncrease();
     }
   };
 
@@ -143,8 +156,8 @@ class BottomTab extends PureComponent {
             style={{
               height: this.BottomViewHeight,
               backgroundColor: 'white',
-              borderTopLeftRadius: isInCreaseHeight ? 0 : scale(20),
-              borderTopRightRadius: isInCreaseHeight ? 0 : scale(20)
+              borderTopLeftRadius: scale(20),
+              borderTopRightRadius: scale(20)
             }}
           >
             {children}

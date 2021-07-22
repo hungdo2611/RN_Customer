@@ -280,11 +280,12 @@ class CreateTripScreen extends Component {
             latitudeDelta,
             longitudeDelta,
             IsIncreaseFromStart,
+            isInCreaseHeight
         } = this.state;
         const { destination, isLoading, origin, CaculatePoint } = this.props;
 
         const widthBox = (width - 50) / 3
-        console.log('ggmap', this.state.WayPoint);
+        console.log('ggmap', height);
         return (
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#FFFFFF' }}>
                 <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'red' }]}>
@@ -347,7 +348,7 @@ class CreateTripScreen extends Component {
                             />
                         )}
                     </MapView> */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: scale(50) }}>
                         <TouchableOpacity
                             style={{
                                 marginLeft: 10,
@@ -358,7 +359,7 @@ class CreateTripScreen extends Component {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                             }}
-                            onPress={this.onPressMenu}
+                            onPress={() => this.setState({ renderStep: 2 })}
                         >
                             <Icon
                                 name='menu'
@@ -415,32 +416,52 @@ class CreateTripScreen extends Component {
                         }}
                         IsIncreaseFromStart={IsIncreaseFromStart}
                         BottomViewHeight={scale(200)}
-                        heightIncreased={height}
+                        heightIncreased={height * 5 / 6}
                         allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+
                     >
-                        <View style={{ marginHorizontal: scale(10) }}>
-                            <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: 40, marginTop: scale(20) }}>
-                                <Image style={{ height: scale(35), width: scale(50) }} source={require('./res/ic_car_red.png')} />
-                            </View>
-                            <View style={{ flexDirection: 'row', marginTop: scale(20) }}>
-
-                                <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                                    <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe Khách</Text>
-                                    <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 10, right: 10 }} source={require('./res/ic_bus.png')} />
-
+                        {renderStep == 1 && <View style={{ marginHorizontal: scale(10) }}>
+                            <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(50), marginTop: scale(20), alignItems: 'center', flexDirection: "row" }}>
+                                <Image style={{
+                                    height: scale(50),
+                                    width: scale(70),
+                                    transform: [{ rotate: '8deg' }],
+                                }} source={require('./res/ic_car_head.png')} />
+                                <View style={{ marginLeft: scale(10) }}>
+                                    <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, fontWeight: '500' }}>Địa chỉ của bạn</Text>
+                                    <Text style={{ fontSize: scale(11), fontWeight: 'bold' }}>Hà Nội</Text>
                                 </View>
-                                <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                                    <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe tiện chuyến</Text>
-                                    <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_tienchuyen.png')} />
-
-                                </View>
-                                <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                                    <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Gửi hàng</Text>
-                                    <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_shipping.png')} />
-
+                                <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center' }}>
+                                    <View style={{ width: scale(1), height: scale(20), backgroundColor: color.GRAY_COLOR_500 }} />
+                                    <Text style={{ fontSize: scale(11), fontWeight: '600', marginHorizontal: scale(12) }}>Bản đồ</Text>
                                 </View>
                             </View>
-                        </View>
+                            <ScrollView scrollEnabled={isInCreaseHeight} showsVerticalScrollIndicator={false}>
+
+                                <View style={{ flexDirection: 'row', marginTop: scale(20) }}>
+
+                                    <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe Khách</Text>
+                                        <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 10, right: 10 }} source={require('./res/ic_bus.png')} />
+
+                                    </View>
+                                    <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe tiện chuyến</Text>
+                                        <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_tienchuyen.png')} />
+
+                                    </View>
+                                    <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Gửi hàng</Text>
+                                        <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_shipping.png')} />
+
+                                    </View>
+                                </View>
+
+                            </ScrollView>
+                        </View>}
+                        {renderStep == 2 && <View style={{ backgroundColor: 'red' }}></View>}
 
                     </BottomTab>
                 </View>
