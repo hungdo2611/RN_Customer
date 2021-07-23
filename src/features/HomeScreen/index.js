@@ -42,8 +42,15 @@ import { color } from '../../constant/color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+
 import MainView from './MainView'
-const Stack = createStackNavigator();
+import OrderCoach from '../XeKhach'
+import { enableScreens } from 'react-native-screens';
+
+
+enableScreens()
+const Stack = createNativeStackNavigator();
 
 const styles = StyleSheet.create({
     container: {
@@ -302,6 +309,7 @@ class CreateTripScreen extends Component {
         };
 
         console.log('ggmap', height);
+       
         return (
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#FFFFFF' }}>
                 <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'red' }]}>
@@ -439,15 +447,16 @@ class CreateTripScreen extends Component {
 
                     >
 
-                        <View style={{ marginHorizontal: scale(10), flex: 1, marginTop: scale(20) }}>
+                        <View style={{ flex: 1, marginTop: scale(20) }}>
                             <NavigationContainer theme={Theme}>
                                 <Stack.Navigator screenOptions={TransitionScreenOptions}>
-                                    <Stack.Screen name="Home">
+                                    <Stack.Screen name="MainView">
                                         {props => <MainView {...props} isInCreaseHeight={isInCreaseHeight} />}
                                     </Stack.Screen>
-                                    <Stack.Screen name="Notifications" component={({ navigation }) => <View><Text>B</Text></View>} />
-                                    <Stack.Screen name="Profile" component={({ navigation }) => <View><Text>C</Text></View>} />
-                                    <Stack.Screen name="Settings" component={({ navigation }) => <View><Text>D</Text></View>} />
+                                    <Stack.Screen name="OrderCoach">
+                                        {props => <OrderCoach {...props} />}
+                                    </Stack.Screen>
+
                                 </Stack.Navigator>
                             </NavigationContainer>
                         </View>

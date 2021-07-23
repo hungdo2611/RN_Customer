@@ -23,6 +23,7 @@ import { scale } from '../../ultis/scale'
 import { color } from '../../constant/color'
 
 import _ from 'lodash';
+import { StackActions } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window')
 
@@ -33,13 +34,17 @@ export default class MainView extends React.Component {
 
         };
     }
+    onClickXeKhach = () => {
+        const { navigation } = this.props;
+        // navigation.push("OrderCoach");
+        navigation.push("OrderCoach", { owner: 'Michaś' });
+    }
 
     render() {
         const { isInCreaseHeight } = this.props;
         const widthBox = (width - 50) / 3
-        console.log("this.props", this.props)
         return (
-            <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
+            <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20), marginHorizontal: scale(10) }}>
                 <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(50), alignItems: 'center', flexDirection: "row" }}>
                     <Image style={{
                         height: scale(50),
@@ -59,23 +64,24 @@ export default class MainView extends React.Component {
 
                     <View style={{ flexDirection: 'row', marginTop: scale(20) }}>
 
-                        <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                        <TouchableOpacity onPress={this.onClickXeKhach} activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
                             <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe Khách</Text>
                             <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 10, right: 10 }} source={require('./res/ic_bus.png')} />
 
-                        </View>
-                        <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
                             <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe tiện chuyến</Text>
                             <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_tienchuyen.png')} />
 
-                        </View>
-                        <View style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
                             <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Gửi hàng</Text>
                             <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_shipping.png')} />
 
-                        </View>
+                        </TouchableOpacity>
                     </View>
-
+                    <Text style={{ marginVertical: scale(10), fontSize: scale(14), fontWeight: 'bold' }}>Sự kiện quanh đây</Text>
+                    <View></View>
                 </ScrollView>
             </View>
         )

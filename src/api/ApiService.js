@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { Platform } from 'react-native'
 import { getToken } from '../model'
 const _makeRequest = createRequest => async args => {
     const _headers = args.headers ? args.headers : {}
@@ -53,7 +54,7 @@ const _makeAuthRequest = createRequest => async args => {
 }
 
 export default (options = {}) => {
-    let BaseURL = 'http://10.0.2.2:3000'
+    let BaseURL =Platform.OS == 'android' ? 'http://10.0.2.2:3000': 'http://localhost:3000'
 
     if (options.BaseURL)
         BaseURL = options.BaseURL

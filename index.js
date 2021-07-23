@@ -3,6 +3,8 @@ import { Navigation } from 'react-native-navigation';
 import React, { PureComponent } from 'react';
 import { getLocalData } from './src/model'
 import { setRootToLogin, setRootToHome } from './src/NavigationController'
+import 'react-native-gesture-handler';
+
 registerScreens();
 Navigation.setDefaultOptions({
     statusBar: {
