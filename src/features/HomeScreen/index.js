@@ -49,8 +49,8 @@ import OrderCoach from '../XeKhach'
 import { enableScreens } from 'react-native-screens';
 
 
-enableScreens()
-const Stack = createNativeStackNavigator();
+enableScreens();
+const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
 const styles = StyleSheet.create({
     container: {
@@ -75,7 +75,6 @@ class CreateTripScreen extends Component {
 
     marker = null;
 
-    BottomViewStep1 = null;
 
     BottomViewStep2 = null;
 
@@ -309,7 +308,7 @@ class CreateTripScreen extends Component {
         };
 
         console.log('ggmap', height);
-       
+
         return (
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#FFFFFF' }}>
                 <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'red' }]}>
@@ -436,7 +435,7 @@ class CreateTripScreen extends Component {
                 <View style={{}}>
                     <BottomTab
                         ref={e => {
-                            this.BottomViewStep1 = e;
+                            this.BottomView = e;
                         }}
                         IsIncreaseFromStart={IsIncreaseFromStart}
                         BottomViewHeight={scale(200)}
@@ -446,15 +445,19 @@ class CreateTripScreen extends Component {
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
 
                     >
-
-                        <View style={{ flex: 1, marginTop: scale(20) }}>
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
                             <NavigationContainer theme={Theme}>
                                 <Stack.Navigator screenOptions={TransitionScreenOptions}>
                                     <Stack.Screen name="MainView">
-                                        {props => <MainView {...props} isInCreaseHeight={isInCreaseHeight} />}
+                                        {props => <MainView {...props} inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()} isInCreaseHeight={isInCreaseHeight} />}
                                     </Stack.Screen>
-                                    <Stack.Screen name="OrderCoach">
-                                        {props => <OrderCoach {...props} />}
+                                    <Stack.Screen
+                                        name="OrderCoach">
+                                        {props => <OrderCoach
+                                            inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
+                                            isInCreaseHeight={isInCreaseHeight}
+                                            {...props} />}
                                     </Stack.Screen>
 
                                 </Stack.Navigator>

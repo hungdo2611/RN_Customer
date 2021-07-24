@@ -37,7 +37,6 @@ class BottomTab extends PureComponent {
     const { isInCreaseHeight } = this.state;
     const { heightIncreased } = this.props;
     const heightPull = height - heightIncreased + scale(80);
-    console.log("heightPull", heightPull)
 
     return isInCreaseHeight ? gestureState.dy > 0 && gestureState.moveY < heightPull : gestureState.dy < 0
   }
@@ -63,7 +62,6 @@ class BottomTab extends PureComponent {
 
   _handlePanResponderEnd = (evt, gestureState) => {
     const { HeightTopDown } = this.props;
-    console.log('gesture end ', gestureState);
     if (this.pulledDown(gestureState)) {
       if (HeightTopDown) {
         this.IncreaseHeightBtmView();

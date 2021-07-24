@@ -3,5 +3,8 @@ export const color = {
     RED_COLOR: '#ff001e',
     GRAY_COLOR: '#8A8A8F',
     GRAY_COLOR_50: '#F6F6F6',
-    GRAY_COLOR_500: '#757575'
+    GRAY_COLOR_100: '#EEEEEE',
+    GRAY_COLOR_200: '#EEEEEE',
+    GRAY_COLOR_500: '#757575',
+    ORANGE_COLOR_400: '#FF6937'
 }
