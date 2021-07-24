@@ -438,7 +438,7 @@ class CreateTripScreen extends Component {
                             this.BottomView = e;
                         }}
                         IsIncreaseFromStart={IsIncreaseFromStart}
-                        BottomViewHeight={scale(200)}
+                        BottomViewHeight={scale(height / 3)}
                         heightIncreased={height * 5 / 6}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
@@ -455,6 +455,7 @@ class CreateTripScreen extends Component {
                                     <Stack.Screen
                                         name="OrderCoach">
                                         {props => <OrderCoach
+                                            coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
                                             isInCreaseHeight={isInCreaseHeight}
                                             {...props} />}
