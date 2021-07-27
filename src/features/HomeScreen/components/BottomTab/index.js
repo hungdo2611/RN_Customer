@@ -37,7 +37,6 @@ class BottomTab extends PureComponent {
     const { isInCreaseHeight } = this.state;
     const { heightIncreased } = this.props;
     const heightPull = height - heightIncreased + scale(80);
-
     return isInCreaseHeight ? gestureState.dy > 0 && gestureState.moveY < heightPull : gestureState.dy < 0
   }
 
@@ -143,13 +142,7 @@ class BottomTab extends PureComponent {
     const { isInCreaseHeight } = this.state;
     return (
       <Animatable.View animation="slideInUp" iterationCount={1} {...this._panResponder.panHandlers}>
-        <KeyboardAwareScrollView
-          style={{ position: 'relative' }}
-          onScroll={() => {
-            Keyboard.dismiss();
-          }}
-          showsVerticalScrollIndicator={false}
-        >
+       
           <Animated.View
             style={{
               height: this.BottomViewHeight,
@@ -160,7 +153,6 @@ class BottomTab extends PureComponent {
           >
             {children}
           </Animated.View>
-        </KeyboardAwareScrollView>
       </Animatable.View>
     );
   }
