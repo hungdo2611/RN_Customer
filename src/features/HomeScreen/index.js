@@ -277,7 +277,15 @@ class CreateTripScreen extends Component {
 
 
 
+    onMarkerDragEnd = (data) => {
+        console.log("onMarkerDragEnd", data)
 
+        // const { latLng } = coord;
+        // const lat = latLng.lat();
+        // const lng = latLng.lng();
+        // console.log("coord", coord)
+        // this.setState({ latitude: lat, longitude: lng });
+    };
 
 
     render() {
@@ -307,12 +315,12 @@ class CreateTripScreen extends Component {
             },
         };
 
-        console.log('ggmap', height);
+        console.log('ggmap', isPickWithGGMap);
 
         return (
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#FFFFFF' }}>
-                <View style={[StyleSheet.absoluteFillObject, { backgroundColor: 'red' }]}>
-                    {/* <MapView
+                <View style={[StyleSheet.absoluteFillObject, {}]}>
+                    <MapView
                         provider={PROVIDER_GOOGLE}
                         style={renderStep == 3 ? { height: height - scale(295), ...styles.map } : styles.map}
                         ref={c => {
@@ -333,10 +341,16 @@ class CreateTripScreen extends Component {
                                 this.setState({ WayPoint: [data.nativeEvent.coordinate] })
                             }
                         }}
+                        onMarkerDragEnd={e => this.onMarkerDragEnd(e.nativeEvent)}
+
+
                     // followsUserLocation
                     >
 
-                        {renderStep === 3 && (
+
+
+
+                        {/* {renderStep === 3 && (
                             <MapViewDirections
                                 origin={{
                                     latitude: origin.geometry.location.lat,
@@ -369,8 +383,27 @@ class CreateTripScreen extends Component {
                                     });
                                 }}
                             />
-                        )}
-                    </MapView> */}
+                        )} */}
+                    </MapView>
+                    {isPickWithGGMap && (
+                        <View style={{
+                            left: '50%',
+                            marginLeft: scale(-15),
+                            marginTop: scale(-31),
+                            position: 'absolute',
+                            top: '50%'
+                        }}>
+                            <Icon
+                                type="material"
+                                name="location-pin"
+                                color="red"
+                                size={scale(30)}
+                                containerStyle={{
+
+                                }}
+                            />
+                        </View>
+                    )}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: scale(50) }}>
                         <TouchableOpacity
                             style={{
@@ -418,19 +451,7 @@ class CreateTripScreen extends Component {
                         </TouchableOpacity>
                     </View>
 
-                    {isPickWithGGMap && (
-                        <Icon
-                            type="material"
-                            name="location-on"
-                            size={scale(40)}
-                            color={renderStep === 1 ? 'red' : 'green'}
-                            containerStyle={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginTop: Platform.OS === 'ios' ? height / 2 - scale(70) - 27 : height / 2 - scale(70) - scale(49),
-                            }}
-                        />
-                    )}
+
                 </View>
                 <View style={{}}>
                     <BottomTab
@@ -457,7 +478,10 @@ class CreateTripScreen extends Component {
                                         {props => <OrderCoach
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
+                                            inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
                                             isInCreaseHeight={isInCreaseHeight}
+                                            isPickWithGG={isPickWithGGMap}
+                                            setPickWithGG={vl => this.setState({ isPickWithGGMap: vl })}
                                             {...props} />}
                                     </Stack.Screen>
 

@@ -23,10 +23,15 @@ import EvilIconsIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { AutoCompleteAPI } from '../../api/MapApi';
+import { AutoCompleteAPI, getFromLocationId } from '../../api/MapApi';
 import { scale } from '../../ultis/scale'
 import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
-
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
 import { color } from '../../constant/color'
 
 import _ from 'lodash';
@@ -40,8 +45,9 @@ export default class XeKhachView extends React.Component {
             diem_don: '',
             isFocus: false,
             isloading: false,
-            dataAutoComplete: []
-        };
+            isloadingAPI: false,
+            dataAutoComplete: [],
+        }
         this._layoutProvider = new LayoutProvider((i) => {
             let data = this.state.dataprovider.getDataForIndex(i)
             let dataLength = data.dataDays.data.length
@@ -65,9 +71,16 @@ export default class XeKhachView extends React.Component {
     componentDidMount() {
 
     }
+    renderPickWithGG = () => {
+        return <View>
+            <Text>pick GG</Text>
+        </View>
+    }
     renderLow = () => {
-        const { isInCreaseHeight, inCreaseHeight } = this.props;
-
+        const { isInCreaseHeight, inCreaseHeight, isPickWithGG } = this.props;
+        if (isPickWithGG) {
+            return this.renderPickWithGG()
+        }
         return (
             <View>
                 <TouchableOpacity
@@ -118,26 +131,39 @@ export default class XeKhachView extends React.Component {
         )
     }
     onChangeDiemDen = async (txt) => {
-        const { isloading } = this.state;
+        const { isloading, isloadingAPI } = this.state;
         const { coord } = this.props;
-
-        if (txt.trim().length > 2 && txt.trim() != '' && !isloading) {
-            console.log("text", txt)
+        if (txt) {
             this.setState({ isloading: true })
+
+        } else {
+            this.setState({ isloading: false, dataAutoComplete: [] })
+            return
+        }
+
+        if (txt.trim().length > 2 && txt.trim() != '' && !isloadingAPI) {
+            console.log("text", txt)
+            this.setState({ isloadingAPI: true })
             let autocomplete = await AutoCompleteAPI(txt, coord.lat, coord.lng);
             setTimeout(() => {
                 if (autocomplete && autocomplete.suggestions) {
-                    this.setState({ isloading: false, dataAutoComplete: autocomplete.suggestions })
+                    this.setState({ dataAutoComplete: autocomplete.suggestions })
                 }
-            }, 1000)
-            console.log("autocomplete", autocomplete)
+                this.setState({ isloading: false, isloadingAPI: false })
+
+            }, 500)
         }
+    }
+    onChooseLocation = async (item) => {
+        const location_id = item?.locationId;
+        let localtion = await getFromLocationId(location_id)
+        const result = localtion?.response?.view[0].result;
+        console.log("localtion", localtion?.response?.view[0].result)
     }
     renderItem = ({ item }) => {
         const distance = item.distance / 1000;
         const label = item.label.split(',')
-        console.log("label", label)
-        return <TouchableOpacity activeOpacity={0.7}>
+        return <TouchableOpacity onPress={() => this.onChooseLocation(item)} activeOpacity={0.7}>
             <View style={{ flexDirection: "row", alignItems: 'center' }}>
                 <View style={{ width: scale(65), alignItems: "center", justifyContent: "center", height: scale(60) }}>
                     <View style={{
@@ -154,7 +180,7 @@ export default class XeKhachView extends React.Component {
                             color="#FFFFFF"
                         />
                     </View>
-                    <Text style={{ fontSize: scale(10), marginTop: scale(4), paddingHorizontal: scale(5), textAlign:"center" }}>{distance.toFixed(2)} km</Text>
+                    <Text style={{ fontSize: scale(10), marginTop: scale(4), paddingHorizontal: scale(5), textAlign: "center" }}>{distance.toFixed(2)} km</Text>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                     <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>{label[label.length - 1]}</Text>
@@ -163,10 +189,32 @@ export default class XeKhachView extends React.Component {
             </View>
             <View style={{ height: 0.5, width: width, backgroundColor: color.GRAY_COLOR_500, opacity: 0.3 }}></View>
         </TouchableOpacity>
+    }
+    renderLoading = () => {
+        let arr = [1, 2, 3, 4, 5];
+        return <ScrollView showsVerticalScrollIndicator={false}>
+            {arr.map(vl => {
+                return <Placeholder
+                    Animation={Fade}
+                    Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
+                    style={{ marginVertical: scale(12) }}
+                >
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                </Placeholder>
+            })}
 
+
+        </ScrollView>
+    }
+    onPickWithGG = () => {
+        const { setPickWithGG, inDecreaseHeiht } = this.props;
+        setPickWithGG(true);
+        inDecreaseHeiht();
     }
     renderHight = () => {
-        const { isFocus, diem_don, dataAutoComplete } = this.state;
+        const { isFocus, diem_don, dataAutoComplete, isloading } = this.state;
         const { coord } = this.props;
         console.log("coord", coord)
         return (
@@ -237,7 +285,7 @@ export default class XeKhachView extends React.Component {
 
                         </View>
                     </View>
-                    <TouchableOpacity activeOpacity={0.7} style={{ flexDirection: "row", alignItems: 'center', marginVertical: scale(10) }}>
+                    <TouchableOpacity onPress={this.onPickWithGG} activeOpacity={0.7} style={{ flexDirection: "row", alignItems: 'center', marginVertical: scale(10) }}>
                         <FontAwesomeIcon
                             name='map'
                             size={scale(15)}
@@ -249,9 +297,10 @@ export default class XeKhachView extends React.Component {
                         />
                         <Text style={{ fontSize: scale(14), marginLeft: scale(10) }}>Chọn bằng bản đồ</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 0.5, opacity: 0.7, width: '100%', alignSelf: "center", backgroundColor: color.GRAY_COLOR_400 }} />
                 </View>
-                <View style={{ flex: 1, backgroundColor: color.GRAY_COLOR_100 }}>
+                <View style={{ height: 0.5, opacity: 0.5, width: '100%', alignSelf: "center", backgroundColor: color.GRAY_COLOR_400 }} />
+
+                {dataAutoComplete.length > 0 && !isloading && <View style={{ flex: 1, backgroundColor: color.GRAY_COLOR_100 }}>
                     <FlatList
                         data={dataAutoComplete}
                         renderItem={this.renderItem}
@@ -259,7 +308,8 @@ export default class XeKhachView extends React.Component {
                         keyExtractor={item => item.locationId}
                         showsVerticalScrollIndicator={false}
                     />
-                </View>
+                </View>}
+                {isloading && this.renderLoading()}
 
             </View>
         )
