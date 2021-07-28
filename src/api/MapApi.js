@@ -11,3 +11,7 @@ export const getFromLocationId = async (location_id) => {
     let request = await Axios.get(`https://geocoder.ls.hereapi.com/6.2/geocode.json?locationid=${location_id}&jsonattributes=1&gen=9&apiKey=${API_KEY}`);
     return request.data
 }
+export const getAdressFromLatLng = async (location_id) => {
+    let request = await Axios.get(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${lng}&lang=en-US&apiKey=${API_KEY}`);
+    return request.data
+}
