@@ -21,6 +21,8 @@ export default () => {
   const duration = cond(isActive, 2000, 250);
   const progress = withTransition(isActive, { duration });
   const scale = mix(progress, 1, 1.2);
+  console.log("gestureHandler123", isActive)
+
   return (
     <View style={styles.container}>
       <TapGestureHandler {...gestureHandler}>

@@ -7,7 +7,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import Placeholder from 'rn-placeholder';
 import Permissions from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
-
+import LocationAnimate from '../../component/LocationAnimation'
 import {
     Text,
     View,
@@ -25,7 +25,7 @@ import {
     BackHandler,
     Alert,
     AppState,
-    SafeAreaView,
+    Easing,
 } from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
@@ -47,7 +47,8 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import MainView from './MainView'
 import OrderCoach from '../XeKhach'
 import { enableScreens } from 'react-native-screens';
-
+import AnimationButton from '../../component/animationButton/index'
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
@@ -127,6 +128,8 @@ class CreateTripScreen extends Component {
     componentWillMount() { }
 
     componentDidMount() {
+
+
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         AppState.addEventListener('change', this._handleAppStateChange);
         Permissions.check('location').then(response => {
@@ -314,6 +317,8 @@ class CreateTripScreen extends Component {
                 background: '#FFFFFF',
             },
         };
+        const MAX_POINTS = 30;
+        const fill = (this.state.points / MAX_POINTS) * 100;
 
         console.log('ggmap', isPickWithGGMap);
 
@@ -333,7 +338,7 @@ class CreateTripScreen extends Component {
                             longitudeDelta,
                         }}
                         onRegionChangeComplete={this.onRegionChange}
-                        showsUserLocation
+                        // showsUserLocation
                         showsMyLocationButton={false}
                         onLongPress={data => {
                             console.log('onlongpress', data)
@@ -385,6 +390,16 @@ class CreateTripScreen extends Component {
                             />
                         )} */}
                     </MapView>
+                    <View style={{
+                        left: '50%',
+                        marginLeft: scale(-19),
+                        marginTop: scale(-44),
+                        position: 'absolute',
+                        top: '50%'
+                    }}>
+                        <LocationAnimate />
+                    </View>
+
                     {isPickWithGGMap && (
                         <View style={{
                             left: '50%',

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { call, cond, eq, useCode } from "react-native-reanimated";
-import { MaterialIcons as Icon } from "@expo/vector-icons";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { mix } from "react-native-redash";
-import CircularProgress from "../components/CircularProgress";
-import { StyleGuide } from "../components";
+import CircularProgress from "../CircularProgress";
+import StyleGuide from "./StyleGuide";
 
 const SIZE = 150;
 const STROKE_WIDTH = 10;
