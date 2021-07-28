@@ -47,8 +47,8 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import MainView from './MainView'
 import OrderCoach from '../XeKhach'
 import { enableScreens } from 'react-native-screens';
-import AnimationButton from '../../component/animationButton/index'
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import GoogleAPI from './api/GoogleAPI';
+
 
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
@@ -221,27 +221,25 @@ class CreateTripScreen extends Component {
         this.map.animateToRegion(r, 500);
     };
 
-    onRegionChange = data => {
+    onRegionChange = async data => {
         const { coordinate, isPickWithGGMap, renderStep, latitude, longitude } = this.state;
         const { searchWithLatLng } = this.props;
         console.log('data', data);
-        // this.setState({ coordinate: data });
-
+        if (this.LocationAnimate && isPickWithGGMap) {
+            this.LocationAnimate.MoveDown();
+        }
         if (isPickWithGGMap) {
-            if (data.latitude !== latitude && data.longitude !== longitude) {
-                this.setState({
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                    latitudeDelta: data.latitudeDelta,
-                    longitudeDelta: data.longitudeDelta,
-                });
+            let reqAdress = await GoogleAPI.APISearchPlaceWithLatlng(data.latitude, data.longitude)
+            if (reqAdress && reqAdress.results){
+
             }
-            if (renderStep === 1) {
-                searchWithLatLng(data.latitude, data.longitude, 'des');
-            }
-            if (renderStep === 2) {
-                searchWithLatLng(data.latitude, data.longitude, 'origin');
-            }
+                console.log('reqAdress data', reqAdress)
+            // if (renderStep === 1) {
+            //     searchWithLatLng(data.latitude, data.longitude, 'des');
+            // }
+            // if (renderStep === 2) {
+            //     searchWithLatLng(data.latitude, data.longitude, 'origin');
+            // }
         }
     };
 
@@ -337,8 +335,13 @@ class CreateTripScreen extends Component {
                             latitudeDelta,
                             longitudeDelta,
                         }}
+                        onRegionChange={() => {
+                            if (isPickWithGGMap) {
+                                this.LocationAnimate.MoveUp()
+                            }
+                        }}
                         onRegionChangeComplete={this.onRegionChange}
-                        // showsUserLocation
+                        showsUserLocation={false}
                         showsMyLocationButton={false}
                         onLongPress={data => {
                             console.log('onlongpress', data)
@@ -346,10 +349,8 @@ class CreateTripScreen extends Component {
                                 this.setState({ WayPoint: [data.nativeEvent.coordinate] })
                             }
                         }}
-                        onMarkerDragEnd={e => this.onMarkerDragEnd(e.nativeEvent)}
 
 
-                    // followsUserLocation
                     >
 
 
@@ -390,33 +391,17 @@ class CreateTripScreen extends Component {
                             />
                         )} */}
                     </MapView>
-                    <View style={{
-                        left: '50%',
-                        marginLeft: scale(-19),
-                        marginTop: scale(-44),
-                        position: 'absolute',
-                        top: '50%'
-                    }}>
-                        <LocationAnimate />
-                    </View>
+
 
                     {isPickWithGGMap && (
                         <View style={{
                             left: '50%',
-                            marginLeft: scale(-15),
-                            marginTop: scale(-31),
+                            marginLeft: scale(-19.5),
+                            marginTop: scale(-44),
                             position: 'absolute',
                             top: '50%'
                         }}>
-                            <Icon
-                                type="material"
-                                name="location-pin"
-                                color="red"
-                                size={scale(30)}
-                                containerStyle={{
-
-                                }}
-                            />
+                            <LocationAnimate ref={e => this.LocationAnimate = e} />
                         </View>
                     )}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: scale(50) }}>
@@ -497,6 +482,7 @@ class CreateTripScreen extends Component {
                                             isInCreaseHeight={isInCreaseHeight}
                                             isPickWithGG={isPickWithGGMap}
                                             setPickWithGG={vl => this.setState({ isPickWithGGMap: vl })}
+
                                             {...props} />}
                                     </Stack.Screen>
 

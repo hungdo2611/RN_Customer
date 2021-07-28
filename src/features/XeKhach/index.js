@@ -319,11 +319,18 @@ export default class XeKhachView extends React.Component {
         const { isInCreaseHeight, inCreaseHeight } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
-                <View style={{ marginHorizontal: scale(10) }}>
-                    <Text style={{ fontSize: scale(20), fontWeight: 'bold', marginBottom: scale(10) }}>Tìm Xe Khách</Text>
-                    {!isInCreaseHeight && this.renderLow()}
-                </View>
-                {isInCreaseHeight && this.renderHight()}
+                <KeyboardAvoidingView
+                    style={{
+                        flex: 1,
+                        
+                    }}
+                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                    <View style={{ marginHorizontal: scale(10) }}>
+                        <Text style={{ fontSize: scale(20), fontWeight: 'bold', marginBottom: scale(10) }}>Tìm Xe Khách</Text>
+                        {!isInCreaseHeight && this.renderLow()}
+                    </View>
+                    {isInCreaseHeight && this.renderHight()}
+                </KeyboardAvoidingView>
             </View>
         )
     }
