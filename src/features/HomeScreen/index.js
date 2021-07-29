@@ -32,10 +32,8 @@ import * as Animatable from 'react-native-animatable';
 import PropTypes from 'prop-types';
 import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
 import localeLanguage, { updateLocale } from './language';
-import { ApiKey } from './constant';
-import ItemGGSearch from './ItemGGSearch';
+
 import SharePlanAction from './redux/Action';
-import Assets from './Asset';
 import BottomTab from './components/BottomTab';
 import { scale } from '../../ultis/scale';
 import { color } from '../../constant/color';
@@ -47,8 +45,7 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import MainView from './MainView'
 import OrderCoach from '../XeKhach'
 import { enableScreens } from 'react-native-screens';
-import GoogleAPI from './api/GoogleAPI';
-
+import { getAdressFromLatLng } from '../../api/MapApi'
 
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
@@ -71,6 +68,12 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 /** Màn hình tạo yêu cầu */
 
+const constantService = {
+    XE_KHACH: 'XE_KHACH',
+    XE_TIEN_CHUYEN: 'XE_TIEN_CHUYEN',
+    GUI_HANG: 'GUI_HANG',
+    NONE: 'NONE'
+}
 class CreateTripScreen extends Component {
     map = null;
 
@@ -99,6 +102,7 @@ class CreateTripScreen extends Component {
             distance: 0,
             IsIncreaseFromStart: false,
             WayPoint: [],
+            currentService: constantService.NONE
         };
         Navigation.events().bindComponent(this);
 
@@ -225,23 +229,33 @@ class CreateTripScreen extends Component {
         const { coordinate, isPickWithGGMap, renderStep, latitude, longitude } = this.state;
         const { searchWithLatLng } = this.props;
         console.log('data', data);
-        if (this.LocationAnimate && isPickWithGGMap) {
-            this.LocationAnimate.MoveDown();
-        }
-        if (isPickWithGGMap) {
-            let reqAdress = await GoogleAPI.APISearchPlaceWithLatlng(data.latitude, data.longitude)
-            if (reqAdress && reqAdress.results){
 
+        if (isPickWithGGMap) {
+            let reqAdress = await getAdressFromLatLng(data.latitude, data.longitude)
+            if (reqAdress && reqAdress.items && reqAdress.items[0]) {
+                if (this.LocationAnimate && isPickWithGGMap) {
+                    this.LocationAnimate.MoveDown();
+                }
+                this.OrderCoach.setLoadingPickWithGG(false);
+                this.OrderCoach.setDataPickWithGG(reqAdress.items[0])
             }
-                console.log('reqAdress data', reqAdress)
-            // if (renderStep === 1) {
-            //     searchWithLatLng(data.latitude, data.longitude, 'des');
-            // }
-            // if (renderStep === 2) {
-            //     searchWithLatLng(data.latitude, data.longitude, 'origin');
-            // }
+
         }
     };
+    getCurrentPlace = async () => {
+        const { latitude, longitude, isPickWithGGMap } = this.state;
+        this.OrderCoach.setLoadingPickWithGG(true);
+
+        let reqAdress = await getAdressFromLatLng(latitude, longitude)
+        if (reqAdress && reqAdress.items && reqAdress.items[0]) {
+            if (this.LocationAnimate && isPickWithGGMap) {
+                this.LocationAnimate.MoveDown();
+            }
+            this.OrderCoach.setLoadingPickWithGG(false);
+            this.OrderCoach.setDataPickWithGG(reqAdress.items[0])
+
+        }
+    }
 
 
 
@@ -337,7 +351,8 @@ class CreateTripScreen extends Component {
                         }}
                         onRegionChange={() => {
                             if (isPickWithGGMap) {
-                                this.LocationAnimate.MoveUp()
+                                this.LocationAnimate.MoveUp();
+                                this.OrderCoach.setLoadingPickWithGG(true);
                             }
                         }}
                         onRegionChangeComplete={this.onRegionChange}
@@ -349,8 +364,6 @@ class CreateTripScreen extends Component {
                                 this.setState({ WayPoint: [data.nativeEvent.coordinate] })
                             }
                         }}
-
-
                     >
 
 
@@ -458,7 +471,7 @@ class CreateTripScreen extends Component {
                         ref={e => {
                             this.BottomView = e;
                         }}
-                        IsIncreaseFromStart={IsIncreaseFromStart}
+                        IsIncreaseFromStart={false}
                         BottomViewHeight={scale(height / 3)}
                         heightIncreased={height * 5 / 6}
                         allowIncrease={!isPickWithGGMap}
@@ -476,13 +489,18 @@ class CreateTripScreen extends Component {
                                     <Stack.Screen
                                         name="OrderCoach">
                                         {props => <OrderCoach
+                                            ref={e => this.OrderCoach = e}
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
                                             inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
                                             isInCreaseHeight={isInCreaseHeight}
                                             isPickWithGG={isPickWithGGMap}
-                                            setPickWithGG={vl => this.setState({ isPickWithGGMap: vl })}
-
+                                            setPickWithGG={vl => {
+                                                if (vl !== isPickWithGGMap) {
+                                                    this.setState({ isPickWithGGMap: vl })
+                                                }
+                                            }}
+                                            getCurrentPlace={() => this.getCurrentPlace()}
                                             {...props} />}
                                     </Stack.Screen>
 

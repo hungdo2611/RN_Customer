@@ -46,7 +46,9 @@ export default class XeKhachView extends React.Component {
             isFocus: false,
             isloading: false,
             isloadingAPI: false,
+            isLoadingAPIPickGG: false,
             dataAutoComplete: [],
+            dataPickWithGG: {}
         }
         this._layoutProvider = new LayoutProvider((i) => {
             let data = this.state.dataprovider.getDataForIndex(i)
@@ -71,9 +73,58 @@ export default class XeKhachView extends React.Component {
     componentDidMount() {
 
     }
+    setLoadingPickWithGG = (isloading) => {
+        this.setState({ isLoadingAPIPickGG: isloading })
+    }
+    setDataPickWithGG = (data) => {
+        console.log("setDataPickWithGG", data)
+        this.setState({ dataPickWithGG: data })
+    }
     renderPickWithGG = () => {
+        const { isLoadingAPIPickGG, dataPickWithGG } = this.state
+        if (isLoadingAPIPickGG)
+            return <View>
+                <Placeholder
+                    Animation={Fade}
+                    Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
+                    style={{ marginVertical: scale(12) }}
+                >
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                </Placeholder>
+            </View>
+
+
         return <View>
-            <Text>pick GG</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
+                <Text style={{ fontSize: scale(18), fontWeight: "bold" }}>Đặt điểm đến</Text>
+                <TouchableOpacity
+                    style={{
+                        width: scale(90),
+                        height: scale(30),
+                        borderRadius: scale(20),
+                        alignItems: "center",
+                        justifyContent: 'center',
+                        borderWidth: 1,
+                        borderColor: color.MAIN_COLOR
+                    }}>
+                    <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: color.MAIN_COLOR }}>Thay đổi</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', backgroundColor: '#d3f5de', marginTop: scale(10), height: scale(60), borderRadius: scale(15), width: width - scale(30), alignSelf: "center" }}>
+                <View style={{ width: scale(24), height: scale(24), borderRadius: scale(12), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center", margin: scale(10), marginTop: scale(5) }}>
+                    <View style={{ width: scale(10), height: scale(10), borderRadius: scale(5), backgroundColor: 'white' }}>
+                    </View>
+                </View>
+                <View style={{}}>
+                    <Text style={{ fontSize: scale(13), fontWeight: "bold", marginTop: scale(5) }}>{dataPickWithGG?.address?.houseNumber} {dataPickWithGG?.address?.street}</Text>
+                    <Text numberOfLines={2} style={{ fontSize: scale(11), fontWeight: '600', marginTop: scale(5), width: '80%' }}>{dataPickWithGG?.title}</Text>
+                </View>
+            </View>
+            <TouchableOpacity style={{ width: width / 1.5, height: scale(40), alignSelf: "center", backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(20), alignItems: 'center', justifyContent: 'center', marginTop: scale(15) }}>
+                <Text style={{ fontSize: scale(15), color: '#FFFFFF' }}>Tiếp tục</Text>
+            </TouchableOpacity>
         </View>
     }
     renderLow = () => {
@@ -209,7 +260,8 @@ export default class XeKhachView extends React.Component {
         </ScrollView>
     }
     onPickWithGG = () => {
-        const { setPickWithGG, inDecreaseHeiht } = this.props;
+        const { setPickWithGG, inDecreaseHeiht, getCurrentPlace } = this.props;
+        getCurrentPlace();
         setPickWithGG(true);
         inDecreaseHeiht();
     }
@@ -314,19 +366,38 @@ export default class XeKhachView extends React.Component {
             </View>
         )
     }
+    onBack = () => {
+        const { navigation, setPickWithGG } = this.props;
+        setPickWithGG(false);
+        navigation.pop();
+
+    }
 
     render() {
-        const { isInCreaseHeight, inCreaseHeight } = this.props;
+        const { isInCreaseHeight, inCreaseHeight, navigation } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                 <KeyboardAvoidingView
                     style={{
                         flex: 1,
-                        
+
                     }}
                     behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                    <View style={{ marginBottom: scale(10) }}>
+                        <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
+                                <MaterialIcons
+                                    name='arrow-back-ios'
+                                    size={scale(22)}
+                                    color="black"
+                                />
+                            </TouchableOpacity>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Tìm Xe Khách</Text>
+
+                        </View>
+                        <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />
+                    </View>
                     <View style={{ marginHorizontal: scale(10) }}>
-                        <Text style={{ fontSize: scale(20), fontWeight: 'bold', marginBottom: scale(10) }}>Tìm Xe Khách</Text>
                         {!isInCreaseHeight && this.renderLow()}
                     </View>
                     {isInCreaseHeight && this.renderHight()}
