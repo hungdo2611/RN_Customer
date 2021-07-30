@@ -339,7 +339,7 @@ class CreateTripScreen extends Component {
                 <View style={[StyleSheet.absoluteFillObject, {}]}>
                     <MapView
                         provider={PROVIDER_GOOGLE}
-                        style={renderStep == 3 ? { height: height - scale(295), ...styles.map } : styles.map}
+                        style={styles.map}
                         ref={c => {
                             this.map = c;
                         }}
@@ -356,7 +356,7 @@ class CreateTripScreen extends Component {
                             }
                         }}
                         onRegionChangeComplete={this.onRegionChange}
-                        showsUserLocation={false}
+                        showsUserLocation={true}
                         showsMyLocationButton={false}
                         onLongPress={data => {
                             console.log('onlongpress', data)
@@ -410,7 +410,7 @@ class CreateTripScreen extends Component {
                         <View style={{
                             left: '50%',
                             marginLeft: scale(-19.5),
-                            marginTop: scale(-44),
+                            marginTop: Platform.OS == 'android' ? scale(-44) : scale(38),
                             position: 'absolute',
                             top: '50%'
                         }}>

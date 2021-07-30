@@ -4,6 +4,8 @@
 #import <React/RCTRootView.h>
 #import <ReactNativeNavigation/ReactNativeNavigation.h>
 #import <Firebase.h>
+#import <GoogleMaps/GoogleMaps.h>
+
 
 @implementation AppDelegate
 
@@ -12,6 +14,7 @@
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
+  [GMSServices provideAPIKey:@"AIzaSyB1lTe_-nm39EAz6-NhO0hWUMdBVgQd2_U"];
   [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
 
   return YES;
