@@ -410,7 +410,7 @@ class CreateTripScreen extends Component {
                         <View style={{
                             left: '50%',
                             marginLeft: scale(-19.5),
-                            marginTop: Platform.OS == 'android' ? scale(-44) : scale(38),
+                            marginTop: Platform.OS == 'android' ? scale(-44) : scale(-38),
                             position: 'absolute',
                             top: '50%'
                         }}>
@@ -493,6 +493,7 @@ class CreateTripScreen extends Component {
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
                                             inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+                                            AnimateHeightTovalue={vl => this.BottomView.AnimateHeightToValue(vl)}
                                             isInCreaseHeight={isInCreaseHeight}
                                             isPickWithGG={isPickWithGGMap}
                                             setPickWithGG={vl => {

@@ -109,6 +109,17 @@ class BottomTab extends PureComponent {
     //   }).start();
     // }
   };
+  AnimateHeightToValue = (value) => {
+    const {  onDecrease } = this.props;
+    Animated.timing(this.BottomViewHeight, {
+      //   toValue: 200,
+      toValue: value,
+      duration: 500,
+      useNativeDriver: false
+    }).start();
+    this.setState({ isInCreaseHeight: false });
+    onDecrease();
+  }
 
   DecreaseHeightBtmView = () => {
     const { BottomViewHeight, onDecrease } = this.props;
@@ -142,17 +153,17 @@ class BottomTab extends PureComponent {
     const { isInCreaseHeight } = this.state;
     return (
       <Animatable.View animation="slideInUp" iterationCount={1} {...this._panResponder.panHandlers}>
-       
-          <Animated.View
-            style={{
-              height: this.BottomViewHeight,
-              backgroundColor: 'white',
-              borderTopLeftRadius: scale(20),
-              borderTopRightRadius: scale(20)
-            }}
-          >
-            {children}
-          </Animated.View>
+
+        <Animated.View
+          style={{
+            height: this.BottomViewHeight,
+            backgroundColor: 'white',
+            borderTopLeftRadius: scale(20),
+            borderTopRightRadius: scale(20)
+          }}
+        >
+          {children}
+        </Animated.View>
       </Animatable.View>
     );
   }

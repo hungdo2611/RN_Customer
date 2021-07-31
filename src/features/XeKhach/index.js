@@ -37,18 +37,26 @@ import { color } from '../../constant/color'
 import _ from 'lodash';
 
 const { width, height } = Dimensions.get('window')
-
+const CONSTANT_SELECT = {
+    NONE: 'NONE',
+    ORIGIN: 'ORIGIN',
+    DES: 'DESTINATION'
+}
 export default class XeKhachView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            diem_don: '',
-            isFocus: false,
+            data_diem_don: {},
+            data_diem_den: {},
+            isFocus_origin: false,
+            isFocus_des: false,
             isloading: false,
             isloadingAPI: false,
             isLoadingAPIPickGG: false,
             dataAutoComplete: [],
-            dataPickWithGG: {}
+            dataPickWithGG: {},
+            select_origin_or_des: CONSTANT_SELECT.NONE,
+            text_temp: ''
         }
         this._layoutProvider = new LayoutProvider((i) => {
             let data = this.state.dataprovider.getDataForIndex(i)
@@ -80,6 +88,28 @@ export default class XeKhachView extends React.Component {
         console.log("setDataPickWithGG", data)
         this.setState({ dataPickWithGG: data })
     }
+    onChangeLocation = () => {
+        const { setPickWithGG, inCreaseHeight } = this.props;
+        setPickWithGG(false);
+        setTimeout(() => {
+            inCreaseHeight()
+        }, 100)
+    }
+    onComfirmPickGG = () => {
+        const { dataPickWithGG, select_origin_or_des } = this.state;
+        const { setPickWithGG, inCreaseHeight } = this.props;
+        setPickWithGG(false);
+        setTimeout(() => {
+            inCreaseHeight()
+        }, 100)
+        if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
+            this.setState({ data_diem_don: dataPickWithGG })
+        }
+        console.log("select_origin_or_des", select_origin_or_des)
+        if (select_origin_or_des === CONSTANT_SELECT.DES) {
+            this.setState({ data_diem_den: dataPickWithGG })
+        }
+    }
     renderPickWithGG = () => {
         const { isLoadingAPIPickGG, dataPickWithGG } = this.state
         if (isLoadingAPIPickGG)
@@ -100,6 +130,7 @@ export default class XeKhachView extends React.Component {
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
                 <Text style={{ fontSize: scale(18), fontWeight: "bold" }}>Đặt điểm đến</Text>
                 <TouchableOpacity
+                    onPress={this.onChangeLocation}
                     style={{
                         width: scale(90),
                         height: scale(30),
@@ -112,18 +143,18 @@ export default class XeKhachView extends React.Component {
                     <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: color.MAIN_COLOR }}>Thay đổi</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ flexDirection: 'row', backgroundColor: '#d3f5de', marginTop: scale(10), height: scale(60), borderRadius: scale(15), width: width - scale(30), alignSelf: "center" }}>
+            <View style={{ flexDirection: 'row', backgroundColor: '#d3f5de', marginTop: scale(10), height: scale(80), borderRadius: scale(15), width: width - scale(30), alignSelf: "center" }}>
                 <View style={{ width: scale(24), height: scale(24), borderRadius: scale(12), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center", margin: scale(10), marginTop: scale(5) }}>
                     <View style={{ width: scale(10), height: scale(10), borderRadius: scale(5), backgroundColor: 'white' }}>
                     </View>
                 </View>
-                <View style={{}}>
-                    <Text style={{ fontSize: scale(13), fontWeight: "bold", marginTop: scale(5) }}>{dataPickWithGG?.address?.houseNumber} {dataPickWithGG?.address?.street}</Text>
-                    <Text numberOfLines={2} style={{ fontSize: scale(11), fontWeight: '600', marginTop: scale(5), width: '80%' }}>{dataPickWithGG?.title}</Text>
+                <View style={{ flex: 1 }}>
+                    <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "bold", marginTop: scale(5), width: '90%' }}>{dataPickWithGG?.address?.houseNumber} {dataPickWithGG?.address?.street}</Text>
+                    <Text numberOfLines={2} style={{ fontSize: scale(12), fontWeight: '600', marginTop: scale(5), width: '90%', paddingLeft: scale(3) }}>{dataPickWithGG?.title}</Text>
                 </View>
             </View>
-            <TouchableOpacity style={{ width: width / 1.5, height: scale(40), alignSelf: "center", backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(20), alignItems: 'center', justifyContent: 'center', marginTop: scale(15) }}>
-                <Text style={{ fontSize: scale(15), color: '#FFFFFF' }}>Tiếp tục</Text>
+            <TouchableOpacity onPress={this.onComfirmPickGG} style={{ width: width / 1.5, height: scale(40), alignSelf: "center", backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(20), alignItems: 'center', justifyContent: 'center', marginTop: scale(20) }}>
+                <Text style={{ fontSize: scale(15), color: '#FFFFFF', fontWeight: "bold" }}>Tiếp tục</Text>
             </TouchableOpacity>
         </View>
     }
@@ -168,7 +199,7 @@ export default class XeKhachView extends React.Component {
                         style={{ flex: 1, marginHorizontal: scale(7), fontSize: scale(13), color: color.GRAY_COLOR_400 }}
                     >
                         Bạn muốn đi đâu
-                        </Text>
+                    </Text>
                     <EvilIconsIcon
                         name='search'
                         size={scale(18)}
@@ -184,6 +215,7 @@ export default class XeKhachView extends React.Component {
     onChangeDiemDen = async (txt) => {
         const { isloading, isloadingAPI } = this.state;
         const { coord } = this.props;
+        this.setState({ text_temp: txt })
         if (txt) {
             this.setState({ isloading: true })
 
@@ -207,9 +239,17 @@ export default class XeKhachView extends React.Component {
     }
     onChooseLocation = async (item) => {
         const location_id = item?.locationId;
+        const { select_origin_or_des } = this.state;
         let localtion = await getFromLocationId(location_id)
         const result = localtion?.response?.view[0].result;
-        console.log("localtion", localtion?.response?.view[0].result)
+        console.log("localtion", localtion?.response?.view[0].result[0].location)
+        const dataLocation = localtion?.response?.view[0]?.result[0]?.location
+        if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
+            this.setState({ data_diem_don: dataLocation, text_temp: dataLocation?.address?.label })
+        }
+        if (select_origin_or_des === CONSTANT_SELECT.DES) {
+            this.setState({ data_diem_den: dataLocation, text_temp: dataLocation?.address?.label })
+        }
     }
     renderItem = ({ item }) => {
         const distance = item.distance / 1000;
@@ -260,15 +300,16 @@ export default class XeKhachView extends React.Component {
         </ScrollView>
     }
     onPickWithGG = () => {
-        const { setPickWithGG, inDecreaseHeiht, getCurrentPlace } = this.props;
+        const { setPickWithGG, inDecreaseHeiht, getCurrentPlace, AnimateHeightTovalue } = this.props;
+        this.setState({ isFocus_des: false, isFocus_origin: false })
+        AnimateHeightTovalue(scale(300))
         getCurrentPlace();
         setPickWithGG(true);
-        inDecreaseHeiht();
     }
     renderHight = () => {
-        const { isFocus, diem_don, dataAutoComplete, isloading } = this.state;
+        const { isFocus_origin, diem_don, dataAutoComplete, isloading, data_diem_den, data_diem_don, isFocus_des, text_temp } = this.state;
         const { coord } = this.props;
-        console.log("coord", coord)
+        console.log("coord", data_diem_den)
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ marginHorizontal: scale(10) }}>
@@ -320,19 +361,30 @@ export default class XeKhachView extends React.Component {
                         <View style={{ flex: 1, marginHorizontal: scale(10), paddingVertical: scale(5) }}>
                             <TextInput
                                 onFocus={() => {
-                                    this.setState({ isFocus: true });
+                                    this.setState({ isFocus_origin: true, select_origin_or_des: CONSTANT_SELECT.ORIGIN });
                                 }}
                                 onBlur={() => {
-                                    this.setState({ isFocus: false });
+                                    this.setState({ isFocus_origin: false });
                                 }}
-                                defaultValue={diem_don == '' && !isFocus ? 'Vị trí hiện tại' : diem_don}
+                                value={diem_don == '' && !isFocus_origin ? 'Vị trí hiện tại' : diem_don}
                                 style={{ flex: 1 }}
+                                blurOnSubmit={false}
                                 placeholder="Tìm điểm đón" />
                             <View style={{ height: 0.5, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400 }} />
                             <TextInput
                                 ref={e => this.inPutDiemDen = e}
+                                onFocus={() => {
+                                    const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : ''
+                                    this.setState({ isFocus_des: true, select_origin_or_des: CONSTANT_SELECT.DES, text_temp: text });
+
+                                }}
+                                onBlur={() => {
+                                    this.setState({ isFocus_des: false, text_temp: '' })
+                                }}
+                                value={isFocus_des ? text_temp : data_diem_den?.address?.label}
                                 onChangeText={this.onChangeDiemDen}
                                 style={{ flex: 1 }}
+                                blurOnSubmit={false}
                                 placeholder="Chọn điểm đến" />
 
                         </View>
