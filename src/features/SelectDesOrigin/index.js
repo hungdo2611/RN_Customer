@@ -42,12 +42,12 @@ const CONSTANT_SELECT = {
     ORIGIN: 'ORIGIN',
     DES: 'DESTINATION'
 }
-export default class XeKhachView extends React.Component {
+export default class SelectDesOrigin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data_diem_don: {},
-            data_diem_den: {},
+            data_diem_don: null,
+            data_diem_den: null,
             isFocus_origin: false,
             isFocus_des: false,
             isloading: false,
@@ -79,7 +79,11 @@ export default class XeKhachView extends React.Component {
         });
     }
     componentDidMount() {
-
+        console.log("componentDidMount")
+        const { isInCreaseHeight } = this.props;
+        if (isInCreaseHeight) {
+            this.inPutDiemDen.focus();
+        }
     }
     setLoadingPickWithGG = (isloading) => {
         this.setState({ isLoadingAPIPickGG: isloading })
@@ -90,25 +94,44 @@ export default class XeKhachView extends React.Component {
     }
     onChangeLocation = () => {
         const { setPickWithGG, inCreaseHeight } = this.props;
+        const { select_origin_or_des } = this.state;
         setPickWithGG(false);
+
         setTimeout(() => {
             inCreaseHeight()
+            if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
+                this.inPutDiemDon.focus();
+            }
+            if (select_origin_or_des === CONSTANT_SELECT.DES) {
+                this.inPutDiemDen.focus();
+            }
         }, 100)
     }
+
+    onComfirmDirection = (data_diem_don, data_diem_den) => {
+        const { navigation } = this.props;
+        navigation.push("AdditionalInfo", { data_diem_don, data_diem_den });
+
+    }
+
     onComfirmPickGG = () => {
-        const { dataPickWithGG, select_origin_or_des } = this.state;
+        const { dataPickWithGG, select_origin_or_des, data_diem_den } = this.state;
         const { setPickWithGG, inCreaseHeight } = this.props;
         setPickWithGG(false);
         setTimeout(() => {
-            inCreaseHeight()
+            if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
+                this.setState({ data_diem_don: dataPickWithGG })
+                inCreaseHeight()
+                if (!data_diem_den) {
+                    this.inPutDiemDen.focus();
+                }
+            }
+            console.log("select_origin_or_des", select_origin_or_des)
+            if (select_origin_or_des === CONSTANT_SELECT.DES) {
+                this.setState({ data_diem_den: dataPickWithGG })
+            }
         }, 100)
-        if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
-            this.setState({ data_diem_don: dataPickWithGG })
-        }
-        console.log("select_origin_or_des", select_origin_or_des)
-        if (select_origin_or_des === CONSTANT_SELECT.DES) {
-            this.setState({ data_diem_den: dataPickWithGG })
-        }
+
     }
     renderPickWithGG = () => {
         const { isLoadingAPIPickGG, dataPickWithGG } = this.state
@@ -212,7 +235,7 @@ export default class XeKhachView extends React.Component {
             </View>
         )
     }
-    onChangeDiemDen = async (txt) => {
+    onChangeAutoComplete = async (txt) => {
         const { isloading, isloadingAPI } = this.state;
         const { coord } = this.props;
         this.setState({ text_temp: txt })
@@ -239,16 +262,22 @@ export default class XeKhachView extends React.Component {
     }
     onChooseLocation = async (item) => {
         const location_id = item?.locationId;
-        const { select_origin_or_des } = this.state;
+        const { select_origin_or_des, data_diem_den, data_diem_don } = this.state;
         let localtion = await getFromLocationId(location_id)
         const result = localtion?.response?.view[0].result;
         console.log("localtion", localtion?.response?.view[0].result[0].location)
         const dataLocation = localtion?.response?.view[0]?.result[0]?.location
         if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
             this.setState({ data_diem_don: dataLocation, text_temp: dataLocation?.address?.label })
+            if (!data_diem_den) {
+                this.inPutDiemDen.focus();
+            } else {
+                this.onComfirmDirection(dataLocation, data_diem_den)
+            }
         }
         if (select_origin_or_des === CONSTANT_SELECT.DES) {
             this.setState({ data_diem_den: dataLocation, text_temp: dataLocation?.address?.label })
+            this.onComfirmDirection(data_diem_don, dataLocation)
         }
     }
     renderItem = ({ item }) => {
@@ -301,7 +330,7 @@ export default class XeKhachView extends React.Component {
     }
     onPickWithGG = () => {
         const { setPickWithGG, inDecreaseHeiht, getCurrentPlace, AnimateHeightTovalue } = this.props;
-        this.setState({ isFocus_des: false, isFocus_origin: false })
+        this.setState({ isFocus_des: false, isFocus_origin: false, dataAutoComplete: [] })
         AnimateHeightTovalue(scale(300))
         getCurrentPlace();
         setPickWithGG(true);
@@ -360,13 +389,17 @@ export default class XeKhachView extends React.Component {
                         </View>
                         <View style={{ flex: 1, marginHorizontal: scale(10), paddingVertical: scale(5) }}>
                             <TextInput
+                                ref={e => this.inPutDiemDon = e}
                                 onFocus={() => {
-                                    this.setState({ isFocus_origin: true, select_origin_or_des: CONSTANT_SELECT.ORIGIN });
+                                    const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : ''
+                                    this.setState({ isFocus_origin: true, select_origin_or_des: CONSTANT_SELECT.ORIGIN, text_temp: text });
                                 }}
                                 onBlur={() => {
-                                    this.setState({ isFocus_origin: false });
+                                    this.setState({ isFocus_origin: false, dataAutoComplete: [], text_temp: '' });
                                 }}
-                                value={diem_don == '' && !isFocus_origin ? 'Vị trí hiện tại' : diem_don}
+                                selectTextOnFocus={true}
+                                onChangeText={this.onChangeAutoComplete}
+                                value={isFocus_origin ? text_temp : (data_diem_don?.address?.label ? data_diem_don?.address?.label : 'Vị trí hiện tại')}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={false}
                                 placeholder="Tìm điểm đón" />
@@ -379,10 +412,10 @@ export default class XeKhachView extends React.Component {
 
                                 }}
                                 onBlur={() => {
-                                    this.setState({ isFocus_des: false, text_temp: '' })
+                                    this.setState({ isFocus_des: false, text_temp: '', dataAutoComplete: [] })
                                 }}
                                 value={isFocus_des ? text_temp : data_diem_den?.address?.label}
-                                onChangeText={this.onChangeDiemDen}
+                                onChangeText={this.onChangeAutoComplete}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={false}
                                 placeholder="Chọn điểm đến" />
@@ -419,7 +452,11 @@ export default class XeKhachView extends React.Component {
         )
     }
     onBack = () => {
-        const { navigation, setPickWithGG } = this.props;
+        const { navigation, setPickWithGG, isPickWithGG } = this.props;
+        if (isPickWithGG) {
+            this.onChangeLocation()
+            return
+        }
         setPickWithGG(false);
         navigation.pop();
 

@@ -36,8 +36,7 @@ export default class MainView extends React.Component {
     }
     onClickXeKhach = () => {
         const { navigation } = this.props;
-        // navigation.push("OrderCoach");
-        navigation.push("OrderCoach", { owner: 'Michaś' });
+        navigation.push("SelectDesOrigin", {});
     }
 
     render() {

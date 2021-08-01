@@ -43,10 +43,10 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import MainView from './MainView'
-import OrderCoach from '../XeKhach'
+import SelectDesOrigin from '../SelectDesOrigin'
 import { enableScreens } from 'react-native-screens';
 import { getAdressFromLatLng } from '../../api/MapApi'
-
+import AdditionalInfo from '../AdditionInfo'
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
@@ -236,23 +236,23 @@ class CreateTripScreen extends Component {
                 if (this.LocationAnimate && isPickWithGGMap) {
                     this.LocationAnimate.MoveDown();
                 }
-                this.OrderCoach.setLoadingPickWithGG(false);
-                this.OrderCoach.setDataPickWithGG(reqAdress.items[0])
+                this.SelectDesOrigin.setLoadingPickWithGG(false);
+                this.SelectDesOrigin.setDataPickWithGG(reqAdress.items[0])
             }
 
         }
     };
     getCurrentPlace = async () => {
         const { latitude, longitude, isPickWithGGMap } = this.state;
-        this.OrderCoach.setLoadingPickWithGG(true);
+        this.SelectDesOrigin.setLoadingPickWithGG(true);
 
         let reqAdress = await getAdressFromLatLng(latitude, longitude)
         if (reqAdress && reqAdress.items && reqAdress.items[0]) {
             if (this.LocationAnimate && isPickWithGGMap) {
                 this.LocationAnimate.MoveDown();
             }
-            this.OrderCoach.setLoadingPickWithGG(false);
-            this.OrderCoach.setDataPickWithGG(reqAdress.items[0])
+            this.SelectDesOrigin.setLoadingPickWithGG(false);
+            this.SelectDesOrigin.setDataPickWithGG(reqAdress.items[0])
 
         }
     }
@@ -352,7 +352,7 @@ class CreateTripScreen extends Component {
                         onRegionChange={() => {
                             if (isPickWithGGMap) {
                                 this.LocationAnimate.MoveUp();
-                                this.OrderCoach.setLoadingPickWithGG(true);
+                                this.SelectDesOrigin.setLoadingPickWithGG(true);
                             }
                         }}
                         onRegionChangeComplete={this.onRegionChange}
@@ -487,9 +487,9 @@ class CreateTripScreen extends Component {
                                         {props => <MainView {...props} inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()} isInCreaseHeight={isInCreaseHeight} />}
                                     </Stack.Screen>
                                     <Stack.Screen
-                                        name="OrderCoach">
-                                        {props => <OrderCoach
-                                            ref={e => this.OrderCoach = e}
+                                        name="SelectDesOrigin">
+                                        {props => <SelectDesOrigin
+                                            ref={e => this.SelectDesOrigin = e}
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
                                             inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
@@ -504,7 +504,12 @@ class CreateTripScreen extends Component {
                                             getCurrentPlace={() => this.getCurrentPlace()}
                                             {...props} />}
                                     </Stack.Screen>
-
+                                    <Stack.Screen
+                                        name="AdditionalInfo">
+                                        {props => <AdditionalInfo
+                                            ref={e => this.AdditionalInfo = e}
+                                            {...props} />}
+                                    </Stack.Screen>
                                 </Stack.Navigator>
                             </NavigationContainer>
                         </View>

@@ -110,14 +110,15 @@ class BottomTab extends PureComponent {
     // }
   };
   AnimateHeightToValue = (value) => {
-    const {  onDecrease } = this.props;
+    const { onDecrease } = this.props;
     Animated.timing(this.BottomViewHeight, {
       //   toValue: 200,
       toValue: value,
       duration: 500,
       useNativeDriver: false
     }).start();
-    this.setState({ isInCreaseHeight: false });
+    let isIncrease = value > height / 2 ? true : false
+    this.setState({ isInCreaseHeight: isIncrease });
     onDecrease();
   }
 
