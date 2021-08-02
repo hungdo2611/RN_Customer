@@ -339,7 +339,9 @@ class CreateTripScreen extends Component {
                 <View style={[StyleSheet.absoluteFillObject, {}]}>
                     <MapView
                         provider={PROVIDER_GOOGLE}
-                        style={styles.map}
+                        style={{
+                            ...StyleSheet.absoluteFillObject,
+                        }}
                         ref={c => {
                             this.map = c;
                         }}
@@ -417,7 +419,7 @@ class CreateTripScreen extends Component {
                             <LocationAnimate ref={e => this.LocationAnimate = e} />
                         </View>
                     )}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: scale(50) }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: scale(40) }}>
                         <TouchableOpacity
                             style={{
                                 marginLeft: 10,
@@ -466,6 +468,7 @@ class CreateTripScreen extends Component {
 
 
                 </View>
+                {isInCreaseHeight && <View style={{ width: width, height: height, position: 'absolute', backgroundColor: 'rgba(52, 52, 52, 0.3)' }}></View>}
                 <View style={{}}>
                     <BottomTab
                         ref={e => {
@@ -473,7 +476,7 @@ class CreateTripScreen extends Component {
                         }}
                         IsIncreaseFromStart={false}
                         BottomViewHeight={scale(height / 3)}
-                        heightIncreased={height * 5 / 6}
+                        heightIncreased={height * 6 / 7}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}

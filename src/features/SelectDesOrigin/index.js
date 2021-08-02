@@ -14,7 +14,8 @@ import {
     ActivityIndicator,
     Alert,
     ScrollView,
-    Animated
+    TouchableWithoutFeedback,
+    Platform
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -42,41 +43,26 @@ const CONSTANT_SELECT = {
     ORIGIN: 'ORIGIN',
     DES: 'DESTINATION'
 }
+const CONSTANT_TYPE_AUTOCOMPLETE_NULL = {
+    START_FIND: 'START_FIND',
+    NOT_FOUND: 'NOT_FOUND'
+}
 export default class SelectDesOrigin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             data_diem_don: null,
             data_diem_den: null,
-            isFocus_origin: false,
-            isFocus_des: false,
             isloading: false,
             isloadingAPI: false,
             isLoadingAPIPickGG: false,
-            dataAutoComplete: [],
+            dataAutoComplete: null,
             dataPickWithGG: {},
             select_origin_or_des: CONSTANT_SELECT.NONE,
-            text_temp: ''
+            text_temp: '',
+            type_autocompleteNull: null
         }
-        this._layoutProvider = new LayoutProvider((i) => {
-            let data = this.state.dataprovider.getDataForIndex(i)
-            let dataLength = data.dataDays.data.length
-            return { type: "Item_task", length: dataLength } //this.state.dataProvider.getDataForIndex(i).type;
 
-        }, (type, dim) => {
-            switch (type.type) {
-                case "Item_task":
-                    dim.width = width;
-                    dim.height = type.length > 0 ? scale(56) * type.length : scale(56);
-                    break;
-
-                default:
-                    dim.height = 0;
-                    dim.width = width;
-                    break;
-
-            };
-        });
     }
     componentDidMount() {
         console.log("componentDidMount")
@@ -109,13 +95,15 @@ export default class SelectDesOrigin extends React.Component {
     }
 
     onComfirmDirection = (data_diem_don, data_diem_den) => {
+        console.log("onComfirmDirectionha")
         const { navigation } = this.props;
+        this.setState({ dataAutoComplete: [] })
         navigation.push("AdditionalInfo", { data_diem_don, data_diem_den });
 
     }
 
     onComfirmPickGG = () => {
-        const { dataPickWithGG, select_origin_or_des, data_diem_den } = this.state;
+        const { dataPickWithGG, select_origin_or_des, data_diem_den, data_diem_don } = this.state;
         const { setPickWithGG, inCreaseHeight } = this.props;
         setPickWithGG(false);
         setTimeout(() => {
@@ -124,17 +112,21 @@ export default class SelectDesOrigin extends React.Component {
                 inCreaseHeight()
                 if (!data_diem_den) {
                     this.inPutDiemDen.focus();
+                } else {
+                    this.onComfirmDirection(dataPickWithGG, data_diem_den)
+
                 }
             }
             console.log("select_origin_or_des", select_origin_or_des)
             if (select_origin_or_des === CONSTANT_SELECT.DES) {
                 this.setState({ data_diem_den: dataPickWithGG })
+                this.onComfirmDirection(data_diem_don, dataPickWithGG)
             }
         }, 100)
 
     }
     renderPickWithGG = () => {
-        const { isLoadingAPIPickGG, dataPickWithGG } = this.state
+        const { isLoadingAPIPickGG, dataPickWithGG, select_origin_or_des } = this.state
         if (isLoadingAPIPickGG)
             return <View>
                 <Placeholder
@@ -151,7 +143,7 @@ export default class SelectDesOrigin extends React.Component {
 
         return <View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
-                <Text style={{ fontSize: scale(18), fontWeight: "bold" }}>Đặt điểm đến</Text>
+                <Text style={{ fontSize: scale(18), fontWeight: "bold" }}>{select_origin_or_des == CONSTANT_SELECT.ORIGIN ? "Chọn điểm đón" : "Đặt điểm đến"}</Text>
                 <TouchableOpacity
                     onPress={this.onChangeLocation}
                     style={{
@@ -243,7 +235,7 @@ export default class SelectDesOrigin extends React.Component {
             this.setState({ isloading: true })
 
         } else {
-            this.setState({ isloading: false, dataAutoComplete: [] })
+            this.setState({ isloading: false, dataAutoComplete: null })
             return
         }
 
@@ -253,6 +245,7 @@ export default class SelectDesOrigin extends React.Component {
             let autocomplete = await AutoCompleteAPI(txt, coord.lat, coord.lng);
             setTimeout(() => {
                 if (autocomplete && autocomplete.suggestions) {
+                    console.log("autocomplete.suggestions", autocomplete.suggestions)
                     this.setState({ dataAutoComplete: autocomplete.suggestions })
                 }
                 this.setState({ isloading: false, isloadingAPI: false })
@@ -304,7 +297,7 @@ export default class SelectDesOrigin extends React.Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                     <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>{label[label.length - 1]}</Text>
-                    <Text numberOfLines={1} style={{ fontSize: scale(11), color: color.GRAY_COLOR_500, paddingTop: scale(3) }}>{item.label}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scale(11), color: color.GRAY_COLOR_500, paddingTop: scale(3), paddingLeft: scale(3) }}>{item.label}</Text>
                 </View>
             </View>
             <View style={{ height: 0.5, width: width, backgroundColor: color.GRAY_COLOR_500, opacity: 0.3 }}></View>
@@ -330,13 +323,41 @@ export default class SelectDesOrigin extends React.Component {
     }
     onPickWithGG = () => {
         const { setPickWithGG, inDecreaseHeiht, getCurrentPlace, AnimateHeightTovalue } = this.props;
-        this.setState({ isFocus_des: false, isFocus_origin: false, dataAutoComplete: [] })
-        AnimateHeightTovalue(scale(300))
+        this.setState({ dataAutoComplete: [] })
+        AnimateHeightTovalue(scale(250))
         getCurrentPlace();
         setPickWithGG(true);
     }
+    renderAutoCompleteList = () => {
+        const { dataAutoComplete, isloading } = this.state;
+        if (!dataAutoComplete && !isloading) {
+            return <View>
+                <Text>Tìm xe ngay</Text>
+            </View>
+        }
+        if (dataAutoComplete && dataAutoComplete.length == 0 && !isloading) {
+            return <View>
+                <Text>Không tìm thấy địa điểm này</Text>
+            </View>
+        }
+        if (isloading) {
+            return this.renderLoading()
+        }
+        if (dataAutoComplete && dataAutoComplete.length && dataAutoComplete.length > 0 && !isloading) {
+            return <View style={{ flex: 1, backgroundColor: color.GRAY_COLOR_100 }}>
+                <FlatList
+                    data={dataAutoComplete}
+                    renderItem={this.renderItem}
+                    style={{ flex: 1 }}
+                    keyExtractor={item => item.locationId}
+                    showsVerticalScrollIndicator={false}
+                    onScrollBeginDrag={() => Keyboard.dismiss()}
+                />
+            </View>
+        }
+    }
     renderHight = () => {
-        const { isFocus_origin, diem_don, dataAutoComplete, isloading, data_diem_den, data_diem_don, isFocus_des, text_temp } = this.state;
+        const { diem_don, dataAutoComplete, isloading, data_diem_den, data_diem_don, text_temp, select_origin_or_des } = this.state;
         const { coord } = this.props;
         console.log("coord", data_diem_den)
         return (
@@ -391,38 +412,42 @@ export default class SelectDesOrigin extends React.Component {
                             <TextInput
                                 ref={e => this.inPutDiemDon = e}
                                 onFocus={() => {
-                                    const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : ''
-                                    this.setState({ isFocus_origin: true, select_origin_or_des: CONSTANT_SELECT.ORIGIN, text_temp: text });
-                                }}
-                                onBlur={() => {
-                                    this.setState({ isFocus_origin: false, dataAutoComplete: [], text_temp: '' });
+                                    const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : text_temp
+                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.ORIGIN });
+                                    if (select_origin_or_des == CONSTANT_SELECT.DES) {
+                                        this.setState({ dataAutoComplete: [], text_temp: '' })
+                                    } else {
+                                        this.setState({ text_temp: text })
+                                    }
                                 }}
                                 selectTextOnFocus={true}
                                 onChangeText={this.onChangeAutoComplete}
-                                value={isFocus_origin ? text_temp : (data_diem_don?.address?.label ? data_diem_don?.address?.label : 'Vị trí hiện tại')}
+                                value={data_diem_don?.address?.label ? data_diem_don?.address?.label : (select_origin_or_des == CONSTANT_SELECT.ORIGIN ? text_temp : 'Vị trí của bạn')}
                                 style={{ flex: 1 }}
-                                blurOnSubmit={false}
+                                blurOnSubmit={true}
                                 placeholder="Tìm điểm đón" />
                             <View style={{ height: 0.5, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400 }} />
                             <TextInput
                                 ref={e => this.inPutDiemDen = e}
                                 onFocus={() => {
-                                    const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : ''
-                                    this.setState({ isFocus_des: true, select_origin_or_des: CONSTANT_SELECT.DES, text_temp: text });
-
+                                    const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : text_temp
+                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.DES });
+                                    if (select_origin_or_des == CONSTANT_SELECT.ORIGIN) {
+                                        this.setState({ dataAutoComplete: [], text_temp: '' })
+                                    } else {
+                                        this.setState({ text_temp: text })
+                                    }
                                 }}
-                                onBlur={() => {
-                                    this.setState({ isFocus_des: false, text_temp: '', dataAutoComplete: [] })
-                                }}
-                                value={isFocus_des ? text_temp : data_diem_den?.address?.label}
+                                value={data_diem_den?.address?.label ? data_diem_den?.address?.label : (select_origin_or_des == CONSTANT_SELECT.DES ? text_temp : '')}
                                 onChangeText={this.onChangeAutoComplete}
                                 style={{ flex: 1 }}
-                                blurOnSubmit={false}
+                                blurOnSubmit={true}
+                                selectTextOnFocus={true}
                                 placeholder="Chọn điểm đến" />
 
                         </View>
                     </View>
-                    <TouchableOpacity onPress={this.onPickWithGG} activeOpacity={0.7} style={{ flexDirection: "row", alignItems: 'center', marginVertical: scale(10) }}>
+                    <TouchableOpacity onPress={this.onPickWithGG} activeOpacity={0.7} style={{ flexDirection: "row", alignItems: 'center', marginVertical: scale(10), width: scale(170) }}>
                         <FontAwesomeIcon
                             name='map'
                             size={scale(15)}
@@ -436,18 +461,21 @@ export default class SelectDesOrigin extends React.Component {
                     </TouchableOpacity>
                 </View>
                 <View style={{ height: 0.5, opacity: 0.5, width: '100%', alignSelf: "center", backgroundColor: color.GRAY_COLOR_400 }} />
-
-                {dataAutoComplete.length > 0 && !isloading && <View style={{ flex: 1, backgroundColor: color.GRAY_COLOR_100 }}>
+                {this.renderAutoCompleteList()}
+                {/* {dataAutoComplete && dataAutoComplete.length > 0 && !isloading && <View style={{ flex: 1, backgroundColor: color.GRAY_COLOR_100 }}>
                     <FlatList
                         data={dataAutoComplete}
                         renderItem={this.renderItem}
                         style={{ flex: 1 }}
                         keyExtractor={item => item.locationId}
                         showsVerticalScrollIndicator={false}
+                        onScrollBeginDrag={() => Keyboard.dismiss()}
                     />
                 </View>}
                 {isloading && this.renderLoading()}
-
+                {!isloading && dataAutoComplete.length == 0 && <View>
+                    <Text></Text>
+                </View>} */}
             </View>
         )
     }
@@ -465,33 +493,35 @@ export default class SelectDesOrigin extends React.Component {
     render() {
         const { isInCreaseHeight, inCreaseHeight, navigation } = this.props;
         return (
-            <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
-                <KeyboardAvoidingView
-                    style={{
-                        flex: 1,
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
+                    <KeyboardAvoidingView
+                        style={{
+                            flex: 1,
 
-                    }}
-                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-                    <View style={{ marginBottom: scale(10) }}>
-                        <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
-                                <MaterialIcons
-                                    name='arrow-back-ios'
-                                    size={scale(22)}
-                                    color="black"
-                                />
-                            </TouchableOpacity>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Tìm Xe Khách</Text>
+                        }}
+                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                        <View style={{ marginBottom: scale(10) }}>
+                            <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
+                                <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
+                                    <MaterialIcons
+                                        name='arrow-back-ios'
+                                        size={scale(22)}
+                                        color="black"
+                                    />
+                                </TouchableOpacity>
+                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách</Text>
 
+                            </View>
+                            <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />
                         </View>
-                        <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />
-                    </View>
-                    <View style={{ marginHorizontal: scale(10) }}>
-                        {!isInCreaseHeight && this.renderLow()}
-                    </View>
-                    {isInCreaseHeight && this.renderHight()}
-                </KeyboardAvoidingView>
-            </View>
+                        <View style={{ marginHorizontal: scale(10) }}>
+                            {!isInCreaseHeight && this.renderLow()}
+                        </View>
+                        {isInCreaseHeight && this.renderHight()}
+                    </KeyboardAvoidingView>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 }
