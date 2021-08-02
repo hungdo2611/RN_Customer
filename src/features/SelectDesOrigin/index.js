@@ -97,7 +97,6 @@ export default class SelectDesOrigin extends React.Component {
     onComfirmDirection = (data_diem_don, data_diem_den) => {
         console.log("onComfirmDirectionha")
         const { navigation } = this.props;
-        this.setState({ dataAutoComplete: [] })
         navigation.push("AdditionalInfo", { data_diem_don, data_diem_den });
 
     }
@@ -493,7 +492,6 @@ export default class SelectDesOrigin extends React.Component {
     render() {
         const { isInCreaseHeight, inCreaseHeight, navigation } = this.props;
         return (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                     <KeyboardAvoidingView
                         style={{
@@ -521,7 +519,6 @@ export default class SelectDesOrigin extends React.Component {
                         {isInCreaseHeight && this.renderHight()}
                     </KeyboardAvoidingView>
                 </View>
-            </TouchableWithoutFeedback>
         )
     }
 }

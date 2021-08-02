@@ -74,7 +74,9 @@ export default class AdditionalInfo extends React.Component {
                         </View>
                         <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />
                     </View>
-
+                    <View style={{ marginHorizontal: scale(10) }}>
+                        <Text style={{ fontSize: scale(15), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>
+                    </View>
                 </KeyboardAvoidingView>
             </View>
         )
