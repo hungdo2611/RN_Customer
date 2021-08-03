@@ -60,7 +60,17 @@ class BottomTab extends PureComponent {
   };
 
   _handlePanResponderEnd = (evt, gestureState) => {
-    const { HeightTopDown } = this.props;
+    const { HeightTopDown, EnablePull } = this.props;
+
+
+    if (this.tapped(gestureState)) {
+      Keyboard.dismiss();
+
+    }
+    if (!EnablePull) {
+      return
+    }
+
     if (this.pulledDown(gestureState)) {
       if (HeightTopDown) {
         this.IncreaseHeightBtmView();
@@ -80,11 +90,7 @@ class BottomTab extends PureComponent {
       }
       // console.log('pull up');
     }
-    if (this.tapped(gestureState)) {
-      Keyboard.dismiss();
 
-      // console.log('tapped');
-    }
   };
 
   __handlePanResponderMove = (evt, gestureState) => {

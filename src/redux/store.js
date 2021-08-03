@@ -18,7 +18,7 @@ store = createStore(reducer, {}, compose(applyMiddleware(...middleWare)));
 rootSaga.map(sagaMiddleware.run);
 
 if (module.hot) {
-  module.hot.accept("./reducers", () => {
+  module.hot.accept(() => {
     store.replaceReducer(reducer);
   });
 }

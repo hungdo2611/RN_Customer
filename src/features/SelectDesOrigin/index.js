@@ -34,9 +34,9 @@ import {
     Fade
 } from "rn-placeholder";
 import { color } from '../../constant/color'
-
+import { getListDriverAPI } from '../../api/bookingApi'
 import _ from 'lodash';
-
+import actions from './redux/actions'
 const { width, height } = Dimensions.get('window')
 const CONSTANT_SELECT = {
     NONE: 'NONE',
@@ -47,7 +47,7 @@ const CONSTANT_TYPE_AUTOCOMPLETE_NULL = {
     START_FIND: 'START_FIND',
     NOT_FOUND: 'NOT_FOUND'
 }
-export default class SelectDesOrigin extends React.Component {
+class SelectDesOrigin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -94,10 +94,16 @@ export default class SelectDesOrigin extends React.Component {
         }, 100)
     }
 
-    onComfirmDirection = (data_diem_don, data_diem_den) => {
-        console.log("onComfirmDirectionha")
-        const { navigation } = this.props;
-        navigation.push("AdditionalInfo", { data_diem_don, data_diem_den });
+    onComfirmDirection = async (data_diem_don, data_diem_den) => {
+        const { getListDriver, getListDriverDone } = this.props;
+
+        const { navigation, AnimateHeightTovalue } = this.props;
+        navigation.push("AdditionalInfo", { data_diem_don: data_diem_don, data_diem_den: data_diem_den });
+        getListDriver();
+        let reqGetDriver = await getListDriverAPI();
+        if (!reqGetDriver.err) {
+            getListDriverDone(reqGetDriver.data)
+        }
 
     }
 
@@ -492,38 +498,55 @@ export default class SelectDesOrigin extends React.Component {
     render() {
         const { isInCreaseHeight, inCreaseHeight, navigation } = this.props;
         return (
-                <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
-                    <KeyboardAvoidingView
-                        style={{
-                            flex: 1,
+            <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
+                <KeyboardAvoidingView
+                    style={{
+                        flex: 1,
 
-                        }}
-                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-                        <View style={{ marginBottom: scale(10) }}>
-                            <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                                <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
-                                    <MaterialIcons
-                                        name='arrow-back-ios'
-                                        size={scale(22)}
-                                        color="black"
-                                    />
-                                </TouchableOpacity>
-                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách</Text>
+                    }}
+                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                    <View style={{ marginBottom: scale(10) }}>
+                        <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
+                                <MaterialIcons
+                                    name='arrow-back-ios'
+                                    size={scale(22)}
+                                    color="black"
+                                />
+                            </TouchableOpacity>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách</Text>
 
-                            </View>
-                            <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />
                         </View>
-                        <View style={{ marginHorizontal: scale(10) }}>
-                            {!isInCreaseHeight && this.renderLow()}
-                        </View>
-                        {isInCreaseHeight && this.renderHight()}
-                    </KeyboardAvoidingView>
-                </View>
+                        <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />
+                    </View>
+                    <View style={{ marginHorizontal: scale(10) }}>
+                        {!isInCreaseHeight && this.renderLow()}
+                    </View>
+                    {isInCreaseHeight && this.renderHight()}
+                </KeyboardAvoidingView>
+            </View>
         )
     }
 }
 
 
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        getListDriver: () => {
+            dispatch(actions.action.getListDriver());
+        },
+        getListDriverDone: (data) => {
+            dispatch(actions.action.getListDriverDone(data));
+        },
+    };
+}
+
+export default connect(
+    null,
+    mapDispatchToProps,
+)(SelectDesOrigin);
 
 
 

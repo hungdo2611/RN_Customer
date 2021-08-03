@@ -480,7 +480,7 @@ class CreateTripScreen extends Component {
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-
+                        EnablePull={true}
                     >
                         <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
                         <View style={{ flex: 1, marginTop: scale(10) }}>
