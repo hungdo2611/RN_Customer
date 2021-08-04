@@ -24,6 +24,8 @@ export const getLocalData = async () => {
     console.log("data123", data)
     if (data) {
         instanceData.user_info = JSON.parse(data);
+        instanceData.token = JSON.parse(data).token;
+
     }
-    return data;
+    return JSON.parse(data);
 }

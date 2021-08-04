@@ -5,7 +5,6 @@ const api = ApiService()
 export const getListDriverAPI = (body) => {
     const body_booking = {
         cus_id: 2,
-        cus_id: req.user.cus_id,
         from: {
             "loc": {
                 "type": "Point",
@@ -25,7 +24,7 @@ export const getListDriverAPI = (body) => {
 
     };
 
-    return api.makeRequest({
+    return api.makeAuthRequest({
         url: `/booking/create`,
         method: 'POST',
         data: body_booking

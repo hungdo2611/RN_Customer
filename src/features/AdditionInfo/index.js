@@ -39,7 +39,7 @@ import _ from 'lodash';
 
 const { width, height } = Dimensions.get('window')
 
-export default class AdditionalInfo extends React.Component {
+class AdditionalInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -122,9 +122,33 @@ export default class AdditionalInfo extends React.Component {
         return <View style={{ height: 0.6, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400, marginVertical: scale(5) }} />
 
     }
+    renderLoading = () => {
+        let arr = [1, 2, 3, 4, 5];
+        return <ScrollView showsVerticalScrollIndicator={false}>
+            {arr.map(vl => {
+                return <Placeholder
+                    Animation={Fade}
+                    Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
+                    style={{ marginVertical: scale(12) }}
+                >
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                </Placeholder>
+            })}
 
+
+        </ScrollView>
+    }
+
+    renderLstDriver = (lstDriver) => {
+        return <View>
+            <Text>Driver</Text>
+        </View>
+    }
     render() {
         const { seat, selectAll } = this.state;
+        const { isLoading_getListDriver, lstDriver } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                 <KeyboardAvoidingView
@@ -192,7 +216,7 @@ export default class AdditionalInfo extends React.Component {
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: scale(10), alignItems: 'center' }}>
                         <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Danh sách nhà xe</Text>
                         <View style={{ flexDirection: 'row', alignItems: "center" }}>
-                            <Text style={{ marginRight: scale(5), fontWeight:'600' }}>Tất cả</Text>
+                            <Text style={{ marginRight: scale(5), fontWeight: '600' }}>Tất cả</Text>
                             <CheckBox
                                 disabled={false}
                                 value={selectAll}
@@ -201,6 +225,8 @@ export default class AdditionalInfo extends React.Component {
                             />
                         </View>
                     </View>
+                    {isLoading_getListDriver && this.renderLoading()}
+                    {!isLoading_getListDriver && lstDriver && lstDriver.length > 0 && this.renderLstDriver(lstDriver)}
                 </KeyboardAvoidingView>
             </View>
         )
@@ -208,6 +234,15 @@ export default class AdditionalInfo extends React.Component {
 }
 
 
+const mapStateToProps = (state) => {
+    return {
+        isLoading_getListDriver: state.SelectDesOriginReducer.isLoading,
+        lstDriver: state.SelectDesOriginReducer.lstDriver
+    }
+}
 
-
+export default connect(
+    mapStateToProps,
+    null,
+)(AdditionalInfo);
 

@@ -101,6 +101,7 @@ class SelectDesOrigin extends React.Component {
         navigation.push("AdditionalInfo", { data_diem_don: data_diem_don, data_diem_den: data_diem_den });
         getListDriver();
         let reqGetDriver = await getListDriverAPI();
+        console.log("reqGetDriver", reqGetDriver)
         if (!reqGetDriver.err) {
             getListDriverDone(reqGetDriver.data)
         }
