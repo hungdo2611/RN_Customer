@@ -16,6 +16,11 @@ export const getToken = () => {
     return instanceData.token;
 }
 export const setLocalData = async (data) => {
+    if (data) {
+        instanceData.user_info = JSON.parse(data);
+        instanceData.token = JSON.parse(data).token;
+
+    }
     await AsyncStorage.setItem(constant_key.USER_INFO, data)
 }
 export const getLocalData = async () => {

@@ -70,7 +70,7 @@ class EnterInfo extends React.Component {
         }, 1000)
         if (requestUpdate && requestUpdate.data && !requestUpdate.err) {
             //success
-            setLocalData(requestUpdate.data)
+            setLocalData(JSON.stringify(requestUpdate.data))
             setRootToHome()
         } else {
             Alert.alert("Đã có lỗi xảy ra vui lòng thử lại sau")
