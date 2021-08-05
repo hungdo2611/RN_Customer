@@ -25,6 +25,7 @@ import { color } from '../../constant/color'
 import { updateInfoAPI } from '../../api/loginApi'
 import { setRootToHome } from '../../NavigationController'
 import _ from 'lodash';
+import { setLocalData } from '../../model';
 
 const { width, height } = Dimensions.get('window')
 
@@ -69,6 +70,7 @@ class EnterInfo extends React.Component {
         }, 1000)
         if (requestUpdate && requestUpdate.data && !requestUpdate.err) {
             //success
+            setLocalData(requestUpdate.data)
             setRootToHome()
         } else {
             Alert.alert("Đã có lỗi xảy ra vui lòng thử lại sau")
