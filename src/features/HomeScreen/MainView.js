@@ -24,6 +24,7 @@ import { color } from '../../constant/color'
 
 import _ from 'lodash';
 import { StackActions } from '@react-navigation/native';
+import { pushToBookingScreen } from '../../NavigationController'
 
 const { width, height } = Dimensions.get('window')
 
@@ -35,8 +36,8 @@ export default class MainView extends React.Component {
         };
     }
     onClickXeKhach = () => {
-        const { navigation } = this.props;
-        navigation.push("SelectDesOrigin", {});
+        const { componentId } = this.props;
+        pushToBookingScreen(componentId)
     }
 
     render() {

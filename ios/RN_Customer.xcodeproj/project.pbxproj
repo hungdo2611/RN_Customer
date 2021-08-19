@@ -42,6 +42,7 @@
 		3498EF6847FAEEB227E9BB7D /* libPods-RN_Customer-RN_CustomerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RN_Customer-RN_CustomerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5286FEBD26A30AD0004CBA0E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5286FF0626A314BD004CBA0E /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		52D3A4CD26CE3FCD004B3909 /* RN_Customer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RN_Customer.entitlements; path = RN_Customer/RN_Customer.entitlements; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RN_Customer/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8F7FEFD6CBAB92CA1696C648 /* Pods-RN_Customer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RN_Customer.release.xcconfig"; path = "Target Support Files/Pods-RN_Customer/Pods-RN_Customer.release.xcconfig"; sourceTree = "<group>"; };
 		98E39A454E6E5D38C148E31B /* libPods-RN_Customer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RN_Customer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +92,7 @@
 		13B07FAE1A68108700A75B9A /* RN_Customer */ = {
 			isa = PBXGroup;
 			children = (
+				52D3A4CD26CE3FCD004B3909 /* RN_Customer.entitlements */,
 				5286FEBD26A30AD0004CBA0E /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -505,7 +507,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = RN_Customer/RN_Customer.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL33VX6NK4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RN_Customer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -531,7 +535,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = RN_Customer/RN_Customer.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TL33VX6NK4;
 				INFOPLIST_FILE = RN_Customer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -3,6 +3,8 @@ import actions from "./actions";
 const initState = {
     isLoading: false,
     lstDriver: [],
+    isLoading_route: false,
+    distance: 0,
 };
 const reducer = (state = initState, action) => {
     switch (action.type) {
@@ -16,6 +18,18 @@ const reducer = (state = initState, action) => {
                 ...state,
                 lstDriver: action.payload.data,
                 isLoading: false
+
+            }
+        case actions.type.GET_ROUTE:
+            return {
+                ...state,
+                isLoading_route: true
+            }
+        case actions.type.GET_ROUTE_DONE:
+            return {
+                ...state,
+                distance: action.payload.data,
+                isLoading_route: false
 
             }
 

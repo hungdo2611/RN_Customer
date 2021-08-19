@@ -11,7 +11,8 @@ import OTPScreen from './features/SignIn/OTPScreen'
 import EnterPass from './features/SignIn/EnterPass'
 import EnterInfo from './features/SignIn/EnterInfo'
 import ResetPass from './features/SignIn/ResetPass'
-import HomeScreen from './features/HomeScreen/'
+import BookingScreen from './features/BookingScreen'
+import HomeScreen from './features/HomeScreen'
 export const constant_name = {
     LOGIN_SCREEN: `Navigation.LoginScreen`,
     ENTER_PHONE_NUMBER: `Navigation.EnterPhoneNumber`,
@@ -19,7 +20,8 @@ export const constant_name = {
     ENTER_PASS_SCREEN: `Navigation.ENTER.PASS`,
     ENTER_INFO: `Navigation.ENTER.INFO`,
     RESET_PASS: `Navigation.RESET.PASS`,
-    HOME_SCREEN: `Navigation.HOME.SCREEN`
+    HOME_SCREEN: `Navigation.HOME.SCREEN`,
+    BOOKING_SCREEN: `Navigation.BOOKING.SCREEN`
 }
 
 export const registerScreens = () => {
@@ -60,4 +62,9 @@ export const registerScreens = () => {
             <HomeScreen {...props} />
         </Provider>,
         () => HomeScreen);
+    Navigation.registerComponent(constant_name.BOOKING_SCREEN, () => (props) =>
+        <Provider store={store}>
+            <BookingScreen {...props} />
+        </Provider>,
+        () => BookingScreen);
 }

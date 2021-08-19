@@ -15,3 +15,17 @@ export const getAdressFromLatLng = async (lat, lng) => {
     let request = await Axios.get(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${lng}&lang=en-US&apiKey=${API_KEY}`);
     return request.data
 }
+export const getRouteBetween2Point = async (lstPoint) => {
+    let param = ''
+    lstPoint.map((vl, index) => {
+        if (lstPoint.length == 3 && index == 1) {
+            param = param + `&waypoint${index}=passThrough!${vl.lat},${vl.lng}`
+        } else {
+            param = param + `&waypoint${index}=geo!${vl.lat},${vl.lng}`
+        }
+
+    })
+    console.log("param", param)
+    let request = await Axios.get(`https://route.ls.hereapi.com/routing/7.2/calculateroute.json?${param}&mode=fastest;car;traffic:disabled&apiKey=${API_KEY}`);
+    return request.data
+}

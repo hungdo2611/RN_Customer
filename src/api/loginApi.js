@@ -29,6 +29,13 @@ export const updateInfoAPI = (body) => {
         data: body
     })
 }
+export const registerDeviceToken = (device_token) => {
+    return api.makeAuthRequest({
+        url: `/users/register/devicetoken`,
+        method: 'POST',
+        data: { device_token: device_token }
+    })
+}
 
 export const resetPassAPI = (body) => {
     return api.makeRequest({

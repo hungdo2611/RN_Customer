@@ -96,6 +96,25 @@ export function pushToEnterInfo(componentId, props) {
         },
     });
 }
+export function pushToBookingScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.BOOKING_SCREEN}_id`,
+            name: constant_name.BOOKING_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function setRootToHome() {
     Navigation.setRoot({
         root: {

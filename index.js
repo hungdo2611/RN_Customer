@@ -50,3 +50,4 @@ Navigation.events().registerAppLaunchedListener(async () => {
         setRootToLogin();
     }
 });
+// notificationProcessor.checkPermission();

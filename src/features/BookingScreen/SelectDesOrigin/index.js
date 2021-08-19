@@ -24,8 +24,8 @@ import EvilIconsIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { AutoCompleteAPI, getFromLocationId } from '../../api/MapApi';
-import { scale } from '../../ultis/scale'
+import { AutoCompleteAPI, getFromLocationId } from '../../../api/MapApi';
+import { scale } from '../../../ultis/scale'
 import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
 import {
     Placeholder,
@@ -33,8 +33,8 @@ import {
     PlaceholderLine,
     Fade
 } from "rn-placeholder";
-import { color } from '../../constant/color'
-import { getListDriverAPI } from '../../api/bookingApi'
+import { color } from '../../../constant/color'
+import { getListDriverAPI } from '../../../api/bookingApi'
 import _ from 'lodash';
 import actions from './redux/actions'
 const { width, height } = Dimensions.get('window')
@@ -62,7 +62,7 @@ class SelectDesOrigin extends React.Component {
             text_temp: '',
             type_autocompleteNull: null
         }
-
+        this.props.setRef(this)
     }
     componentDidMount() {
         console.log("componentDidMount")
@@ -95,12 +95,33 @@ class SelectDesOrigin extends React.Component {
     }
 
     onComfirmDirection = async (data_diem_don, data_diem_den) => {
-        const { getListDriver, getListDriverDone } = this.props;
-
-        const { navigation, AnimateHeightTovalue } = this.props;
+        const { navigation, setPolygon, coord, getListDriver, getListDriverDone } = this.props;
+        let lat_origin = data_diem_don ? data_diem_don.displayPosition.latitude : coord.lat
+        let lng_origin = data_diem_don ? data_diem_don.displayPosition.longitude : coord.lng
+        let lstPoint = [{ lat: lat_origin, lng: lng_origin }, { lat: data_diem_den.displayPosition.latitude, lng: data_diem_den.displayPosition.longitude }]
+        setPolygon(lstPoint, data_diem_don, data_diem_den);
+        const { isInCreaseHeight, inCreaseHeight } = this.props;
+        if (!isInCreaseHeight) {
+            setTimeout(() => {
+                inCreaseHeight();
+            }, 200)
+        }
         navigation.push("AdditionalInfo", { data_diem_don: data_diem_don, data_diem_den: data_diem_den });
+
+
         getListDriver();
-        let reqGetDriver = await getListDriverAPI();
+        const body_booking = {
+            from: {
+                lat: lat_origin,
+                lng: lng_origin
+
+            },
+            to: {
+                lat: data_diem_den.displayPosition.latitude,
+                lng: data_diem_den.displayPosition.longitude,
+            },
+        };
+        let reqGetDriver = await getListDriverAPI(body_booking);
         console.log("reqGetDriver", reqGetDriver)
         if (!reqGetDriver.err) {
             getListDriverDone(reqGetDriver.data)
@@ -112,21 +133,22 @@ class SelectDesOrigin extends React.Component {
         const { dataPickWithGG, select_origin_or_des, data_diem_den, data_diem_don } = this.state;
         const { setPickWithGG, inCreaseHeight } = this.props;
         setPickWithGG(false);
+        const formatData = { ...dataPickWithGG, displayPosition: { latitude: dataPickWithGG.position.lat, longitude: dataPickWithGG.position.lng } }
         setTimeout(() => {
             if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
-                this.setState({ data_diem_don: dataPickWithGG })
+                this.setState({ data_diem_don: formatData })
                 inCreaseHeight()
                 if (!data_diem_den) {
                     this.inPutDiemDen.focus();
                 } else {
-                    this.onComfirmDirection(dataPickWithGG, data_diem_den)
+                    this.onComfirmDirection(formatData, data_diem_den)
 
                 }
             }
             console.log("select_origin_or_des", select_origin_or_des)
             if (select_origin_or_des === CONSTANT_SELECT.DES) {
-                this.setState({ data_diem_den: dataPickWithGG })
-                this.onComfirmDirection(data_diem_don, dataPickWithGG)
+                this.setState({ data_diem_den: formatData })
+                this.onComfirmDirection(data_diem_don, formatData)
             }
         }, 100)
 
@@ -170,8 +192,8 @@ class SelectDesOrigin extends React.Component {
                     </View>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "bold", marginTop: scale(5), width: '90%' }}>{dataPickWithGG?.address?.houseNumber} {dataPickWithGG?.address?.street}</Text>
-                    <Text numberOfLines={2} style={{ fontSize: scale(12), fontWeight: '600', marginTop: scale(5), width: '90%', paddingLeft: scale(3) }}>{dataPickWithGG?.title}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "bold", marginTop: scale(5), width: '90%' }}> {dataPickWithGG.title}</Text>
+                    <Text numberOfLines={2} style={{ fontSize: scale(12), fontWeight: '600', marginTop: scale(5), width: '90%', paddingLeft: scale(3) }}>{dataPickWithGG?.address?.label}</Text>
                 </View>
             </View>
             <TouchableOpacity onPress={this.onComfirmPickGG} style={{ width: width / 1.5, height: scale(40), alignSelf: "center", backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(20), alignItems: 'center', justifyContent: 'center', marginTop: scale(20) }}>
@@ -233,9 +255,25 @@ class SelectDesOrigin extends React.Component {
             </View>
         )
     }
-    onChangeAutoComplete = async (txt) => {
-        const { isloading, isloadingAPI } = this.state;
+    onChangeAutoComplete = async (txt, isOrigin) => {
+        const { isloading, isloadingAPI, data_diem_don } = this.state;
         const { coord } = this.props;
+
+
+        let lat, lng;
+        if (isOrigin) {
+            lat = coord.lat;
+            lng = coord.lng;
+        } else {
+            if (data_diem_don) {
+                lat = data_diem_don.displayPosition.latitude;
+                lng = data_diem_don.displayPosition.longitude;
+            } else {
+                lat = coord.lat;
+                lng = coord.lng;
+            }
+        }
+
         this.setState({ text_temp: txt })
         if (txt) {
             this.setState({ isloading: true })
@@ -248,7 +286,8 @@ class SelectDesOrigin extends React.Component {
         if (txt.trim().length > 2 && txt.trim() != '' && !isloadingAPI) {
             console.log("text", txt)
             this.setState({ isloadingAPI: true })
-            let autocomplete = await AutoCompleteAPI(txt, coord.lat, coord.lng);
+
+            let autocomplete = await AutoCompleteAPI(txt, lat, lng);
             setTimeout(() => {
                 if (autocomplete && autocomplete.suggestions) {
                     console.log("autocomplete.suggestions", autocomplete.suggestions)
@@ -264,7 +303,6 @@ class SelectDesOrigin extends React.Component {
         const { select_origin_or_des, data_diem_den, data_diem_don } = this.state;
         let localtion = await getFromLocationId(location_id)
         const result = localtion?.response?.view[0].result;
-        console.log("localtion", localtion?.response?.view[0].result[0].location)
         const dataLocation = localtion?.response?.view[0]?.result[0]?.location
         if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
             this.setState({ data_diem_don: dataLocation, text_temp: dataLocation?.address?.label })
@@ -421,13 +459,13 @@ class SelectDesOrigin extends React.Component {
                                     const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : text_temp
                                     this.setState({ select_origin_or_des: CONSTANT_SELECT.ORIGIN });
                                     if (select_origin_or_des == CONSTANT_SELECT.DES) {
-                                        this.setState({ dataAutoComplete: [], text_temp: '' })
+                                        this.setState({ dataAutoComplete: null, text_temp: '' })
                                     } else {
-                                        this.setState({ text_temp: text })
+                                        this.setState({ text_temp: text, data_diem_don: null })
                                     }
                                 }}
                                 selectTextOnFocus={true}
-                                onChangeText={this.onChangeAutoComplete}
+                                onChangeText={txt => this.onChangeAutoComplete(txt, true)}
                                 value={data_diem_don?.address?.label ? data_diem_don?.address?.label : (select_origin_or_des == CONSTANT_SELECT.ORIGIN ? text_temp : 'Vị trí của bạn')}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={true}
@@ -439,13 +477,13 @@ class SelectDesOrigin extends React.Component {
                                     const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : text_temp
                                     this.setState({ select_origin_or_des: CONSTANT_SELECT.DES });
                                     if (select_origin_or_des == CONSTANT_SELECT.ORIGIN) {
-                                        this.setState({ dataAutoComplete: [], text_temp: '' })
+                                        this.setState({ dataAutoComplete: null, text_temp: '' })
                                     } else {
-                                        this.setState({ text_temp: text })
+                                        this.setState({ text_temp: text, data_diem_den: null })
                                     }
                                 }}
                                 value={data_diem_den?.address?.label ? data_diem_den?.address?.label : (select_origin_or_des == CONSTANT_SELECT.DES ? text_temp : '')}
-                                onChangeText={this.onChangeAutoComplete}
+                                onChangeText={txt => this.onChangeAutoComplete(txt, false)}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={true}
                                 selectTextOnFocus={true}
@@ -508,13 +546,6 @@ class SelectDesOrigin extends React.Component {
                     behavior={Platform.OS == 'ios' ? 'padding' : ''}>
                     <View style={{ marginBottom: scale(10) }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
-                                <MaterialIcons
-                                    name='arrow-back-ios'
-                                    size={scale(22)}
-                                    color="black"
-                                />
-                            </TouchableOpacity>
                             <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách</Text>
 
                         </View>

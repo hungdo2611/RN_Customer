@@ -1,9 +1,7 @@
 import { combineReducers } from "redux";
-import homeReducer from '../features/HomeScreen/redux/Reducer';
-import SelectDesOriginReducer from '../features/SelectDesOrigin/redux/reducer'
+import SelectDesOriginReducer from '../features/BookingScreen/SelectDesOrigin/redux/reducer'
 
 export default appReducer = combineReducers({
-    homeReducer: homeReducer.reducer,
     SelectDesOriginReducer: SelectDesOriginReducer
 
 })
