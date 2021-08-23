@@ -2,6 +2,14 @@ import ApiService from './ApiService'
 
 
 const api = ApiService()
+export const createBookingAPI = (body) => {
+
+    return api.makeAuthRequest({
+        url: `/booking/create`,
+        method: 'POST',
+        data: body
+    })
+}
 export const getListDriverAPI = (body) => {
     // const body_booking = {
     //     from: {

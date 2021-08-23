@@ -24,10 +24,10 @@ import EvilIconsIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { getAdressFromLatLng } from '../../../api/MapApi';
 
-import { AutoCompleteAPI, getFromLocationId } from '../../../api/MapApi';
+import { createBookingAPI } from '../../../api/bookingApi';
 import { scale } from '../../../ultis/scale'
-import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -51,6 +51,7 @@ class AdditionalInfo extends React.Component {
             lst_select: [],
             fromTime: moment(new Date()).add(0.25, 'hours').format('HH:mm')
         }
+
     }
     componentDidMount() {
         const { disablePull } = this.props;
@@ -159,6 +160,7 @@ class AdditionalInfo extends React.Component {
         let data = lst_price.find(price => {
             return distance < (price.distance * 1000)
         })
+
         if (data) {
             return data.value;
         } else {
@@ -179,7 +181,7 @@ class AdditionalInfo extends React.Component {
 
         return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
             {lstDriver.map(driver => {
-                const isCheck = lst_select.findIndex(vl => vl == driver.journey_id)
+                const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
 
                 return <View
                     style={{
@@ -266,10 +268,10 @@ class AdditionalInfo extends React.Component {
                             style={{ width: scale(20), height: scale(20), marginRight: scale(5) }}
                             onValueChange={(newValue) => {
                                 if (newValue) {
-                                    let newArr = [...lst_select, driver.journey_id]
+                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price: driver.price }]
                                     this.setState({ lst_select: newArr })
                                 } else {
-                                    let newArr = lst_select.filter(vl => vl !== driver.journey_id)
+                                    let newArr = lst_select.filter(vl => vl.journey_id !== driver.journey_id)
                                     this.setState({ lst_select: newArr })
                                 }
                             }}
@@ -280,6 +282,115 @@ class AdditionalInfo extends React.Component {
             })}
 
         </View>
+    }
+    createBookingSuccess = () => {
+        const { data_diem_don, data_diem_den } = this.props?.route?.params;
+        const { navigation } = this.props;
+        const { lst_select } = this.state;
+
+        let maxPrice = 0;
+        let minPrice = 0;
+        lst_select.map(lstprice => {
+            let price = this.getPrice(lstprice.price);
+            if (maxPrice == 0 && minPrice == 0) {
+                maxPrice = price;
+                minPrice = price;
+            } else {
+                if (maxPrice < price) {
+                    maxPrice = price;
+                }
+                if (minPrice > price) {
+                    minPrice = price
+                }
+            }
+        })
+
+        navigation.push(
+            "WaitingDriverScreen",
+            {
+                data_diem_don: data_diem_don,
+                data_diem_den: data_diem_den,
+                maxPrice: maxPrice,
+                minPrice: minPrice
+            });
+
+    }
+    onSendRequestToDriver = () => {
+        const { lst_select, seat, fromTime } = this.state;
+        const { data_diem_don, data_diem_den } = this.props?.route?.params;
+        const { coord, distance } = this.props;
+        const crrDay = moment().format('DD/MM/YYYY');
+        const lst_token = lst_select.map(vl => vl.value)
+        console.log("lst_token", lst_token)
+        Alert.alert(
+            'Thông báo',
+            'Hãy chắc chắn các thông tin về chuyến đi là chính xác',
+            [
+                {
+                    text: 'Huỷ',
+
+                    onPress: () => console.log('cancel'),
+                    style: 'cancel',
+                },
+
+                {
+                    text: 'Gửi yêu cầu',
+                    onPress: async () => {
+                        if (!data_diem_don) {
+                            let getDataDiemDon = await getAdressFromLatLng(coord.lat, coord.lng);
+                            const bodyRequest = {
+                                from: {
+                                    lat: coord.lat,
+                                    lng: coord.lng,
+                                    address: getDataDiemDon.items[0].title
+                                },
+                                to: {
+                                    lat: data_diem_den.displayPosition.latitude,
+                                    lng: data_diem_den.displayPosition.longitude,
+                                    address: data_diem_den?.address?.label
+                                },
+                                distance: distance,
+                                time_start: moment(`${crrDay} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
+                                seat: seat,
+                                lst_devicetoken: lst_token
+                            }
+                            let reqCreateBooking = await createBookingAPI(bodyRequest)
+                            console.log("reqCreateBooking", reqCreateBooking)
+
+                            if (reqCreateBooking.err == false) {
+                                this.createBookingSuccess()
+                            }
+                        } else {
+
+                            const bodyRequest = {
+                                from: {
+                                    lat: data_diem_don.displayPosition.latitude,
+                                    lng: data_diem_don.displayPosition.longitude,
+                                    address: data_diem_don?.address?.label
+                                },
+                                to: {
+                                    lat: data_diem_den.displayPosition.latitude,
+                                    lng: data_diem_den.displayPosition.longitude,
+                                    address: data_diem_den?.address?.label
+                                },
+                                distance: distance,
+                                time_start: moment(`${crrDay} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
+                                seat: seat,
+                                lst_devicetoken: lst_token
+
+                            }
+                            let reqCreateBooking = await createBookingAPI(bodyRequest)
+                            console.log("reqCreateBooking", reqCreateBooking)
+                            if (reqCreateBooking.err == false) {
+                                this.createBookingSuccess()
+                            }
+
+                        }
+                    },
+                },
+            ],
+        );
+
     }
     renderTimeStart = () => {
         const { fromTime } = this.state;
@@ -328,7 +439,7 @@ class AdditionalInfo extends React.Component {
 
                         </View>
                         <TouchableOpacity
-                            onPress={this.onChangeLocation}
+                            onPress={this.onSendRequestToDriver}
                             disabled={!enablebtn}
                             style={{
                                 width: scale(90),
@@ -384,7 +495,9 @@ class AdditionalInfo extends React.Component {
                                 style={{ width: scale(20), height: scale(20), marginHorizontal: scale(5) }}
                                 onValueChange={(newValue) => {
                                     if (newValue) {
-                                        let arr = lstDriver.map(journey => journey.journey_id)
+                                        let arr = lstDriver.map(journey => {
+                                            return { journey_id: journey.journey_id, value: journey.driver_id.device_token, price: journey.price }
+                                        })
                                         this.setState({ lst_select: arr })
                                     } else {
                                         this.setState({ lst_select: [] })

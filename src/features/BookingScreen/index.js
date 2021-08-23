@@ -45,6 +45,7 @@ import { enableScreens } from 'react-native-screens';
 import { getAdressFromLatLng, getRouteBetween2Point } from '../../api/MapApi'
 import AdditionalInfo from './AdditionInfo'
 import actions from './SelectDesOrigin/redux/actions'
+import WaitingDriverScreen from './WaitingDriver'
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
@@ -580,7 +581,7 @@ class CreateTripScreen extends Component {
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                        EnablePull={true}
+                        EnablePull={this.state.EnablePull}
                     >
                         <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
                         <View style={{ flex: 1, marginTop: scale(10) }}>
@@ -614,6 +615,14 @@ class CreateTripScreen extends Component {
                                             disablePull={() => this.setState({ EnablePull: false })}
                                             enablePull={() => this.setState({ EnablePull: true })}
                                             ref={e => this.AdditionalInfo = e}
+                                            coord={{ lat: this.state.latitude, lng: this.state.longitude }}
+                                            {...props} />}
+                                    </Stack.Screen>
+                                    <Stack.Screen
+                                        name="WaitingDriverScreen">
+                                        {props => <WaitingDriverScreen
+                                            onNavigationBack={this.onNavigationBack}
+
                                             {...props} />}
                                     </Stack.Screen>
                                 </Stack.Navigator>
