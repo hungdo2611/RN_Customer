@@ -5,9 +5,15 @@ const initState = {
     lstDriver: [],
     isLoading_route: false,
     distance: 0,
+    currentBooking: null
 };
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actions.type.UPDATE_CURRENT_BOOKING:
+            return {
+                ...state,
+                currentBooking: action.payload.data
+            }
         case actions.type.GET_LIST_DRIVER:
             return {
                 ...state,

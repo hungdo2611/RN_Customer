@@ -36,7 +36,7 @@ import {
 import { color } from '../../../constant/color'
 import { getListDriverAPI } from '../../../api/bookingApi'
 import _ from 'lodash';
-import actions from './redux/actions'
+import actions from '../redux/actions'
 const { width, height } = Dimensions.get('window')
 const CONSTANT_SELECT = {
     NONE: 'NONE',
@@ -252,6 +252,13 @@ class SelectDesOrigin extends React.Component {
 
                         }} />
                 </TouchableOpacity>
+                <View style={{ marginVertical: scale(15), flexDirection: "row", alignItems: 'center' }}>
+                    <Image resizeMode="stretch" style={{ width: scale(100), height: scale(70), borderRadius: scale(20), overflow: "hidden", }} source={require('../res/ic_letgo.jpg')} />
+                    <View style={{ flex: 1, marginLeft: scale(10) }}>
+                        <Text style={{ fontSize: scale(13), fontWeight: '600' }}>Đặt xe ngay nhé!</Text>
+                        <Text style={{ fontSize: scale(12), fontWeight: '400', marginTop: scale(5) }}>Tìm chuyến đi phù hợp. Chủ động lựa chọn nhà xe</Text>
+                    </View>
+                </View>
             </View>
         )
     }
@@ -367,7 +374,7 @@ class SelectDesOrigin extends React.Component {
     }
     onPickWithGG = () => {
         const { setPickWithGG, inDecreaseHeiht, getCurrentPlace, AnimateHeightTovalue } = this.props;
-        this.setState({ dataAutoComplete: [] })
+        this.setState({ dataAutoComplete: null })
         AnimateHeightTovalue(scale(250))
         getCurrentPlace();
         setPickWithGG(true);
@@ -375,13 +382,21 @@ class SelectDesOrigin extends React.Component {
     renderAutoCompleteList = () => {
         const { dataAutoComplete, isloading } = this.state;
         if (!dataAutoComplete && !isloading) {
-            return <View>
-                <Text>Tìm xe ngay</Text>
+            return <View style={{ margin: scale(15), flexDirection: "row", alignItems: 'center' }}>
+                <Image resizeMode="stretch" style={{ width: scale(100), height: scale(70), borderRadius: scale(20), overflow: "hidden", }} source={require('../res/ic_letgo.jpg')} />
+                <View style={{ flex: 1, marginLeft: scale(10) }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: '600' }}>Đặt xe ngay nhé!</Text>
+                    <Text style={{ fontSize: scale(12), fontWeight: '400', marginTop: scale(5) }}>Tìm chuyến đi phù hợp. Chủ động lựa chọn nhà xe</Text>
+                </View>
             </View>
         }
         if (dataAutoComplete && dataAutoComplete.length == 0 && !isloading) {
-            return <View>
-                <Text>Không tìm thấy địa điểm này</Text>
+            return <View style={{ margin: scale(15), flexDirection: "row", alignItems: 'center' }}>
+                <Image resizeMode="stretch" style={{ tintColor: color.ORANGE_COLOR_400, width: scale(70), height: scale(70), borderRadius: scale(20), overflow: "hidden", }} source={require('../res/ic_location_off.png')} />
+                <View style={{ flex: 1, marginLeft: scale(10) }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: '600' }}>Không tìm được địa điểm này!</Text>
+                    <Text style={{ fontSize: scale(12), fontWeight: '400', marginTop: scale(5) }}>Hãy kiểm tra lại chính tả hoặc chọn địa điểm trên bản đồ để xác định vị trí</Text>
+                </View>
             </View>
         }
         if (isloading) {
@@ -456,17 +471,15 @@ class SelectDesOrigin extends React.Component {
                             <TextInput
                                 ref={e => this.inPutDiemDon = e}
                                 onFocus={() => {
-                                    const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : text_temp
-                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.ORIGIN });
+                                    const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : ''
+                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.ORIGIN, text_temp: text });
                                     if (select_origin_or_des == CONSTANT_SELECT.DES) {
-                                        this.setState({ dataAutoComplete: null, text_temp: '' })
-                                    } else {
-                                        this.setState({ text_temp: text, data_diem_don: null })
+                                        this.setState({ dataAutoComplete: null, isloading: false })
                                     }
                                 }}
                                 selectTextOnFocus={true}
                                 onChangeText={txt => this.onChangeAutoComplete(txt, true)}
-                                value={data_diem_don?.address?.label ? data_diem_don?.address?.label : (select_origin_or_des == CONSTANT_SELECT.ORIGIN ? text_temp : 'Vị trí của bạn')}
+                                value={select_origin_or_des == CONSTANT_SELECT.ORIGIN ? text_temp : (data_diem_don ? data_diem_don?.address?.label : 'Vị trí của bạn')}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={true}
                                 placeholder="Tìm điểm đón" />
@@ -474,12 +487,11 @@ class SelectDesOrigin extends React.Component {
                             <TextInput
                                 ref={e => this.inPutDiemDen = e}
                                 onFocus={() => {
-                                    const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : text_temp
-                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.DES });
+
+                                    const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : ''
+                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.DES, text_temp: text });
                                     if (select_origin_or_des == CONSTANT_SELECT.ORIGIN) {
-                                        this.setState({ dataAutoComplete: null, text_temp: '' })
-                                    } else {
-                                        this.setState({ text_temp: text, data_diem_den: null })
+                                        this.setState({ dataAutoComplete: null, isloading: false })
                                     }
                                 }}
                                 value={data_diem_den?.address?.label ? data_diem_den?.address?.label : (select_origin_or_des == CONSTANT_SELECT.DES ? text_temp : '')}

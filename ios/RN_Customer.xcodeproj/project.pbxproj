@@ -512,6 +512,7 @@
 				DEVELOPMENT_TEAM = TL33VX6NK4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RN_Customer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -539,6 +540,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TL33VX6NK4;
 				INFOPLIST_FILE = RN_Customer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

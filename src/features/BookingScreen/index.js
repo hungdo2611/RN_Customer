@@ -44,7 +44,7 @@ import SelectDesOrigin from './SelectDesOrigin'
 import { enableScreens } from 'react-native-screens';
 import { getAdressFromLatLng, getRouteBetween2Point } from '../../api/MapApi'
 import AdditionalInfo from './AdditionInfo'
-import actions from './SelectDesOrigin/redux/actions'
+import actions from './redux/actions'
 import WaitingDriverScreen from './WaitingDriver'
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
@@ -326,7 +326,7 @@ class CreateTripScreen extends Component {
             this.map.fitToCoordinates(route, {
                 edgePadding: {
                     right: width / 4,
-                    bottom: height / 4 + 200,
+                    bottom: height / 4 + 300,
                     left: width / 4,
                     top: height / 4,
                 }
@@ -346,7 +346,7 @@ class CreateTripScreen extends Component {
             this.map.fitToCoordinates(lst_polyline, {
                 edgePadding: {
                     right: width / 4,
-                    bottom: height / 4 + 200,
+                    bottom: height / 4 + 300,
                     left: width / 4,
                     top: height / 4,
                 }
@@ -418,7 +418,7 @@ class CreateTripScreen extends Component {
             <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: '#FFFFFF' }}>
                 <View style={[StyleSheet.absoluteFillObject, {}]}>
                     <MapView
-                        provider={Platform.OS == 'android' ? PROVIDER_GOOGLE : null}
+                        provider={PROVIDER_GOOGLE}
                         style={{
                             ...StyleSheet.absoluteFillObject,
                         }}
@@ -614,6 +614,7 @@ class CreateTripScreen extends Component {
                                             onBack={this.onCancelPick}
                                             disablePull={() => this.setState({ EnablePull: false })}
                                             enablePull={() => this.setState({ EnablePull: true })}
+                                            AnimateHeightTovalue={vl => this.BottomView.AnimateHeightToValue(vl)}
                                             ref={e => this.AdditionalInfo = e}
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             {...props} />}

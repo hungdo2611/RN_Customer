@@ -39,7 +39,8 @@ import moment from 'moment'
 import _ from 'lodash';
 import FastImage from 'react-native-fast-image'
 import ChooseAppointmentTimeModal from '../../../component/PickTime/ChooseAppointmentTime'
-
+import ChooseAppointmentDateModal from '../../../component/PickTime/ChooseAppointmentDate'
+import actions from '../redux/actions'
 const { width, height } = Dimensions.get('window')
 
 class AdditionalInfo extends React.Component {
@@ -49,7 +50,9 @@ class AdditionalInfo extends React.Component {
             seat: 1,
             selectAll: false,
             lst_select: [],
-            fromTime: moment(new Date()).add(0.25, 'hours').format('HH:mm')
+            fromTime: moment(new Date()).add(0.25, 'hours').format('HH:mm'),
+            day_select: moment(new Date()).format('DD/MM/YYYY'),
+            isloading: false
         }
 
     }
@@ -283,10 +286,10 @@ class AdditionalInfo extends React.Component {
 
         </View>
     }
-    createBookingSuccess = () => {
+    createBookingSuccess = (data) => {
         const { data_diem_don, data_diem_den } = this.props?.route?.params;
-        const { navigation } = this.props;
-        const { lst_select } = this.state;
+        const { navigation, AnimateHeightTovalue, updateCurrentBooking } = this.props;
+        const { lst_select, seat, fromTime, day_select } = this.state;
 
         let maxPrice = 0;
         let minPrice = 0;
@@ -304,24 +307,28 @@ class AdditionalInfo extends React.Component {
                 }
             }
         })
-
+        setTimeout(() => {
+            AnimateHeightTovalue(scale(400));
+        }, 200)
+        updateCurrentBooking(data);
         navigation.push(
             "WaitingDriverScreen",
             {
                 data_diem_don: data_diem_don,
                 data_diem_den: data_diem_den,
                 maxPrice: maxPrice,
-                minPrice: minPrice
+                minPrice: minPrice,
+                seat: seat,
+                time: fromTime,
+                day_select: day_select
             });
 
     }
     onSendRequestToDriver = () => {
-        const { lst_select, seat, fromTime } = this.state;
+        const { lst_select, seat, fromTime, day_select } = this.state;
         const { data_diem_don, data_diem_den } = this.props?.route?.params;
         const { coord, distance } = this.props;
-        const crrDay = moment().format('DD/MM/YYYY');
         const lst_token = lst_select.map(vl => vl.value)
-        console.log("lst_token", lst_token)
         Alert.alert(
             'Thông báo',
             'Hãy chắc chắn các thông tin về chuyến đi là chính xác',
@@ -337,6 +344,7 @@ class AdditionalInfo extends React.Component {
                     text: 'Gửi yêu cầu',
                     onPress: async () => {
                         if (!data_diem_don) {
+                            this.setState({ isloading: true })
                             let getDataDiemDon = await getAdressFromLatLng(coord.lat, coord.lng);
                             const bodyRequest = {
                                 from: {
@@ -350,18 +358,18 @@ class AdditionalInfo extends React.Component {
                                     address: data_diem_den?.address?.label
                                 },
                                 distance: distance,
-                                time_start: moment(`${crrDay} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
+                                time_start: moment(`${day_select} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
                                 seat: seat,
                                 lst_devicetoken: lst_token
                             }
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
-                            console.log("reqCreateBooking", reqCreateBooking)
+                            this.setState({ isloading: false })
 
                             if (reqCreateBooking.err == false) {
-                                this.createBookingSuccess()
+                                this.createBookingSuccess(reqCreateBooking.data)
                             }
                         } else {
-
+                            this.setState({ isloading: true })
                             const bodyRequest = {
                                 from: {
                                     lat: data_diem_don.displayPosition.latitude,
@@ -374,15 +382,18 @@ class AdditionalInfo extends React.Component {
                                     address: data_diem_den?.address?.label
                                 },
                                 distance: distance,
-                                time_start: moment(`${crrDay} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
+                                time_start: moment(`${day_select} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
                                 seat: seat,
                                 lst_devicetoken: lst_token
 
                             }
+                            console.log("reqCreateBooking", bodyRequest.time_start)
+
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
-                            console.log("reqCreateBooking", reqCreateBooking)
+                            this.setState({ isloading: false })
+
                             if (reqCreateBooking.err == false) {
-                                this.createBookingSuccess()
+                                this.createBookingSuccess(reqCreateBooking.data)
                             }
 
                         }
@@ -391,6 +402,28 @@ class AdditionalInfo extends React.Component {
             ],
         );
 
+    }
+    renderTimeDay = () => {
+        const { day_select } = this.state;
+        return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(5), alignItems: "center" }}>
+            <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Ngày </Text>
+            <TouchableOpacity
+                onPress={() => {
+                    this.chooseAppointmentDateModal.showModal(
+                        this.state.day_select,
+                    );
+                }}
+                activeOpacity={0.5}
+                style={{ flexDirection: 'row', alignItems: 'center', borderRadius: scale(10), borderWidth: 0.7, borderColor: color.GRAY_COLOR_400, width: scale(120) }}>
+                <Text style={{ marginHorizontal: scale(7), fontSize: scale(14), fontWeight: '500', paddingVertical: scale(7) }}>{day_select}</Text>
+                <MaterialCommunityIcons
+                    name='calendar'
+                    size={scale(22)}
+                    color={color.GRAY_COLOR_500}
+                    style={{ marginLeft: scale(5), opacity: 0.6 }}
+                />
+            </TouchableOpacity>
+        </View>
     }
     renderTimeStart = () => {
         const { fromTime } = this.state;
@@ -422,6 +455,8 @@ class AdditionalInfo extends React.Component {
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                 <KeyboardAwareScrollView
+                    extraScrollHeight={scale(50)}
+                    extraHeight={100}
                     innerRef={ref => {
                         this.scroll = ref
                     }}
@@ -442,14 +477,16 @@ class AdditionalInfo extends React.Component {
                             onPress={this.onSendRequestToDriver}
                             disabled={!enablebtn}
                             style={{
-                                width: scale(90),
                                 height: scale(30),
                                 borderRadius: scale(20),
                                 alignItems: "center",
                                 justifyContent: 'center',
                                 backgroundColor: enablebtn ? color.ORANGE_COLOR_400 : color.GRAY_COLOR_400,
-                                marginRight: scale(10)
+                                marginRight: scale(10),
+                                paddingHorizontal: scale(10),
+                                flexDirection: 'row'
                             }}>
+                            {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{}} />}
                             <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: '#FFFFFF' }}>Gửi yêu cầu</Text>
                         </TouchableOpacity>
                     </View>
@@ -482,6 +519,7 @@ class AdditionalInfo extends React.Component {
                         </View>
                     </View>
                     {this.renderTimeStart()}
+                    {this.renderTimeDay()}
                     {this.renderLine()}
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: scale(10), alignItems: 'center', marginTop: scale(5) }}>
                         <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Danh sách nhà xe</Text>
@@ -520,6 +558,11 @@ class AdditionalInfo extends React.Component {
                     ref={e => this.TimePicker = e}
                     fromTime={fromTime}
                 />
+                <ChooseAppointmentDateModal
+                    confirmAction={(date) => {
+                        this.setState({ day_select: date });
+                    }}
+                    ref={e => this.chooseAppointmentDateModal = e}></ChooseAppointmentDateModal>
             </View>
         )
     }
@@ -533,9 +576,18 @@ const mapStateToProps = (state) => {
         distance: state.SelectDesOriginReducer.distance
     }
 }
+function mapDispatchToProps(dispatch) {
+    return {
+        updateCurrentBooking: (dt) => {
+            dispatch(actions.action.updateCurrentBooking(dt));
+        },
+
+        dispatch,
+    };
+}
 
 export default connect(
     mapStateToProps,
-    null,
+    mapDispatchToProps,
 )(AdditionalInfo);
 
