@@ -12,20 +12,20 @@ PODS:
     - React-Core (= 0.64.2)
     - React-jsi (= 0.64.2)
     - ReactCommon/turbomodule/core (= 0.64.2)
-  - Firebase/Auth (8.3.0):
+  - Firebase/Auth (8.4.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (~> 8.3.0)
-  - Firebase/CoreOnly (8.3.0):
-    - FirebaseCore (= 8.3.0)
-  - Firebase/Messaging (8.3.0):
+    - FirebaseAuth (~> 8.4.0)
+  - Firebase/CoreOnly (8.4.0):
+    - FirebaseCore (= 8.4.0)
+  - Firebase/Messaging (8.4.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 8.3.0)
-  - FirebaseAuth (8.3.0):
+    - FirebaseMessaging (~> 8.4.0)
+  - FirebaseAuth (8.4.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
     - GoogleUtilities/Environment (~> 7.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - FirebaseCore (8.3.0):
+  - FirebaseCore (8.4.0):
     - FirebaseCoreDiagnostics (~> 8.0)
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/Logger (~> 7.4)
@@ -39,7 +39,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.4)
     - GoogleUtilities/UserDefaults (~> 7.4)
     - PromisesObjC (< 3.0, >= 1.2)
-  - FirebaseMessaging (8.3.0):
+  - FirebaseMessaging (8.4.0):
     - FirebaseCore (~> 8.0)
     - FirebaseInstallations (~> 8.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
@@ -396,9 +396,9 @@ PODS:
     - React
   - react-native-maps (0.27.1):
     - React
-  - react-native-pager-view (5.4.0):
+  - react-native-pager-view (5.3.2):
     - React-Core
-  - react-native-safe-area-context (3.3.0):
+  - react-native-safe-area-context (3.2.0):
     - React-Core
   - React-perflogger (0.64.2)
   - React-RCTActionSheet (0.64.2):
@@ -481,21 +481,23 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
+  - RNCPushNotificationIOS (1.10.0):
+    - React-Core
   - RNDeviceInfo (5.6.5):
     - React
   - RNFastImage (8.3.7):
     - React-Core
     - SDWebImage (~> 5.8)
     - SDWebImageWebPCoder (~> 0.6.1)
-  - RNFBApp (12.2.0):
-    - Firebase/CoreOnly (= 8.3.0)
+  - RNFBApp (12.3.0):
+    - Firebase/CoreOnly (= 8.4.0)
     - React-Core
-  - RNFBAuth (12.2.0):
-    - Firebase/Auth (= 8.3.0)
+  - RNFBAuth (12.3.0):
+    - Firebase/Auth (= 8.4.0)
     - React-Core
     - RNFBApp
-  - RNFBMessaging (12.7.0):
-    - Firebase/Messaging (= 8.3.0)
+  - RNFBMessaging (12.7.3):
+    - Firebase/Messaging (= 8.4.0)
     - React-Core
     - RNFBApp
   - RNGestureHandler (1.10.3):
@@ -531,7 +533,7 @@ PODS:
     - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.5.0):
+  - RNScreens (3.4.0):
     - React-Core
     - React-RCTImage
   - RNSVG (12.1.1):
@@ -629,6 +631,7 @@ DEPENDENCIES:
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -792,6 +795,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -824,12 +829,12 @@ SPEC CHECKSUMS:
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
   FBReactNativeSpec: ec825fdd0d913353d9608de13609b3e3781ffe79
-  Firebase: 817b9171d0d51dccc458b94a5e8edff6b1dd323d
-  FirebaseAuth: fd12c82de44e7ad3b821610c387b8251f03aa0f9
-  FirebaseCore: a6dba751680d7033b9d3831e1cfc95ead0605118
+  Firebase: 54cdc8bc9c9b3de54f43dab86e62f5a76b47034f
+  FirebaseAuth: 8ef169751d795f20921d425f7b0131cc1c70935c
+  FirebaseCore: 31f389c37ac1ea52454a53d3081f2d7019485a4a
   FirebaseCoreDiagnostics: 3721920bde3a9a6d5aa093c1d25e9d3e47f694af
   FirebaseInstallations: 0ede6ffcd215b8f93c19d9b06c1c54e2d4107e98
-  FirebaseMessaging: 42252b79b860482021483748669ec32e22196462
+  FirebaseMessaging: 78025c56654f05c7ebd6f7f87f9d4b12c5231207
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: 755929a4f851b2fb2c347d533a23f191b008554c
@@ -847,25 +852,25 @@ SPEC CHECKSUMS:
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
-  Permission-AppTrackingTransparency: ed3a54759541929d0a81a75b04a3559af5b2a738
-  Permission-BluetoothPeripheral: deb3e2052364da825f8516d200c40f066b5ff421
-  Permission-Calendars: 7524e233f7cec0c95b7e40f8cf017383183e9289
-  Permission-Camera: ac603073e4128e51e6ca3c39129778f05b4082fa
-  Permission-Contacts: 4bd4bdbbcec21ce0175e02cc4925070a773204cf
-  Permission-FaceID: 9b1f0d42ee7aa2c830844964e739676fe6b634bd
-  Permission-LocationAccuracy: c008fa8c4a90fcb6e33f465c2a8684e92d93b794
-  Permission-LocationAlways: 0704c3bcce11f98f8d6ddf34c49c65893ec64b09
-  Permission-LocationWhenInUse: e1168a583654f1d2d34d3a18c4c6518ce409ad2a
-  Permission-MediaLibrary: ca07553882f0533f67739cdea7486c369b6556f0
-  Permission-Microphone: f795f37089f6de4c71ae147b32770a5ebfdee08c
-  Permission-Motion: ea8c247adbe0aaf0d82027014d6d67b629000512
-  Permission-Notifications: 16ccd862111103378a7bab9fb1c5c71addffc348
-  Permission-PhotoLibrary: 0748c1a490fad126dfe36dbea8234dedfe59cc27
-  Permission-PhotoLibraryAddOnly: 224d33cea3c2f1f8982a2a4e343c0726fba3acf9
-  Permission-Reminders: 26a287d1ac29db33c237af7dfbc2f3e786a58896
-  Permission-Siri: 01083b1ef6964b961e74e6693a727f1c37a42272
-  Permission-SpeechRecognition: fb67f19ecfd3de245833d2c1fc0ba00278f90cac
-  Permission-StoreKit: cf0ca74fec91ecf132cfb92257e06371160cb464
+  Permission-AppTrackingTransparency: 9044a120c00e650227056c4c998ecca4eec595c2
+  Permission-BluetoothPeripheral: f0de3621968349a0419bac1228179a187b4c65db
+  Permission-Calendars: 4996a2d88982b45244e35d6a3d95488fe1e9c9e7
+  Permission-Camera: 24c37a846ff69e0eb7fd4264346550850d5b707a
+  Permission-Contacts: 8e964a7bc2e71b8377af9d007699344294d3f333
+  Permission-FaceID: 686384632cc38c62752acfec5a8f5aa958d53849
+  Permission-LocationAccuracy: bdcb49d8a0112f5e09cb9860a28f69cbfa65fbbe
+  Permission-LocationAlways: 92bf7638da5852ddba7c29fda18ecd0ac246c813
+  Permission-LocationWhenInUse: 1c1f3c5dc7e33029c0a4a0846b97b4bf89d3244b
+  Permission-MediaLibrary: 01085a7e58d0ffc5a6ecba2ba7874404e8ac10db
+  Permission-Microphone: 4667fe94d91ca063175966062186ade404ed57d1
+  Permission-Motion: 9855ea95cebeadbca4467ab99b5b2efe40d0e569
+  Permission-Notifications: 2662b6885535a98892b8e48da04b74fc898d70f8
+  Permission-PhotoLibrary: 48e58291bd650b4f197cf542dad53f41dea4e84f
+  Permission-PhotoLibraryAddOnly: 90b427e4a2acd37d1128618704b53364d73826c2
+  Permission-Reminders: abfe3c6b64b840769d8d41dad13855dc3d4a8f53
+  Permission-Siri: 0e803bfece98ba36b59b623b9c2ccf306f4bfec4
+  Permission-SpeechRecognition: 03a7098acfc5bfa3a6cf02f08def1430ee82f110
+  Permission-StoreKit: 87ee7ea89653e86efe2680e14a62b3cdfa11e24f
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
@@ -880,11 +885,11 @@ SPEC CHECKSUMS:
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-date-picker: 76fc79be2f3cad8ff1b2850fc5601e5f8107979d
-  react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
+  react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-google-maps: 0a989abda71059db2caa98b9dacca7a8f38a47d0
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
-  react-native-pager-view: 54970cc27fdef14db2dcfedadb091d711e88065d
-  react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
+  react-native-pager-view: e21c14b7d5662d37eda45bc31358a8bfc326e33c
+  react-native-safe-area-context: e471852c5ed67eea4b10c5d9d43c1cebae3b231d
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa
@@ -898,19 +903,20 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   ReactNativeNavigation: f81a4e3d44b761c5bf81a519b6e49845ecdf9440
-  RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
-  RNCCheckbox: 6bd119c26c6eb8264a29d59ff66cb70a14de3349
-  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
-  RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNDeviceInfo: c5f8f3a456adcbba405ace475254b08febc4c095
+  RNCAsyncStorage: cb9a623793918c6699586281f0b51cbc38f046f9
+  RNCCheckbox: 7d36e3a79b7301e8b126c5136cc449af65d9cdab
+  RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
+  RNCMaskedView: f127cd9652acfa31b91dcff613e07ba18b774db6
+  RNCPushNotificationIOS: b83387e59e3b7fc48bead4b79b23f9bbbc432663
+  RNDeviceInfo: e841619c3dac5495a095c5455473579ff04908d4
   RNFastImage: a7384db75df352500261e8e8f1ac2026def26102
-  RNFBApp: f83ab90f319f1a4b7f276e4703c6a0cdfce5abde
-  RNFBAuth: 385db0185418f06c99507596cfd7a5ec92de2b89
-  RNFBMessaging: 7a5e34694b9cb2f3139b539749ac7e219fbb513c
+  RNFBApp: 64c90ab78b6010ed5c3ade026dfe5ff6442c21fd
+  RNFBAuth: 59fe503707ab7bd2c2790ac5b7a11d4e14b44452
+  RNFBMessaging: 02c630501c245d814ede9acc09e75de2a805c17e
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNPermissions: 7043bacbf928eae25808275cfe73799b8f618911
+  RNPermissions: 3e5bb8afd93c787681bbacbf54d586a6272ecc92
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
-  RNScreens: 01ab149b5dd5c27f5ff26741b1d2bdf2cee1af35
+  RNScreens: 21b73c94c9117e1110a79ee0ee80c93ccefed8ce
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
