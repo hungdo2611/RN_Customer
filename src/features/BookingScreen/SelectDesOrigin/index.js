@@ -482,6 +482,7 @@ class SelectDesOrigin extends React.Component {
                                 value={select_origin_or_des == CONSTANT_SELECT.ORIGIN ? text_temp : (data_diem_don ? data_diem_don?.address?.label : 'Vị trí của bạn')}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={true}
+                                placeholderTextColor={color.GRAY_COLOR_400}
                                 placeholder="Tìm điểm đón" />
                             <View style={{ height: 0.5, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400 }} />
                             <TextInput
@@ -499,6 +500,7 @@ class SelectDesOrigin extends React.Component {
                                 style={{ flex: 1 }}
                                 blurOnSubmit={true}
                                 selectTextOnFocus={true}
+                                placeholderTextColor={color.GRAY_COLOR_400}
                                 placeholder="Chọn điểm đến" />
 
                         </View>

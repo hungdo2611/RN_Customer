@@ -17,15 +17,15 @@ export const getToken = () => {
     return instanceData.token;
 }
 export const setLocalData = async (data) => {
-    notificationProcessor.checkPermission();
     if (data) {
         instanceData.user_info = JSON.parse(data);
         instanceData.token = JSON.parse(data).token;
     }
     await AsyncStorage.setItem(constant_key.USER_INFO, data)
+    notificationProcessor.checkPermission();
+
 }
 export const getLocalData = async () => {
-    notificationProcessor.checkTokenRefresh();
     let data = await AsyncStorage.getItem(constant_key.USER_INFO);
     console.log("data123", data)
     if (data) {
@@ -33,5 +33,7 @@ export const getLocalData = async () => {
         instanceData.token = JSON.parse(data).token;
 
     }
+    notificationProcessor.checkTokenRefresh();
+
     return JSON.parse(data);
 }

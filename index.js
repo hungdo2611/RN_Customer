@@ -5,6 +5,7 @@ import { getLocalData } from './src/model'
 import { setRootToLogin, setRootToHome } from './src/NavigationController'
 import 'react-native-gesture-handler';
 import { Platform } from 'react-native';
+import notificationProcessor from './src/notification'
 
 registerScreens();
 Navigation.setDefaultOptions({
@@ -63,5 +64,7 @@ Navigation.events().registerAppLaunchedListener(async () => {
     } else {
         setRootToLogin();
     }
+    notificationProcessor.createNotificationListeners();
+    notificationProcessor.createDefaultChannels();
 });
 // notificationProcessor.checkPermission();

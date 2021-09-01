@@ -2,6 +2,9 @@ import { Alert } from 'react-native'
 import messaging from '@react-native-firebase/messaging';
 import instanceData from '../model'
 import { registerDeviceToken } from '../api/loginApi'
+import PushNotification, { Importance } from 'react-native-push-notification';
+import handleNoti from './handleNoti'
+
 class NotificationProcessor {
     async checkTokenRefresh() {
         messaging().onTokenRefresh(token => {
@@ -59,6 +62,61 @@ class NotificationProcessor {
         console.log('register device token', req)
         //
         this.device_token = deviceToken;
+
+    }
+    createDefaultChannels() {
+        PushNotification.createChannel(
+            {
+                channelId: "HD_Notification", // (required)
+                channelName: "Tài xế Thông báo", // (required)
+                channelDescription: "Kênh thông báo dành cho ứng dụng của tài xế, nhà xe", // (optional) default: undefined.
+                playSound: true, // (optional) default: true
+                soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+                importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+                vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+            },
+            (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+        );
+
+    }
+    async createNotificationListeners() {
+        PushNotification.configure({
+            // handle foreground notification
+            onNotification: function (notification) {
+                console.log("NOTIFICATION:", notification.data);
+                handleNoti(notification.data)
+            },
+
+            // IOS ONLY (optional): default: all - Permissions to register.
+            permissions: {
+                alert: true,
+                badge: true,
+                sound: true
+            },
+
+            // Should the initial notification be popped automatically
+            // default: true
+            popInitialNotification: true,
+
+            /**
+             * (optional) default: true
+             * - Specified if permissions (ios) and token (android and ios) will requested or not,
+             * - if not, you must call PushNotificationsHandler.requestPermissions() later
+             */
+            requestPermissions: true
+        });
+        messaging().onMessage(async remoteMessage => {
+            console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+
+            PushNotification.localNotification({
+                message: remoteMessage.notification.body,
+                title: remoteMessage.notification.title,
+                channelId: "HD_Notification",
+                userInfo: remoteMessage.data,
+                importance: 4, // (optional) default: 4. Int value of the Android notification importance
+                vibrate: true,
+            });
+        });
 
     }
 }

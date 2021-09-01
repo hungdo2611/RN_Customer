@@ -29,3 +29,15 @@ export const getRouteBetween2Point = async (lstPoint) => {
     let request = await Axios.get(`https://route.ls.hereapi.com/routing/7.2/calculateroute.json?${param}&mode=fastest;car;traffic:disabled&apiKey=${API_KEY}`);
     return request.data
 }
+export const getPolyline = async (lstPoint) => {
+    let param = ''
+    if (lstPoint.length == 2) {
+        param = `origin=${lstPoint[0].lat},${lstPoint[0].lng}&destination=${lstPoint[1].lat},${lstPoint[1].lng}`
+    }
+    if (lstPoint.length == 3) {
+        param = `origin=${lstPoint[0].lat},${lstPoint[0].lng}&destination=${lstPoint[2].lat},${lstPoint[2].lng}&via=${lstPoint[1].lat},${lstPoint[1].lng}`
+    }
+    console.log("param get polyline", param)
+    let request = await Axios.get(`https://router.hereapi.com/v8/routes?transportMode=car&return=polyline,summary,passthrough&${param}&apiKey=${API_KEY}`);
+    return request.data
+}

@@ -483,7 +483,7 @@ class AdditionalInfo extends React.Component {
                                 justifyContent: 'center',
                                 backgroundColor: enablebtn ? color.ORANGE_COLOR_400 : color.GRAY_COLOR_400,
                                 marginRight: scale(10),
-                                paddingHorizontal: scale(10),
+                                width: scale(120),
                                 flexDirection: 'row'
                             }}>
                             {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{}} />}

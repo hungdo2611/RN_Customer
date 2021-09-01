@@ -198,7 +198,7 @@ class WaitingDriverScreen extends React.Component {
             reason: reason
         }
         let requestCancel = await cancelBookingAPI(body)
-        this.setState({ isloading: false })
+        this.setState({ isloading: false, isShowModal: false })
 
         if (!requestCancel.err) {
             this.setState({ isCancel: true, message: 'Huỷ chuyến thành công' })

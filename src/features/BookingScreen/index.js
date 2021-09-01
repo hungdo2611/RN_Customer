@@ -42,10 +42,12 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import SelectDesOrigin from './SelectDesOrigin'
 import { enableScreens } from 'react-native-screens';
-import { getAdressFromLatLng, getRouteBetween2Point } from '../../api/MapApi'
+import { getAdressFromLatLng, getRouteBetween2Point, getPolyline } from '../../api/MapApi'
 import AdditionalInfo from './AdditionInfo'
 import actions from './redux/actions'
 import WaitingDriverScreen from './WaitingDriver'
+import { decode } from '../../ultis/polyline'
+
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
@@ -83,9 +85,8 @@ function convertRouteDataForAPI(data) {
     return route
 }
 function convertRouteDataForShowRoute(data) {
-    const arr = data.response.route[0].leg[0].maneuver
-    let route = arr.map(vl => {
-        return { longitude: vl.position.longitude, latitude: vl.position.latitude }
+    let route = data.map(vl => {
+        return { longitude: vl[1], latitude: vl[0] }
 
     })
     return route
@@ -319,8 +320,14 @@ class CreateTripScreen extends Component {
         const { getRoute, getRouteDone } = this.props;
         getRoute();
         let reqGetRoute = await getRouteBetween2Point(lstCoord)
+        let reqGetPolyline = await getPolyline(lstCoord);
+        let lst_Point = []
+        reqGetPolyline.routes[0].sections.map(value => {
+            const lst_polyline = decode(value.polyline)
+            lst_Point = [...lst_Point, ...lst_polyline.polyline]
+        });
         let distance = reqGetRoute.response.route[0].summary.distance;
-        let route = convertRouteDataForShowRoute(reqGetRoute)
+        let route = convertRouteDataForShowRoute(lst_Point)
         let routeAPi = convertRouteDataForAPI(reqGetRoute)
         setTimeout(() => {
             this.map.fitToCoordinates(route, {
