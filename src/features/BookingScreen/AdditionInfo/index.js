@@ -287,9 +287,20 @@ class AdditionalInfo extends React.Component {
         </View>
     }
     createBookingSuccess = (data) => {
-        const { data_diem_don, data_diem_den } = this.props?.route?.params;
-        const { navigation, AnimateHeightTovalue, updateCurrentBooking } = this.props;
+        const { updateCurrentBooking } = this.props;
+
+
+
+        updateCurrentBooking(data);
+        console.log("current booking", data)
+
+
+    }
+    onSendRequestToDriver = () => {
         const { lst_select, seat, fromTime, day_select } = this.state;
+        const { data_diem_don, data_diem_den } = this.props?.route?.params;
+        const { coord, distance } = this.props;
+        const lst_token = lst_select.map(vl => vl.value)
 
         let maxPrice = 0;
         let minPrice = 0;
@@ -307,28 +318,7 @@ class AdditionalInfo extends React.Component {
                 }
             }
         })
-        setTimeout(() => {
-            AnimateHeightTovalue(scale(400));
-        }, 200)
-        updateCurrentBooking(data);
-        navigation.push(
-            "WaitingDriverScreen",
-            {
-                data_diem_don: data_diem_don,
-                data_diem_den: data_diem_den,
-                maxPrice: maxPrice,
-                minPrice: minPrice,
-                seat: seat,
-                time: fromTime,
-                day_select: day_select
-            });
 
-    }
-    onSendRequestToDriver = () => {
-        const { lst_select, seat, fromTime, day_select } = this.state;
-        const { data_diem_don, data_diem_den } = this.props?.route?.params;
-        const { coord, distance } = this.props;
-        const lst_token = lst_select.map(vl => vl.value)
         Alert.alert(
             'Thông báo',
             'Hãy chắc chắn các thông tin về chuyến đi là chính xác',
@@ -360,7 +350,11 @@ class AdditionalInfo extends React.Component {
                                 distance: distance,
                                 time_start: moment(`${day_select} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
                                 seat: seat,
-                                lst_devicetoken: lst_token
+                                lst_devicetoken: lst_token,
+                                range_price: {
+                                    max_price: maxPrice,
+                                    min_price: minPrice,
+                                }
                             }
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
                             this.setState({ isloading: false })
@@ -384,7 +378,11 @@ class AdditionalInfo extends React.Component {
                                 distance: distance,
                                 time_start: moment(`${day_select} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
                                 seat: seat,
-                                lst_devicetoken: lst_token
+                                lst_devicetoken: lst_token,
+                                range_price: {
+                                    max_price: maxPrice,
+                                    min_price: minPrice,
+                                }
 
                             }
                             console.log("reqCreateBooking", bodyRequest.time_start)
@@ -573,7 +571,7 @@ const mapStateToProps = (state) => {
     return {
         isLoading_getListDriver: state.SelectDesOriginReducer.isLoading,
         lstDriver: state.SelectDesOriginReducer.lstDriver,
-        distance: state.SelectDesOriginReducer.distance
+        distance: state.SelectDesOriginReducer.distance,
     }
 }
 function mapDispatchToProps(dispatch) {

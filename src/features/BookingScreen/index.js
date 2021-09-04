@@ -47,7 +47,9 @@ import AdditionalInfo from './AdditionInfo'
 import actions from './redux/actions'
 import WaitingDriverScreen from './WaitingDriver'
 import { decode } from '../../ultis/polyline'
-
+import { constant_type_status_booking } from './constant'
+import UserCancelBooking from './UserCancelBooking';
+import BookingProcessing from './BookingProcessing';
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
@@ -315,33 +317,40 @@ class CreateTripScreen extends Component {
         // console.log("coord", coord)
         // this.setState({ latitude: lat, longitude: lng });
     };
-    setPolygon = async (lstCoord, diem_don, diem_den) => {
-
-        const { getRoute, getRouteDone } = this.props;
-        getRoute();
-        let reqGetRoute = await getRouteBetween2Point(lstCoord)
+    setRoute = async (lstCoord) => {
         let reqGetPolyline = await getPolyline(lstCoord);
         let lst_Point = []
+        let line_string = []
         reqGetPolyline.routes[0].sections.map(value => {
             const lst_polyline = decode(value.polyline)
+            line_string = [...line_string, value.polyline]
             lst_Point = [...lst_Point, ...lst_polyline.polyline]
         });
-        let distance = reqGetRoute.response.route[0].summary.distance;
         let route = convertRouteDataForShowRoute(lst_Point)
-        let routeAPi = convertRouteDataForAPI(reqGetRoute)
         setTimeout(() => {
             this.map.fitToCoordinates(route, {
                 edgePadding: {
                     right: width / 4,
-                    bottom: height / 4 + 300,
+                    bottom: height / 4 + 200,
                     left: width / 4,
                     top: height / 4,
                 }
             });
         }, 100)
+        this.setState({ lst_polyline: route, lineString: line_string })
+
+    }
+    setPolygon = async (lstCoord, diem_don, diem_den) => {
+
+        const { getRoute, getRouteDone } = this.props;
+        getRoute();
+        this.setRoute(lstCoord);
+        let reqGetRoute = await getRouteBetween2Point(lstCoord);
+        let distance = reqGetRoute.response.route[0].summary.distance;
+        let routeAPi = convertRouteDataForAPI(reqGetRoute)
 
         getRouteDone(distance);
-        this.setState({ lst_polyline: route, diem_don: diem_don, diem_den: diem_den, routeAPI: routeAPi })
+        this.setState({ diem_don: diem_don, diem_den: diem_den, routeAPI: routeAPi })
     }
     focusOnCurrentLoc = () => {
         const {
@@ -403,7 +412,7 @@ class CreateTripScreen extends Component {
             diem_don,
             diem_den
         } = this.state;
-        const { destination, isLoading, origin, CaculatePoint } = this.props;
+        const { currentBooking } = this.props;
 
         const TransitionScreenOptions = {
             ...TransitionPresets.SlideFromRightIOS,
@@ -417,8 +426,7 @@ class CreateTripScreen extends Component {
                 background: '#FFFFFF',
             },
         };
-        const MAX_POINTS = 30;
-        const fill = (this.state.points / MAX_POINTS) * 100;
+
 
 
         return (
@@ -463,41 +471,6 @@ class CreateTripScreen extends Component {
 
                     >
 
-
-                        {/* {renderStep === 3 && (
-                            <MapViewDirections
-                                origin={{
-                                    latitude: origin.geometry.location.lat,
-                                    longitude: origin.geometry.location.lng,
-                                }}
-                                destination={{
-                                    latitude: destination.geometry.location.lat,
-                                    longitude: destination.geometry.location.lng,
-                                }}
-                                language="vi"
-                                apikey={ApiKey}
-                                strokeWidth={5}
-                                strokeColor={color.MAIN_COLOR}
-                                onError={errorMessage => {
-                                    console.log('GOT AN ERROR', errorMessage);
-                                }}
-                                waypoints={this.state.WayPoint}
-                                onReady={result => {
-                                    console.log('map ready', result);
-                                    this.setState({ distance: result.distance });
-                                    // CaculatePoint(result.distance);
-
-                                    this.map.fitToCoordinates(result.coordinates, {
-                                        edgePadding: {
-                                            right: width / 5,
-                                            bottom: height / 5,
-                                            left: width / 5,
-                                            top: height / 5,
-                                        },
-                                    });
-                                }}
-                            />
-                        )} */}
                         {lst_polyline.length > 0 && <Polyline
                             coordinates={lst_polyline}
                             strokeColor={color.ORANGE_COLOR_400} // fallback for when `strokeColors` is not supported by the map-provider
@@ -578,12 +551,12 @@ class CreateTripScreen extends Component {
                 </View>
                 {isInCreaseHeight && <View style={{ width: width, height: height, position: 'absolute', backgroundColor: 'rgba(52, 52, 52, 0.3)' }}></View>}
                 <View style={{}}>
-                    <BottomTab
+                    {!currentBooking && <BottomTab
                         ref={e => {
                             this.BottomView = e;
                         }}
                         IsIncreaseFromStart={false}
-                        BottomViewHeight={scale(height / 3)}
+                        BottomViewHeight={(height / 3)}
                         heightIncreased={height * 6 / 7}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
@@ -636,23 +609,81 @@ class CreateTripScreen extends Component {
                                 </Stack.Navigator>
                             </NavigationContainer>
                         </View>
-                    </BottomTab>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.FINDING_DRIVER && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={false}
+                        BottomViewHeight={scale(400)}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={false}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <WaitingDriverScreen
+                                onNavigationBack={this.onNavigationBack}
+                            />
+
+                        </View>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.USER_CANCEL && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={false}
+                        BottomViewHeight={scale(400)}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={false}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <UserCancelBooking
+                                onNavigationBack={this.onNavigationBack}
+                            />
+
+                        </View>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.PROCESSING && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={false}
+                        BottomViewHeight={height * 6 / 7}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={false}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <BookingProcessing
+                                onNavigationBack={this.onNavigationBack}
+                            />
+
+                        </View>
+                    </BottomTab>}
                 </View>
             </View >
         );
     }
 }
 
-CreateTripScreen.propTypes = {
-    doSearchPlace: PropTypes.func,
-    searchWithLatLng: PropTypes.func,
-    searchLatLngWithPlaceID: PropTypes.func,
-    Point: PropTypes.number,
-    CaculatePoint: PropTypes.func,
-};
+
 
 const mapStateToProps = (state) => {
     return {
+        currentBooking: state.SelectDesOriginReducer.currentBooking
 
     }
 }

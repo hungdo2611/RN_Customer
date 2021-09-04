@@ -26,3 +26,9 @@ export const cancelBookingAPI = (body) => {
     })
 }
 
+export const getCurrentBookingAPI = () => {
+    return api.makeAuthRequest({
+        url: `/booking/current`,
+        method: 'GET',
+    })
+}

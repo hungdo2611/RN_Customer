@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     RefreshControl,
     Dimensions,
-    TextInput,
+    Linking,
     KeyboardAvoidingView,
     FlatList,
     Keyboard,
@@ -35,7 +35,7 @@ import Modal from "react-native-modal";
 
 const { width, height } = Dimensions.get('window')
 
-class WaitingDriverScreen extends React.Component {
+class BookingProcessing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,7 +44,6 @@ class WaitingDriverScreen extends React.Component {
             lst_select: [],
             fromTime: moment(new Date()).add(0.25, 'hours').format('HH:mm'),
             reason: '',
-            isShowModal: false,
             err: false,
             isCancel: false,
             message: '',
@@ -118,7 +117,10 @@ class WaitingDriverScreen extends React.Component {
             </View>
         </View>
     }
+    renderLine = () => {
+        return <View style={{ height: 0.8, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400, marginVertical: scale(5) }} />
 
+    }
     renderInfo = () => {
         const { from, to } = this.props?.currentBooking;
 
@@ -184,35 +186,63 @@ class WaitingDriverScreen extends React.Component {
 
         </View>
     }
-    onCancelBooking = async () => {
-        this.setState({ isloading: true })
 
-        const { currentBooking, updateCurrentBooking } = this.props;
-        const { reason } = this.state;
-        if (!reason) {
-            this.setState({ err: true })
-            this.setState({ isloading: false })
-            return
-        }
-        const body = {
-            id: currentBooking._id,
-            reason: reason
-        }
-        let requestCancel = await cancelBookingAPI(body)
-        this.setState({ isloading: false, isShowModal: false })
+    onBack = () => {
+        const { onNavigationBack, updateCurrentBooking } = this.props;
+        onNavigationBack();
+        setTimeout(() => {
+            updateCurrentBooking(null);
 
-        if (!requestCancel.err) {
-            this.setState({ isCancel: true, message: 'Huỷ chuyến thành công' })
-            updateCurrentBooking(requestCancel.data)
-        } else {
-            this.setState({ isCancel: true, message: 'Đã có lỗi xảy ra. Vui lòng thử lại sau' })
+        }, 100)
 
+    }
+    callNumber = phone => {
+        let phoneNumber = phone;
+        if (Platform.OS !== 'android') {
+            phoneNumber = `telprompt:${phone}`;
         }
-        console.log("requestCancel", requestCancel)
+        else {
+            phoneNumber = `tel:${phone}`;
+        }
+        Linking.canOpenURL(phoneNumber)
+            .then(supported => {
+                if (!supported) {
+                    Alert.alert('Phone number is not available');
+                } else {
+                    return Linking.openURL(phoneNumber);
+                }
+            })
+            .catch(err => console.log(err));
+    };
+    renderInfoDriver = () => {
+        const { currentBooking } = this.props;
+        const userInfo = currentBooking.driver_id;
+        return <View style={{ marginHorizontal: scale(10) }}>
+            <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginVertical: scale(5) }}>Thông tin nhà xe</Text>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                    <Image style={{ width: scale(48), height: scale(48) }} source={require('../res/ic_avatar.png')} />
+                    <View style={{ marginLeft: scale(10) }}>
+                        <Text style={{ fontSize: scale(18), fontWeight: "600" }}>{userInfo.name}</Text>
+                        <Text style={{ fontSize: scale(16), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                    </View>
+                </View>
+                <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
+                    <MaterialCommunityIcons
+                        name='phone-outgoing-outline'
+                        size={scale(23)}
+                        color="#FFFFFF"
+                        containerStyle={{
+
+                        }}
+                    />
+                </TouchableOpacity>
+            </View>
+        </View>
     }
 
     render() {
-        const { onNavigationBack } = this.props;
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                 <KeyboardAwareScrollView
@@ -222,7 +252,7 @@ class WaitingDriverScreen extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Đang tìm xe</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Tài xế đã nhận chuyến</Text>
 
                         </View>
 
@@ -237,64 +267,11 @@ class WaitingDriverScreen extends React.Component {
                     {this.renderTime()}
                     {this.renderTimeDay()}
                     {this.renderPrice()}
-                    <TouchableOpacity onPress={() => this.setState({ isShowModal: true })} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.RED_COLOR, borderRadius: scale(15), alignSelf: "center" }}>
-                        <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Huỷ chuyến</Text>
-                    </TouchableOpacity>
-                </KeyboardAwareScrollView>
-                <Modal isVisible={this.state.isShowModal}>
+                    {this.renderLine()}
+                    {this.renderInfoDriver()}
 
-                    {!this.state.isCancel && <View style={{ width: width - scale(40), height: scale(370), backgroundColor: '#FFFFFF', alignSelf: "center", borderRadius: scale(10), alignItems: "center" }}>
-                        <KeyboardAwareScrollView
-                            extraHeight={100}
-                            extraScrollHeight={scale(130)}
-                            showsVerticalScrollIndicator={false}>
-                            <View style={{ alignItems: 'center', width: width - scale(40), height: scale(370) }}>
-                                <MaterialCommunityIcons
-                                    name='cancel'
-                                    size={scale(42)}
-                                    color={color.RED_COLOR}
-                                    style={{ marginTop: scale(10) }}
-                                />
-                                <Text style={{ fontSize: scale(17), fontWeight: '600', marginTop: scale(10) }}>Bạn muốn huỷ chuyến?</Text>
-                                <View style={{ flex: 1, width: '100%', marginTop: scale(30) }}>
-                                    <Text style={{ fontSize: scale(12), marginLeft: scale(15) }}>Hãy cho chúng tôi biết lý do huỷ chuyến của bạn <Text style={{ color: color.RED_COLOR }}>*</Text></Text>
-                                    <TextInput
-                                        placeholder="Hãy nhập đề xuất của bạn"
-                                        onChangeText={txt => this.setState({ reason: txt, err: false })}
-                                        multiline={true}
-                                        style={{ width: width - scale(70), borderWidth: 0.5, borderColor: '#959494', height: scale(90), fontSize: scale(14), fontWeight: '400', textAlignVertical: "top", marginTop: scale(7), alignSelf: 'center', borderRadius: scale(10), paddingHorizontal: scale(10) }} />
-                                    {this.state.err && <Text style={{ color: color.RED_COLOR, marginLeft: scale(15) }}>Lý do huỷ chuyến không được bỏ trống</Text>}
-                                    <TouchableOpacity
-                                        disabled={this.state.isloading}
-                                        onPress={_.debounce(() => this.onCancelBooking(), 300)}
-                                        style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: this.state.isloading ? color.GRAY_COLOR_400 : color.RED_COLOR, borderRadius: scale(15), alignSelf: "center", marginTop: scale(20), flexDirection: "row" }}>
-                                        {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{}} />}
-                                        <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Huỷ chuyến</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => this.setState({ isShowModal: false })} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_300, borderRadius: scale(15), alignSelf: "center", marginTop: scale(10) }}>
-                                        <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </KeyboardAwareScrollView>
-                    </View>}
-                    {this.state.isCancel && <View style={{ width: width - scale(40), height: scale(170), backgroundColor: '#FFFFFF', alignSelf: "center", borderRadius: scale(10), alignItems: "center" }}>
-                        <MaterialCommunityIcons
-                            name='check-circle'
-                            size={scale(42)}
-                            color={color.GREEN_COLOR_300}
-                            style={{ marginTop: scale(10) }}
-                        />
-                        <Text style={{ fontSize: scale(17), fontWeight: '600', marginTop: scale(10) }}>{this.state.message}</Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                onNavigationBack();
-                            }}
-                            style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_300, borderRadius: scale(15), alignSelf: "center", marginTop: scale(20) }}>
-                            <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
-                        </TouchableOpacity>
-                    </View>}
-                </Modal>
+                </KeyboardAwareScrollView>
+
             </View >
         )
     }
@@ -320,5 +297,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(WaitingDriverScreen);
+)(BookingProcessing);
 

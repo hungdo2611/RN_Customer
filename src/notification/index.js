@@ -1,10 +1,10 @@
 import { Alert } from 'react-native'
 import messaging from '@react-native-firebase/messaging';
-import instanceData from '../model'
+import { instanceData } from '../model'
 import { registerDeviceToken } from '../api/loginApi'
 import PushNotification, { Importance } from 'react-native-push-notification';
 import handleNoti from './handleNoti'
-
+import { Navigation } from "react-native-navigation";
 class NotificationProcessor {
     async checkTokenRefresh() {
         messaging().onTokenRefresh(token => {
@@ -112,11 +112,21 @@ class NotificationProcessor {
                 message: remoteMessage.notification.body,
                 title: remoteMessage.notification.title,
                 channelId: "HD_Notification",
-                userInfo: remoteMessage.data,
+                userInfo: { ...remoteMessage.data, isLocalNoti: true },
                 importance: 4, // (optional) default: 4. Int value of the Android notification importance
                 vibrate: true,
             });
         });
+        PushNotification.popInitialNotification((notification) => {
+            console.log("popInitialNotification", notification);
+            if (notification && notification.data.isLocalNoti) {
+                handleNoti(notification.data)
+            }
+
+        })
+        Navigation.events().registerComponentDidAppearListener(async event => {
+            instanceData.current_component_id = event.componentId;
+        })
 
     }
 }

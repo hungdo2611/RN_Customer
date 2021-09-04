@@ -8,7 +8,8 @@ const constant_key = {
 
 export let instanceData = {
     token: '',
-    user_info: null
+    user_info: null,
+    current_component_id: ''
 }
 export const setToken = (token) => {
     instanceData.token = token;

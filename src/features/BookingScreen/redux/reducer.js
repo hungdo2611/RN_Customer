@@ -1,6 +1,7 @@
 import actions from "./actions";
 
 const initState = {
+    isLoading_crrBooking: false,
     isLoading: false,
     lstDriver: [],
     isLoading_route: false,
@@ -9,10 +10,16 @@ const initState = {
 };
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actions.type.GET_CURRENT_BOOKING:
+            return {
+                ...state,
+                isLoading_crrBooking: true
+            }
         case actions.type.UPDATE_CURRENT_BOOKING:
             return {
                 ...state,
-                currentBooking: action.payload.data
+                currentBooking: action.payload.data,
+                isLoading_crrBooking: false
             }
         case actions.type.GET_LIST_DRIVER:
             return {

@@ -1,5 +1,10 @@
+import { instanceData } from '../model'
+import { constant_name } from '../registerScreen'
+import store from '../redux/store'
+import actionsBooking from '../features/BookingScreen/redux/actions'
+import { pushToBookingScreen } from '../NavigationController'
 const constant_type = {
-    CUSTOMER_REQUEST_TO_DRIVER: 'CUSTOMER_REQUEST_TO_DRIVER'
+    DRIVER_ACEEPT_BOOKING: 'DRIVER_ACEEPT_BOOKING'
 }
 
 export default handleNoti = async (data) => {
@@ -7,7 +12,15 @@ export default handleNoti = async (data) => {
     if (!data) {
         return
     }
+    if (data.type == constant_type.DRIVER_ACEEPT_BOOKING) {
+        store.dispatch(actionsBooking.action.getCurrentBooking())
+        if (instanceData.current_component_id === `${constant_name.BOOKING_SCREEN}_id`) {
+            // update data
+        } else {
+            pushToBookingScreen(instanceData.current_component_id)
+        }
+    }
     // handle noti have customer request
-    
+
 
 }
