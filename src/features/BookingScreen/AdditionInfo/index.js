@@ -299,7 +299,7 @@ class AdditionalInfo extends React.Component {
     onSendRequestToDriver = () => {
         const { lst_select, seat, fromTime, day_select } = this.state;
         const { data_diem_don, data_diem_den } = this.props?.route?.params;
-        const { coord, distance } = this.props;
+        const { coord, distance, line_string } = this.props;
         const lst_token = lst_select.map(vl => vl.value)
 
         let maxPrice = 0;
@@ -354,7 +354,9 @@ class AdditionalInfo extends React.Component {
                                 range_price: {
                                     max_price: maxPrice,
                                     min_price: minPrice,
-                                }
+                                },
+                                line_string: line_string,
+
                             }
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
                             this.setState({ isloading: false })
@@ -382,7 +384,9 @@ class AdditionalInfo extends React.Component {
                                 range_price: {
                                     max_price: maxPrice,
                                     min_price: minPrice,
-                                }
+                                },
+                                line_string: line_string,
+
 
                             }
                             console.log("reqCreateBooking", bodyRequest.time_start)

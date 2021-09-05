@@ -241,8 +241,67 @@ class BookingProcessing extends React.Component {
             </View>
         </View>
     }
+    renderSuggestion = () => {
+        const { suggestion_pick } = this.props.currentBooking
+        console.log("this.props.currentBooking", this.props.currentBooking)
+        return <View style={{ marginHorizontal: scale(10), marginVertical: scale(3) }}>
+            <View style={{ flexDirection: 'row' }}>
+                <Image style={{ width: scale(20), height: scale(20), tintColor: color.MAIN_COLOR }} source={require('../res/ic_help.png')} />
+                <View style={{ marginHorizontal: scale(10), flex: 1 }}>
+                    <Text style={{ fontSize: scale(12), paddingTop: scale(3) }}>Gợi ý điểm đón</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "600", paddingTop: scale(3) }}>{suggestion_pick.address}</Text>
+                </View>
+                <TouchableOpacity onPress={this.onShowMap} activeOpacity={0.6} style={{ width: scale(50), alignItems: 'center', justifyContent: 'center' }}>
+                    <FontAwesomeIcon
+                        name='map'
+                        size={scale(20)}
+                        color={color.GREEN_COLOR_300}
+
+                    />
+                    <Text style={{ fontSize: scale(11), textAlign: 'center' }}>Bản đồ</Text>
+                </TouchableOpacity>
+            </View>
+
+        </View>
+    }
 
     render() {
+        const { onNavigationBack, isInCreaseHeight } = this.props;
+        if (isInCreaseHeight) {
+            return (
+                <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
+                    <KeyboardAwareScrollView
+                        innerRef={ref => {
+                            this.scroll = ref
+                        }}
+                        showsVerticalScrollIndicator={false}>
+                        <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                            <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
+                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Tài xế đã nhận chuyến</Text>
+
+                            </View>
+
+                        </View>
+                        <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
+
+                        <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
+                            <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>
+                        </View>
+                        {this.renderInfo()}
+                        {this.renderSeat()}
+                        {this.renderTime()}
+                        {this.renderTimeDay()}
+                        {this.renderPrice()}
+                        {this.renderLine()}
+                        {this.renderInfoDriver()}
+                        {this.renderLine()}
+                        {this.renderSuggestion()}
+                    </KeyboardAwareScrollView>
+
+                </View >
+            )
+
+        }
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                 <KeyboardAwareScrollView
@@ -252,7 +311,7 @@ class BookingProcessing extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Tài xế đã nhận chuyến</Text>
+                        <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Tài xế đã nhận chuyến</Text>
 
                         </View>
 
@@ -263,18 +322,14 @@ class BookingProcessing extends React.Component {
                         <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>
                     </View>
                     {this.renderInfo()}
-                    {this.renderSeat()}
-                    {this.renderTime()}
-                    {this.renderTimeDay()}
-                    {this.renderPrice()}
-                    {this.renderLine()}
-                    {this.renderInfoDriver()}
 
                 </KeyboardAwareScrollView>
 
             </View >
         )
+
     }
+
 }
 
 

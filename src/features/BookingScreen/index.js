@@ -199,7 +199,41 @@ class CreateTripScreen extends Component {
             error => console.log('error', error),
             { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
         );
+
+        if (this.props.currentBooking) {
+            this.setDataRouteBooking()
+        }
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.currentBooking && prevProps.currentBooking !== this.props.currentBooking) {
+            this.setDataRouteBooking()
+        }
+    }
+    setDataRouteBooking = () => {
+        let lst_Point = []
+        this.props.currentBooking.line_string.map(value => {
+            const lst_polyline = decode(value)
+            lst_Point = [...lst_Point, ...lst_polyline.polyline]
+        });
+        const newRoute = convertRouteDataForShowRoute(lst_Point);
+        console.log("setDataRouteBooking", newRoute)
+
+        this.setState({ lst_polyline: newRoute })
+        setTimeout(() => {
+            this.map.fitToCoordinates(newRoute, {
+                edgePadding: {
+                    right: 20,
+                    bottom: height / 4,
+                    left: 20,
+                    top: 20,
+                }
+            });
+            if (this.suggestion) {
+                this.suggestion.showCallout();
+            }
+        }, 500)
+    }
+
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -395,7 +429,24 @@ class CreateTripScreen extends Component {
         this.map.animateToRegion(r, 500);
         this.setState({ lst_polyline: [], diem_don: null, diem_den: null })
     }
-
+    getCoordFrom = () => {
+        const { currentBooking } = this.props;
+        const { lst_polyline, diem_don, diem_den, latitude, longitude } = this.state;
+        if (!currentBooking) {
+            return !diem_don ? { latitude, longitude } : { latitude: diem_don.displayPosition.latitude, longitude: diem_don.displayPosition.longitude }
+        } else {
+            return { latitude: currentBooking.from.loc.coordinates[1], longitude: currentBooking.from.loc.coordinates[0] }
+        }
+    }
+    getCoordTo = () => {
+        const { currentBooking } = this.props;
+        const { lst_polyline, diem_don, diem_den, latitude, longitude } = this.state;
+        if (!currentBooking) {
+            return { latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }
+        } else {
+            return { latitude: currentBooking.to.loc.coordinates[1], longitude: currentBooking.to.loc.coordinates[0] }
+        }
+    }
 
     render() {
         const {
@@ -470,7 +521,6 @@ class CreateTripScreen extends Component {
                         }}
 
                     >
-
                         {lst_polyline.length > 0 && <Polyline
                             coordinates={lst_polyline}
                             strokeColor={color.ORANGE_COLOR_400} // fallback for when `strokeColors` is not supported by the map-provider
@@ -479,12 +529,28 @@ class CreateTripScreen extends Component {
                         {lst_polyline.length > 0 && <Marker
                             pinColor={color.GREEN_COLOR_400}
                             title="Điểm bắt đầu"
-                            coordinate={!diem_don ? { latitude, longitude } : { latitude: diem_don.displayPosition.latitude, longitude: diem_don.displayPosition.longitude }}
+                            coordinate={this.getCoordFrom()}
                         />}
-                        {lst_polyline.length > 0 && diem_den && <Marker
+                        {lst_polyline.length > 0 && <Marker
                             title="Điểm dừng"
-                            coordinate={{ latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }}
+                            coordinate={this.getCoordTo()}
                         />}
+                        {currentBooking && currentBooking.suggestion_pick && <Marker
+                            ref={e => this.suggestion = e}
+                            identifier="marker_suggest"
+                            description={currentBooking.suggestion_pick.address}
+                            title="Gợi ý điểm đón"
+                            coordinate={{
+                                latitude: currentBooking.suggestion_pick.lat,
+                                longitude: currentBooking.suggestion_pick.lng,
+                            }}
+                        >
+                            <Image
+                                source={require('./res/ic_boarding.png')}
+                                style={{ width: scale(32), height: scale(32), }}
+                                resizeMode="contain"
+                            />
+                        </Marker>}
                     </MapView>
 
 
@@ -592,6 +658,7 @@ class CreateTripScreen extends Component {
                                         name="AdditionalInfo">
                                         {props => <AdditionalInfo
                                             onBack={this.onCancelPick}
+                                            line_string={this.state.lineString}
                                             disablePull={() => this.setState({ EnablePull: false })}
                                             enablePull={() => this.setState({ EnablePull: true })}
                                             AnimateHeightTovalue={vl => this.BottomView.AnimateHeightToValue(vl)}
@@ -614,18 +681,19 @@ class CreateTripScreen extends Component {
                         ref={e => {
                             this.BottomView = e;
                         }}
-                        IsIncreaseFromStart={false}
-                        BottomViewHeight={scale(400)}
-                        heightIncreased={height * 6 / 7}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={scale(400)}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                        EnablePull={false}
+                        EnablePull={true}
                     >
                         <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
                         <View style={{ flex: 1, marginTop: scale(10) }}>
                             <WaitingDriverScreen
+                                isInCreaseHeight={isInCreaseHeight}
                                 onNavigationBack={this.onNavigationBack}
                             />
 
@@ -635,18 +703,19 @@ class CreateTripScreen extends Component {
                         ref={e => {
                             this.BottomView = e;
                         }}
-                        IsIncreaseFromStart={false}
-                        BottomViewHeight={scale(400)}
-                        heightIncreased={height * 6 / 7}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={scale(400)}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                        EnablePull={false}
+                        EnablePull={true}
                     >
                         <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
                         <View style={{ flex: 1, marginTop: scale(10) }}>
                             <UserCancelBooking
+                                isInCreaseHeight={isInCreaseHeight}
                                 onNavigationBack={this.onNavigationBack}
                             />
 
@@ -656,18 +725,19 @@ class CreateTripScreen extends Component {
                         ref={e => {
                             this.BottomView = e;
                         }}
-                        IsIncreaseFromStart={false}
-                        BottomViewHeight={height * 6 / 7}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
                         heightIncreased={height * 6 / 7}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                        EnablePull={false}
+                        EnablePull={true}
                     >
                         <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
                         <View style={{ flex: 1, marginTop: scale(10) }}>
                             <BookingProcessing
+                                isInCreaseHeight={isInCreaseHeight}
                                 onNavigationBack={this.onNavigationBack}
                             />
 
