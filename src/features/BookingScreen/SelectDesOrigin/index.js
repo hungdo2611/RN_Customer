@@ -472,7 +472,7 @@ class SelectDesOrigin extends React.Component {
                                 ref={e => this.inPutDiemDon = e}
                                 onFocus={() => {
                                     const text = data_diem_don?.address?.label ? data_diem_don?.address?.label : ''
-                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.ORIGIN, text_temp: text });
+                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.ORIGIN, text_temp: text, data_diem_don: null });
                                     if (select_origin_or_des == CONSTANT_SELECT.DES) {
                                         this.setState({ dataAutoComplete: null, isloading: false })
                                     }
@@ -490,12 +490,12 @@ class SelectDesOrigin extends React.Component {
                                 onFocus={() => {
 
                                     const text = data_diem_den?.address?.label ? data_diem_den?.address?.label : ''
-                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.DES, text_temp: text });
+                                    this.setState({ select_origin_or_des: CONSTANT_SELECT.DES, text_temp: text, data_diem_den: null });
                                     if (select_origin_or_des == CONSTANT_SELECT.ORIGIN) {
                                         this.setState({ dataAutoComplete: null, isloading: false })
                                     }
                                 }}
-                                value={data_diem_den?.address?.label ? data_diem_den?.address?.label : (select_origin_or_des == CONSTANT_SELECT.DES ? text_temp : '')}
+                                value={select_origin_or_des == CONSTANT_SELECT.DES ? text_temp : (data_diem_den?.address?.label ? data_diem_den?.address?.label : '')}
                                 onChangeText={txt => this.onChangeAutoComplete(txt, false)}
                                 style={{ flex: 1 }}
                                 blurOnSubmit={true}

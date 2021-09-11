@@ -50,6 +50,8 @@ import { decode } from '../../ultis/polyline'
 import { constant_type_status_booking } from './constant'
 import UserCancelBooking from './UserCancelBooking';
 import BookingProcessing from './BookingProcessing';
+import BookingFinish from './BookingFinish';
+import WaitingPickup from './WaitingPickup';
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
@@ -126,7 +128,9 @@ class CreateTripScreen extends Component {
             diem_don: null,
             diem_den: null,
             routeAPI: [],
-            EnablePull: true
+            EnablePull: true,
+            appState: AppState.currentState
+
         };
         Navigation.events().bindComponent(this);
 
@@ -223,7 +227,7 @@ class CreateTripScreen extends Component {
             this.map.fitToCoordinates(newRoute, {
                 edgePadding: {
                     right: 20,
-                    bottom: height / 4,
+                    bottom: height / 4 + 200,
                     left: 20,
                     top: 20,
                 }
@@ -240,26 +244,34 @@ class CreateTripScreen extends Component {
         AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
-    _handleAppStateChange = () => {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
-        Geolocation.getCurrentPosition(
-            position => {
-                console.log(position);
-                this.setState({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    coordinate: new AnimatedRegion({
+    _handleAppStateChange = (nextAppState) => {
+        if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+            console.log('App has come to the foreground!')
+            BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+            const { getCurrentBooking } = this.props;
+            getCurrentBooking();
+            Geolocation.getCurrentPosition(
+                position => {
+                    console.log(position);
+                    this.setState({
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA,
-                    }),
-                });
-            },
-            error => console.log('error', error),
-            { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
-        );
+                        coordinate: new AnimatedRegion({
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            latitudeDelta: LATITUDE_DELTA,
+                            longitudeDelta: LONGITUDE_DELTA,
+                        }),
+                    });
+                },
+                error => console.log('error', error),
+                { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
+            );
+
+        }
+        this.setState({ appState: nextAppState });
+
+
     };
 
     handleBackPress = () => true;
@@ -413,6 +425,10 @@ class CreateTripScreen extends Component {
 
     };
     onNavigationBack = () => {
+        const { currentBooking, updateCurrentBooking } = this.props;
+        if (currentBooking && (currentBooking.status === constant_type_status_booking.USER_CANCEL || currentBooking.status === constant_type_status_booking.END)) {
+            updateCurrentBooking(null);
+        }
         Navigation.pop(this.props.componentId)
     }
     onCancelPick = () => {
@@ -440,9 +456,12 @@ class CreateTripScreen extends Component {
     }
     getCoordTo = () => {
         const { currentBooking } = this.props;
+        console.log("currentBooking", currentBooking)
         const { lst_polyline, diem_don, diem_den, latitude, longitude } = this.state;
         if (!currentBooking) {
-            return { latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }
+            if (diem_den) {
+                return { latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }
+            }
         } else {
             return { latitude: currentBooking.to.loc.coordinates[1], longitude: currentBooking.to.loc.coordinates[0] }
         }
@@ -739,6 +758,56 @@ class CreateTripScreen extends Component {
                             <BookingProcessing
                                 isInCreaseHeight={isInCreaseHeight}
                                 onNavigationBack={this.onNavigationBack}
+                                inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+
+                            />
+
+                        </View>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.END && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={scale(400)}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={true}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <BookingFinish
+                                isInCreaseHeight={isInCreaseHeight}
+                                onNavigationBack={this.onNavigationBack}
+                                inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+
+                            />
+
+                        </View>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.WAITING_DRIVER && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={true}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <WaitingPickup
+                                isInCreaseHeight={isInCreaseHeight}
+                                onNavigationBack={this.onNavigationBack}
+                                inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+
                             />
 
                         </View>
@@ -768,6 +837,13 @@ function mapDispatchToProps(dispatch) {
         getRouteDone: (data) => {
             dispatch(actions.action.getRouteDone(data));
         },
+        getCurrentBooking: () => {
+            dispatch(actions.action.getCurrentBooking());
+        },
+        updateCurrentBooking: (dt) => {
+            dispatch(actions.action.updateCurrentBooking(dt));
+        },
+
         dispatch,
     };
 }

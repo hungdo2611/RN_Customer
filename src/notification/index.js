@@ -5,6 +5,9 @@ import { registerDeviceToken } from '../api/loginApi'
 import PushNotification, { Importance } from 'react-native-push-notification';
 import handleNoti from './handleNoti'
 import { Navigation } from "react-native-navigation";
+import store from '../redux/store'
+import actionsBooking from '../features/BookingScreen/redux/actions'
+import { constant_type_notify } from './handleNoti'
 class NotificationProcessor {
     async checkTokenRefresh() {
         messaging().onTokenRefresh(token => {
@@ -107,6 +110,9 @@ class NotificationProcessor {
         });
         messaging().onMessage(async remoteMessage => {
             console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+            if (remoteMessage.data.type == constant_type_notify.DRIVER_ACEEPT_BOOKING) {
+                store.dispatch(actionsBooking.action.getCurrentBooking())
+            }
 
             PushNotification.localNotification({
                 message: remoteMessage.notification.body,

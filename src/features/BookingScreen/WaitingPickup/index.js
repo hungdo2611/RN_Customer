@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     RefreshControl,
     Dimensions,
-    Linking,
+    TextInput,
     KeyboardAvoidingView,
     FlatList,
     Keyboard,
@@ -26,7 +26,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { scale } from '../../../ultis/scale'
-import { finishBookingAPI } from '../../../api/bookingApi'
+import { cancelBookingAPI } from '../../../api/bookingApi'
 import { color } from '../../../constant/color'
 import moment from 'moment'
 import _ from 'lodash';
@@ -35,7 +35,7 @@ import Modal from "react-native-modal";
 
 const { width, height } = Dimensions.get('window')
 
-class BookingProcessing extends React.Component {
+class WaitingPickup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -308,7 +308,7 @@ class BookingProcessing extends React.Component {
                         <View style={{ flex: 1 }}>
                             <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                                 <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Tài xế đã nhận chuyến</Text>
+                                    <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Chờ tài xế</Text>
 
                                 </View>
 
@@ -331,14 +331,13 @@ class BookingProcessing extends React.Component {
                         </View>
 
                     </KeyboardAwareScrollView>
-                    <View style={{ flexDirection: 'row', height: scale(40), width: width, marginBottom: scale(15) }}>
-                        <TouchableOpacity onPress={() => this.onBack()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>
-                            <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.onFinishBooking()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>
-                            <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Kết thúc chuyến</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            onNavigationBack();
+                        }}
+                        style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginBottom: scale(15) }}>
+                        <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
+                    </TouchableOpacity>
 
                 </View >
             )
@@ -353,7 +352,7 @@ class BookingProcessing extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Tài xế đã nhận chuyến</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Chờ tài xế</Text>
 
                         </View>
 
@@ -394,5 +393,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
-)(BookingProcessing);
+)(WaitingPickup);
 

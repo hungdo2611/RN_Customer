@@ -32,3 +32,9 @@ export const getCurrentBookingAPI = () => {
         method: 'GET',
     })
 }
+export const finishBookingAPI = (booking_id) => {
+    return api.makeAuthRequest({
+        url: `/booking/finish/${booking_id}`,
+        method: 'POST',
+    })
+}
