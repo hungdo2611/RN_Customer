@@ -24,7 +24,7 @@ import { color } from '../../constant/color'
 
 import _ from 'lodash';
 import { StackActions } from '@react-navigation/native';
-import { pushToBookingScreen } from '../../NavigationController'
+import { pushToBookingScreen, pushToBookingHybirdScreen, pushToDeliveryScreen } from '../../NavigationController'
 
 const { width, height } = Dimensions.get('window')
 
@@ -38,6 +38,15 @@ export default class MainView extends React.Component {
     onClickXeKhach = () => {
         const { componentId } = this.props;
         pushToBookingScreen(componentId)
+    }
+    onHybirdCar = () => {
+        const { componentId } = this.props;
+        pushToBookingHybirdScreen(componentId)
+    }
+    onDelivery = () => {
+        const { componentId } = this.props;
+
+        pushToDeliveryScreen(componentId)
     }
 
     render() {
@@ -65,16 +74,16 @@ export default class MainView extends React.Component {
                     <View style={{ flexDirection: 'row', marginTop: scale(20) }}>
 
                         <TouchableOpacity onPress={this.onClickXeKhach} activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
-                            <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe Khách</Text>
+                            <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe tuyến cố định</Text>
                             <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 10, right: 10 }} source={require('./res/ic_bus.png')} />
 
                         </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                        <TouchableOpacity onPress={this.onHybirdCar} activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
                             <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Xe tiện chuyến</Text>
                             <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_tienchuyen.png')} />
 
                         </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
+                        <TouchableOpacity onPress={this.onDelivery} activeOpacity={0.6} style={{ width: widthBox, height: widthBox, margin: 5, backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10) }}>
                             <Text style={{ fontSize: scale(13), fontWeight: 'bold', padding: scale(10) }}>Gửi hàng</Text>
                             <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_shipping.png')} />
 

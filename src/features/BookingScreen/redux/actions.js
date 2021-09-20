@@ -5,26 +5,11 @@ const type = {
     GET_LIST_DRIVER_DONE: prefix + "GET_LIST_DRIVER_DONE",
     GET_ROUTE: prefix + "GET_ROUTE",
     GET_ROUTE_DONE: prefix + "GET_ROUTE_DONE",
-    UPDATE_CURRENT_BOOKING: prefix + "UPDATE_CURRENT_BOOKING",
-    GET_CURRENT_BOOKING: prefix + "GET_CURRENT_BOOKING",
 
 };
 
 const action = {
-    getCurrentBooking: () => {
-        return {
-            type: type.GET_CURRENT_BOOKING,
-            payload: {}
 
-        }
-    },
-    updateCurrentBooking: (data) => {
-        return {
-            type: type.UPDATE_CURRENT_BOOKING,
-            payload: { data }
-
-        }
-    },
     getListDriver: () => {
         return {
             type: type.GET_LIST_DRIVER,

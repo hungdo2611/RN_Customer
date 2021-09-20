@@ -32,6 +32,7 @@ import moment from 'moment'
 import _ from 'lodash';
 import actions from '../redux/actions'
 import Modal from "react-native-modal";
+import actionsHome from '../../HomeScreen/redux/actions'
 
 const { width, height } = Dimensions.get('window')
 
@@ -213,7 +214,7 @@ class WaitingPickup extends React.Component {
     renderInfoDriver = () => {
         const { currentBooking } = this.props;
         const userInfo = currentBooking.driver_id;
-        return <View style={{ marginHorizontal: scale(10) }}>
+        return <View style={{ marginHorizontal: scale(10), marginBottom: scale(5) }}>
             <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginVertical: scale(5) }}>Thông tin nhà xe</Text>
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -308,7 +309,7 @@ class WaitingPickup extends React.Component {
                         <View style={{ flex: 1 }}>
                             <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                                 <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Chờ tài xế</Text>
+                                    <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định - Chờ tài xế</Text>
 
                                 </View>
 
@@ -352,7 +353,7 @@ class WaitingPickup extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Chờ tài xế</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định - Chờ tài xế</Text>
 
                         </View>
 
@@ -376,14 +377,14 @@ class WaitingPickup extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        currentBooking: state.SelectDesOriginReducer.currentBooking,
+        currentBooking: state.HomeReducer.currentBooking
 
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         updateCurrentBooking: (dt) => {
-            dispatch(actions.action.updateCurrentBooking(dt));
+            dispatch(actionsHome.action.updateCurrentBooking(dt));
         },
 
         dispatch,

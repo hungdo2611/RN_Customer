@@ -115,6 +115,44 @@ export function pushToBookingScreen(componentId, props) {
         },
     });
 }
+export function pushToBookingHybirdScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.BOOKING_HYBIRD_SCREEN}_id`,
+            name: constant_name.BOOKING_HYBIRD_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
+export function pushToDeliveryScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.DELIVERY_SCREEN}_id`,
+            name: constant_name.DELIVERY_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function setRootToHome() {
     Navigation.setRoot({
         root: {

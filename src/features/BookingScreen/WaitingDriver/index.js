@@ -30,7 +30,7 @@ import { cancelBookingAPI } from '../../../api/bookingApi'
 import { color } from '../../../constant/color'
 import moment from 'moment'
 import _ from 'lodash';
-import actions from '../redux/actions'
+import actionsHome from '../../HomeScreen/redux/actions'
 import Modal from "react-native-modal";
 
 const { width, height } = Dimensions.get('window')
@@ -223,7 +223,7 @@ class WaitingDriverScreen extends React.Component {
                         showsVerticalScrollIndicator={false}>
                         <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                             <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Đang tìm xe</Text>
+                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định - Đang tìm xe</Text>
 
                             </View>
 
@@ -308,7 +308,7 @@ class WaitingDriverScreen extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Đang tìm xe</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định - Đang tìm xe</Text>
 
                         </View>
 
@@ -331,14 +331,14 @@ class WaitingDriverScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        currentBooking: state.SelectDesOriginReducer.currentBooking,
+        currentBooking: state.HomeReducer.currentBooking
 
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         updateCurrentBooking: (dt) => {
-            dispatch(actions.action.updateCurrentBooking(dt));
+            dispatch(actionsHome.action.updateCurrentBooking(dt));
         },
 
         dispatch,

@@ -30,8 +30,7 @@ import { cancelBookingAPI } from '../../../api/bookingApi'
 import { color } from '../../../constant/color'
 import moment from 'moment'
 import _ from 'lodash';
-import actions from '../redux/actions'
-import Modal from "react-native-modal";
+import actionsHome from '../../HomeScreen/redux/actions'
 
 const { width, height } = Dimensions.get('window')
 
@@ -207,7 +206,7 @@ class BookingFinish extends React.Component {
                         showsVerticalScrollIndicator={false}>
                         <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                             <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Đã kết thúc</Text>
+                                <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định - Đã kết thúc</Text>
 
                             </View>
 
@@ -239,7 +238,7 @@ class BookingFinish extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách - Đã kết thúc</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định - Đã kết thúc</Text>
 
                         </View>
 
@@ -261,14 +260,14 @@ class BookingFinish extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        currentBooking: state.SelectDesOriginReducer.currentBooking,
+        currentBooking: state.HomeReducer.currentBooking,
 
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         updateCurrentBooking: (dt) => {
-            dispatch(actions.action.updateCurrentBooking(dt));
+            dispatch(actionsHome.action.updateCurrentBooking(dt));
         },
 
         dispatch,

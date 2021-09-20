@@ -52,6 +52,10 @@ import UserCancelBooking from './UserCancelBooking';
 import BookingProcessing from './BookingProcessing';
 import BookingFinish from './BookingFinish';
 import WaitingPickup from './WaitingPickup';
+import { instanceData, disable_help_coach } from '../../model';
+import Tooltip from 'react-native-walkthrough-tooltip';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import actionsHome from '../HomeScreen/redux/actions'
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
@@ -129,8 +133,8 @@ class CreateTripScreen extends Component {
             diem_den: null,
             routeAPI: [],
             EnablePull: true,
-            appState: AppState.currentState
-
+            appState: AppState.currentState,
+            show_help: instanceData.show_help.coach
         };
         Navigation.events().bindComponent(this);
 
@@ -147,7 +151,7 @@ class CreateTripScreen extends Component {
 
     componentDidMount() {
 
-
+        disable_help_coach({ ...instanceData.show_help, coach: false })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         AppState.addEventListener('change', this._handleAppStateChange);
         Permissions.check('location').then(response => {
@@ -547,7 +551,7 @@ class CreateTripScreen extends Component {
                         />}
                         {lst_polyline.length > 0 && <Marker
                             pinColor={color.GREEN_COLOR_400}
-                            title="Điểm bắt đầu"
+                            title="Vị trí của bạn"
                             coordinate={this.getCoordFrom()}
                         />}
                         {lst_polyline.length > 0 && <Marker
@@ -607,6 +611,45 @@ class CreateTripScreen extends Component {
                                 }}
                             />
                         </TouchableOpacity>
+                        <Tooltip
+                            isVisible={this.state.show_help}
+                            content={<View style={{ width: width - scale(50), paddingHorizontal: scale(10) }}>
+                                <Text style={{ fontSize: scale(18), fontWeight: 'bold', color: color.RED_300 }}>Tìm Xe tuyến cố định</Text>
+                                <Text style={{ fontSize: scale(14), fontWeight: "500", color: color.GRAY_COLOR_400, paddingTop: scale(10) }}>
+                                    Chúng tôi sẽ tìm những chuyến Xe tuyến cố định có lộ trình đi qua gần chỗ của bạn. Hệ thống sẽ gợi ý một điểm đón. Hãy đi chuyển qua vị trí đó để lên xe nhé
+                                </Text>
+                                <TouchableOpacity onPress={() => this.setState({ show_help: false })} style={{ backgroundColor: color.ORANGE_COLOR_400, width: scale(200), height: scale(35), borderRadius: scale(15), alignSelf: 'center', alignItems: "center", justifyContent: "center", marginTop: scale(20), marginBottom: scale(10) }}>
+                                    <Text style={{ color: '#FFFFFF', fontWeight: "600", fontSize: scale(17) }}>Đã hiểu</Text>
+                                </TouchableOpacity>
+                            </View>}
+                            placement="bottom"
+                            closeOnChildInteraction={false}
+                            onClose={() => this.setState({ show_help: false })}
+                        >
+                            <TouchableOpacity
+                                style={{
+                                    marginRight: 10,
+                                    height: scale(36),
+                                    width: scale(36),
+                                    borderRadius: scale(18),
+                                    backgroundColor: 'white',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            // onPress={this.onNavigationBack}
+                            >
+                                <MaterialCommunityIcons
+                                    onPress={() => this.setState({ show_help: !this.state.show_help })}
+                                    name='help'
+                                    size={scale(20)}
+                                    color={color.ORANGE_COLOR_400}
+                                    containerStyle={{
+
+                                    }}
+                                />
+                            </TouchableOpacity>
+
+                        </Tooltip>
                     </View>
                     <View style={{ position: 'absolute', right: 10, bottom: scale(height / 3) + 20, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity
@@ -812,7 +855,9 @@ class CreateTripScreen extends Component {
 
                         </View>
                     </BottomTab>}
+
                 </View>
+
             </View >
         );
     }
@@ -822,7 +867,7 @@ class CreateTripScreen extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        currentBooking: state.SelectDesOriginReducer.currentBooking
+        currentBooking: state.HomeReducer.currentBooking
 
     }
 }
@@ -838,10 +883,10 @@ function mapDispatchToProps(dispatch) {
             dispatch(actions.action.getRouteDone(data));
         },
         getCurrentBooking: () => {
-            dispatch(actions.action.getCurrentBooking());
+            dispatch(actionsHome.action.getCurrentBooking());
         },
         updateCurrentBooking: (dt) => {
-            dispatch(actions.action.updateCurrentBooking(dt));
+            dispatch(actionsHome.action.updateCurrentBooking(dt));
         },
 
         dispatch,

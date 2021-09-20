@@ -1,5 +1,4 @@
-import BookingSaga from '../features/BookingScreen/redux/sagas'
-
+import HomeSaga from '../features/HomeScreen/redux/sagas'
 export default [
-    BookingSaga
+    HomeSaga
 ];

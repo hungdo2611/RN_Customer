@@ -2,19 +2,32 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import notificationProcessor from '../notification'
 import store from '../redux/store'
-import actionsBooking from '../features/BookingScreen/redux/actions'
+import actionsHome from '../features/HomeScreen/redux/actions'
 const constant_key = {
-    USER_INFO: 'USER_INFO'
+    USER_INFO: 'USER_INFO',
+    SHOW_HELP: 'SHOW_HELP',
 }
 const getPreData = async () => {
-    store.dispatch(actionsBooking.action.getCurrentBooking())
-
+    store.dispatch(actionsHome.action.getCurrentBooking())
+    AsyncStorage.getItem(constant_key.SHOW_HELP).then(value => {
+        if (value) {
+            instanceData.show_help = JSON.parse(value);
+        }
+    })
 
 }
+export const disable_help_coach = async (dt) => {
+    AsyncStorage.setItem(constant_key.SHOW_HELP, JSON.stringify(dt))
+}
+
 export let instanceData = {
     token: '',
     user_info: null,
-    current_component_id: ''
+    current_component_id: '',
+    show_help: {
+        coach: true,
+        hybird: true
+    },
 }
 export const setToken = (token) => {
     instanceData.token = token;

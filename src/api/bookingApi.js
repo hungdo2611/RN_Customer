@@ -18,6 +18,14 @@ export const getListDriverAPI = (body) => {
         data: body
     })
 }
+export const getListDriverDeliveryAPI = (body) => {
+
+    return api.makeAuthRequest({
+        url: `/booking/finding/driver_delivery`,
+        method: 'POST',
+        data: body
+    })
+}
 export const cancelBookingAPI = (body) => {
     return api.makeAuthRequest({
         url: `/booking/cancel`,

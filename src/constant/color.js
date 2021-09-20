@@ -1,6 +1,7 @@
 export const color = {
     MAIN_COLOR: '#00C0B3',
     RED_COLOR: '#ff001e',
+    RED_300: '#E85C4A',
     GRAY_COLOR: '#8A8A8F',
     GRAY_COLOR_50: '#F6F6F6',
     GRAY_COLOR_100: '#F6F6F6',
@@ -8,7 +9,7 @@ export const color = {
     GRAY_COLOR_400: '#AFAFAF',
     GRAY_COLOR_500: '#757575',
     ORANGE_COLOR_400: '#FF6937',
-    GREEN_COLOR_100:'#ADDEC9',
+    GREEN_COLOR_100: '#ADDEC9',
     GREEN_COLOR_300: '#06c167',
     GREEN_COLOR_400: '#05944F',
     GREEN_COLOR_500: '#03703C',

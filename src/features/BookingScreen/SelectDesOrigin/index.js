@@ -37,6 +37,7 @@ import { color } from '../../../constant/color'
 import { getListDriverAPI } from '../../../api/bookingApi'
 import _ from 'lodash';
 import actions from '../redux/actions'
+import { CONSTANT_TYPE_JOURNEYS } from '../../../constant';
 const { width, height } = Dimensions.get('window')
 const CONSTANT_SELECT = {
     NONE: 'NONE',
@@ -120,6 +121,7 @@ class SelectDesOrigin extends React.Component {
                 lat: data_diem_den.displayPosition.latitude,
                 lng: data_diem_den.displayPosition.longitude,
             },
+            journey_type: CONSTANT_TYPE_JOURNEYS.COACH_CAR
         };
         let reqGetDriver = await getListDriverAPI(body_booking);
         console.log("reqGetDriver", reqGetDriver)
@@ -256,7 +258,7 @@ class SelectDesOrigin extends React.Component {
                     <Image resizeMode="stretch" style={{ width: scale(100), height: scale(70), borderRadius: scale(20), overflow: "hidden", }} source={require('../res/ic_letgo.jpg')} />
                     <View style={{ flex: 1, marginLeft: scale(10) }}>
                         <Text style={{ fontSize: scale(13), fontWeight: '600' }}>Đặt xe ngay nhé!</Text>
-                        <Text style={{ fontSize: scale(12), fontWeight: '400', marginTop: scale(5) }}>Tìm chuyến đi phù hợp. Chủ động lựa chọn nhà xe</Text>
+                        <Text style={{ fontSize: scale(12), fontWeight: '500', marginTop: scale(5) }}>Tìm chuyến đi phù hợp. Chủ động lựa chọn nhà xe</Text>
                     </View>
                 </View>
             </View>
@@ -386,7 +388,7 @@ class SelectDesOrigin extends React.Component {
                 <Image resizeMode="stretch" style={{ width: scale(100), height: scale(70), borderRadius: scale(20), overflow: "hidden", }} source={require('../res/ic_letgo.jpg')} />
                 <View style={{ flex: 1, marginLeft: scale(10) }}>
                     <Text style={{ fontSize: scale(13), fontWeight: '600' }}>Đặt xe ngay nhé!</Text>
-                    <Text style={{ fontSize: scale(12), fontWeight: '400', marginTop: scale(5) }}>Tìm chuyến đi phù hợp. Chủ động lựa chọn nhà xe</Text>
+                    <Text style={{ fontSize: scale(12), fontWeight: '500', marginTop: scale(5) }}>Tìm chuyến đi phù hợp. Chủ động lựa chọn nhà xe</Text>
                 </View>
             </View>
         }
@@ -560,7 +562,7 @@ class SelectDesOrigin extends React.Component {
                     behavior={Platform.OS == 'ios' ? 'padding' : ''}>
                     <View style={{ marginBottom: scale(10) }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định</Text>
 
                         </View>
                         <View style={{ width: width, height: 0.8, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, marginTop: scale(8) }} />

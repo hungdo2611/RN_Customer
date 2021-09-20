@@ -40,7 +40,9 @@ import _ from 'lodash';
 import FastImage from 'react-native-fast-image'
 import ChooseAppointmentTimeModal from '../../../component/PickTime/ChooseAppointmentTime'
 import ChooseAppointmentDateModal from '../../../component/PickTime/ChooseAppointmentDate'
-import actions from '../redux/actions'
+import actionsHome from '../../HomeScreen/redux/actions'
+import { CONSTANT_TYPE_BOOKING } from '../../../constant';
+
 const { width, height } = Dimensions.get('window')
 
 class AdditionalInfo extends React.Component {
@@ -356,6 +358,7 @@ class AdditionalInfo extends React.Component {
                                     min_price: minPrice,
                                 },
                                 line_string: line_string,
+                                booking_type: CONSTANT_TYPE_BOOKING.COACH_CAR
 
                             }
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
@@ -386,6 +389,7 @@ class AdditionalInfo extends React.Component {
                                     min_price: minPrice,
                                 },
                                 line_string: line_string,
+                                booking_type: CONSTANT_TYPE_BOOKING.COACH_CAR
 
 
                             }
@@ -472,7 +476,7 @@ class AdditionalInfo extends React.Component {
                                     color="black"
                                 />
                             </TouchableOpacity>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe Khách</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định</Text>
 
                         </View>
                         <TouchableOpacity
@@ -573,15 +577,15 @@ class AdditionalInfo extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        isLoading_getListDriver: state.SelectDesOriginReducer.isLoading,
-        lstDriver: state.SelectDesOriginReducer.lstDriver,
-        distance: state.SelectDesOriginReducer.distance,
+        isLoading_getListDriver: state.BookingReducer.isLoading,
+        lstDriver: state.BookingReducer.lstDriver,
+        distance: state.BookingReducer.distance,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         updateCurrentBooking: (dt) => {
-            dispatch(actions.action.updateCurrentBooking(dt));
+            dispatch(actionsHome.action.updateCurrentBooking(dt));
         },
 
         dispatch,
