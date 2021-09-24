@@ -152,7 +152,7 @@ class CreateTripScreen extends Component {
 
     componentDidMount() {
 
-        disable_help_coach({ ...instanceData.show_help, hybird: false })
+        disable_help_coach({ ...instanceData.show_help, coach: false })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         AppState.addEventListener('change', this._handleAppStateChange);
         Permissions.check('location').then(response => {

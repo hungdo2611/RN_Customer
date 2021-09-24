@@ -50,8 +50,10 @@ class WaitingDriverScreen extends React.Component {
             isCancel: false,
             message: '',
             isloading: false,
-            isShowOrderInfo: false
+            isShowOrderInfo: false,
+            isErrApi: false
         }
+        this.bookingNew = null;
     }
     componentDidMount() {
 
@@ -241,14 +243,16 @@ class WaitingDriverScreen extends React.Component {
             reason: reason
         }
         let requestCancel = await cancelBookingAPI(body)
-        this.setState({ isloading: false, isShowModal: false })
+        this.setState({ isloading: false })
 
         if (!requestCancel.err) {
-            this.setState({ isCancel: true, message: 'Huỷ đơn hàng thành công' })
+            this.setState({ isCancel: true, message: 'Huỷ đơn hàng thành công', isErrApi: false })
             updateCurrentBooking(requestCancel.data)
         } else {
-            this.setState({ isCancel: true, message: 'Đã có lỗi xảy ra. Vui lòng thử lại sau' })
-
+            this.setState({ isCancel: true, message: requestCancel.message, isErrApi: true })
+            if (requestCancel.data) {
+                this.bookingNew = requestCancel.data;
+            }
         }
         console.log("requestCancel", requestCancel)
     }
@@ -328,18 +332,21 @@ class WaitingDriverScreen extends React.Component {
                         </View>}
                         {this.state.isCancel && <View style={{ width: width - scale(40), height: scale(170), backgroundColor: '#FFFFFF', alignSelf: "center", borderRadius: scale(10), alignItems: "center" }}>
                             <MaterialCommunityIcons
-                                name='check-circle'
+                                name={this.state.isErrApi ? 'cancel' : 'check-circle'}
                                 size={scale(42)}
-                                color={color.GREEN_COLOR_300}
+                                color={this.state.isErrApi ? color.RED_COLOR : color.GREEN_COLOR_300}
                                 style={{ marginTop: scale(10) }}
                             />
                             <Text style={{ fontSize: scale(17), fontWeight: '600', marginTop: scale(10) }}>{this.state.message}</Text>
                             <TouchableOpacity
                                 onPress={() => {
-                                    onNavigationBack();
+                                    if (this.state.isErrApi) {
+                                        this.props.updateCurrentBooking(this.bookingNew)
+                                    }
+                                    this.setState({ isShowModal: false })
                                 }}
-                                style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_300, borderRadius: scale(15), alignSelf: "center", marginTop: scale(20) }}>
-                                <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
+                                style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: this.state.isErrApi ? color.RED_COLOR : color.GREEN_COLOR_300, borderRadius: scale(15), alignSelf: "center", marginTop: scale(20) }}>
+                                <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Ok</Text>
                             </TouchableOpacity>
                         </View>}
                     </Modal>
