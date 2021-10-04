@@ -41,6 +41,7 @@ export const setLocalData = async (data) => {
         instanceData.token = JSON.parse(data).token;
     }
     await AsyncStorage.setItem(constant_key.USER_INFO, data)
+    getPreData();
     notificationProcessor.checkPermission();
 
 }

@@ -23,7 +23,7 @@ if (Platform.OS === 'android') {
         statusBar: {
             drawBehind: true,
             style: 'dark',
-            backgroundColor: 'rgba(0,0,0,0)'
+            // backgroundColor: 'rgba(0,0,0,0)'
 
         },
         animations: {

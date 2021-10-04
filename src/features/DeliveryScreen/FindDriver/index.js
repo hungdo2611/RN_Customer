@@ -274,7 +274,7 @@ class FindDriver extends React.Component {
                             style={{ width: scale(20), height: scale(20), marginRight: scale(5) }}
                             onValueChange={(newValue) => {
                                 if (newValue) {
-                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price: driver.price }]
+                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price: driver.price, driver_id: driver.driver_id._id }]
                                     this.setState({ lst_select: newArr })
                                 } else {
                                     let newArr = lst_select.filter(vl => vl.journey_id !== driver.journey_id)
@@ -304,6 +304,7 @@ class FindDriver extends React.Component {
         const { data_diem_don, data_diem_den, infoOrder } = this.props?.route?.params;
         const { coord, distance, line_string } = this.props;
         const lst_token = lst_select.map(vl => vl.value)
+        const list_driverId = lst_select.map(vl => vl.driver_id)
 
         let maxPrice = 0;
         let minPrice = 0;
@@ -370,6 +371,7 @@ class FindDriver extends React.Component {
                                 time_start: moment(`${day_select} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
                                 seat: seat,
                                 lst_devicetoken: lst_token,
+                                list_driverId: list_driverId,
                                 range_price: {
                                     max_price: maxPrice,
                                     min_price: minPrice,
@@ -386,7 +388,7 @@ class FindDriver extends React.Component {
 
                             }
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
-                            console.log("bodyRequest",bodyRequest)
+                            console.log("bodyRequest", bodyRequest)
                             this.setState({ isloading: false })
 
                             if (reqCreateBooking.err == false) {
@@ -424,6 +426,7 @@ class FindDriver extends React.Component {
                                 time_start: moment(`${day_select} ${fromTime}`, 'DD/MM/YYYY HH:mm').unix(),
                                 seat: seat,
                                 lst_devicetoken: lst_token,
+                                list_driverId: list_driverId,
                                 range_price: {
                                     max_price: maxPrice,
                                     min_price: minPrice,
