@@ -75,6 +75,9 @@ class AdditionalInfo extends React.Component {
         const { navigation, onBack } = this.props;
         navigation.pop();
         onBack();
+        const { onbackCB } = this.props?.route?.params;
+        onbackCB();
+
     }
     onPressCamera = () => {
         request(

@@ -69,6 +69,30 @@ class SelectDesOrigin extends React.Component {
     componentDidMount() {
         console.log("componentDidMount")
         const { isInCreaseHeight } = this.props;
+        const { from, to } = this.props
+        if (from && to) {
+            const diem_den = {
+                displayPosition: {
+                    latitude: to?.loc?.coordinates[1],
+                    longitude: to?.loc?.coordinates[0]
+                },
+                address: {
+                    label: to.address
+                }
+            }
+            const diem_don = {
+                displayPosition: {
+                    latitude: from?.loc?.coordinates[1],
+                    longitude: from?.loc?.coordinates[0]
+                },
+                address: {
+                    label: from.address
+                }
+            }
+            this.setState({ data_diem_don: diem_don, data_diem_den: diem_den })
+            this.onComfirmDirection(diem_don, diem_den)
+            return
+        }
         if (isInCreaseHeight) {
             this.inPutDiemDen.focus();
         }
@@ -108,8 +132,16 @@ class SelectDesOrigin extends React.Component {
                 inCreaseHeight();
             }, 200)
         }
-        navigation.push("AdditionalInfo", { data_diem_don: data_diem_don, data_diem_den: data_diem_den });
-
+        navigation.push("AdditionalInfo", {
+            data_diem_don: data_diem_don,
+            data_diem_den: data_diem_den,
+            onbackCB: () => {
+                this.inPutDiemDen.focus();
+                if (!this.state.dataAutoComplete) {
+                    this.onChangeAutoComplete(this.state.data_diem_den?.address?.label, false)
+                }
+            }
+        });
 
         getListDriver();
         const body_booking = {

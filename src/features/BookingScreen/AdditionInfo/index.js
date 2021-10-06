@@ -69,8 +69,10 @@ class AdditionalInfo extends React.Component {
 
     onBack = () => {
         const { navigation, onBack } = this.props;
+        const { onbackCB } = this.props?.route?.params;
         navigation.pop();
         onBack();
+        onbackCB();
     }
 
     renderInfo = () => {

@@ -28,6 +28,10 @@ import { StackActions } from '@react-navigation/native';
 import { pushToBookingScreen, pushToBookingHybirdScreen, pushToDeliveryScreen } from '../../NavigationController'
 import Geolocation from 'react-native-geolocation-service';
 import { getNearJourneyAPI } from '../../api/bookingApi'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
+import { CONSTANT_TYPE_JOURNEYS } from '../../constant';
+import ActionSheet from 'react-native-actionsheet'
 
 const { width, height } = Dimensions.get('window')
 
@@ -37,7 +41,9 @@ export default class MainView extends React.Component {
         this.state = {
             location: null,
             isloadingNear: true,
+            near_journey: []
         };
+        this.crrNear = null
     }
     componentDidMount() {
         Permissions.check('location').then(response => {
@@ -87,6 +93,9 @@ export default class MainView extends React.Component {
     getNearJourney = async (location) => {
         console.log("location", location)
         const req = await getNearJourneyAPI(1, 5, { location: location });
+        if (!req.err) {
+            this.setState({ near_journey: [...req.data] })
+        }
         console.log("req", req)
     }
 
@@ -127,16 +136,124 @@ export default class MainView extends React.Component {
             </TouchableOpacity>
         </View>
     }
+    renderInfo = (from, to) => {
+        return <View style={{}}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    height: scale(80),
+                    justifyContent: "center",
+                    overflow: 'hidden',
+                }}
+            >
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <FontAwesomeIcon
+                        name='arrow-circle-up'
+                        size={scale(17)}
+                        color={color.GREEN_COLOR_300}
+                        containerStyle={{
+
+                        }}
+                    />
+                    <MaterialCommunityIcons
+                        name='dots-vertical'
+                        size={scale(14)}
+                        color={color.GRAY_COLOR_400}
+                        style={{ opacity: 0.6 }}
+                        containerStyle={{
+
+                        }}
+                    />
+                    <MaterialCommunityIcons
+                        name='record-circle'
+                        size={scale(20)}
+                        color={color.ORANGE_COLOR_400}
+                        containerStyle={{
+
+                        }}
+                    />
+                </View>
+                <View style={{ flex: 1, marginHorizontal: scale(10), paddingVertical: scale(5) }}>
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <Text style={{ fontSize: scale(13), fontWeight: '600' }}>{from.address}</Text>
+                    </View>
+                    <View style={{ height: 0.5, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400 }} />
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <Text style={{ fontSize: scale(13), fontWeight: '600' }}>{to.address}</Text>
+                    </View>
+
+                </View>
+            </View>
+
+
+        </View>
+    }
+    onSelectNearJourney = (data) => {
+        this.crrNear = data;
+        this.ActionSheet.show()
+    }
     renderNearJourney = () => {
-        return <View style={{ marginVertical: scale(10) }}>
-            <Text style={{ fontSize: scale(14), fontWeight: 'bold' }}>Chuyến xe gần bạn</Text>
+        const { near_journey } = this.state;
+        return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5) }}>
+            <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Hành trình gần bạn</Text>
+            {near_journey.map((vl, index) => {
+                return <TouchableOpacity
+                    onPress={() => this.onSelectNearJourney(vl)}
+                    style={{
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: scale(10),
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 5,
+                        },
+                        shadowOpacity: 0.36,
+                        shadowRadius: 6.68,
+
+                        elevation: 11,
+                        marginHorizontal: scale(5), marginVertical: scale(10),
+                        paddingHorizontal: scale(15)
+                    }} key={index}>
+                    <Text style={{ fontSize: scale(18), fontWeight: "600", paddingTop: scale(10), paddingBottom: scale(5) }}>{vl?.driver_id?.name}</Text>
+                    <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+                    {this.renderInfo(vl.from, vl.to)}
+                    <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
+                        <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Loại chuyến:</Text>
+                        <Text style={{ fontWeight: '500' }}>{vl.journey_type == CONSTANT_TYPE_JOURNEYS.COACH_CAR ? 'Xe tuyến cố định' : 'Xe tiện chuyến'}</Text>
+                    </View>
+                    <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
+                        <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Xem ngay</Text>
+                        <View
+                            style={{
+                                width: scale(28),
+                                height: scale(28),
+                                borderRadius: scale(14),
+                                backgroundColor: color.ORANGE_COLOR_400,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <MaterialCommunityIcons
+                                name='arrow-right'
+                                size={scale(18)}
+                                color="#FFFFFF"
+                            />
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            })}
+
+
         </View>
     }
 
     render() {
         const { isInCreaseHeight } = this.props;
         return (
-            <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20), marginHorizontal: scale(10) }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20), marginHorizontal: scale(10) }}>
                 <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(50), alignItems: 'center', flexDirection: "row" }}>
                     <Image style={{
                         height: scale(50),
@@ -152,12 +269,34 @@ export default class MainView extends React.Component {
                         <Text style={{ fontSize: scale(11), fontWeight: '600', marginHorizontal: scale(12) }}>Bản đồ</Text>
                     </View>
                 </View>
-                <ScrollView scrollEnabled={isInCreaseHeight} showsVerticalScrollIndicator={false}>
 
-                    {this.renderService()}
-                    {this.renderNearJourney()}
-                </ScrollView>
-            </View>
+                {this.renderService()}
+                {this.state.near_journey.length > 0 && this.renderNearJourney()}
+                <ActionSheet
+                    ref={o => this.ActionSheet = o}
+                    title={'Chọn dịch vụ ?'}
+                    options={['Gửi hàng', 'Đi xe', 'Huỷ']}
+                    cancelButtonIndex={2}
+                    // destructiveButtonIndex={2}
+                    onPress={(index) => {
+                        if (index == 0) {
+                            const { journey_type, from, to } = this.crrNear;
+
+                            //ffrom library
+                            pushToDeliveryScreen(this.props.componentId, { from: from, to: to })
+                        }
+                        if (index == 1) {
+                            //ffrom camera
+                            const { journey_type, from, to } = this.crrNear;
+                            if (journey_type == CONSTANT_TYPE_JOURNEYS.HYBIRD_CAR) {
+                                pushToBookingHybirdScreen(this.props.componentId)
+                            } else {
+                                pushToBookingScreen(this.props.componentId, { from: from, to: to })
+                            }
+                        }
+                    }}
+                />
+            </ScrollView>
         )
     }
 }

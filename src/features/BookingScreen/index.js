@@ -700,6 +700,8 @@ class CreateTripScreen extends Component {
                                         {props => <SelectDesOrigin
                                             setRef={(ref) => this.SelectDesOrigin = ref}
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
+                                            from={this.props.from}
+                                            to={this.props.to}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
                                             inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
                                             AnimateHeightTovalue={vl => this.BottomView.AnimateHeightToValue(vl)}

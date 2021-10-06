@@ -700,6 +700,8 @@ class CreateTripScreen extends Component {
                                     <Stack.Screen
                                         name="SelectDesOrigin">
                                         {props => <SelectDesOrigin
+                                            from={this.props.from}
+                                            to={this.props.to}
                                             setRef={(ref) => this.SelectDesOrigin = ref}
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
