@@ -46,3 +46,10 @@ export const finishBookingAPI = (booking_id) => {
         method: 'POST',
     })
 }
+export const getNearJourneyAPI = (page_number, page_size, body) => {
+    return api.makeAuthRequest({
+        url: `/booking/near/user?page_number=${page_number}&page_size=${page_size}`,
+        method: 'POST',
+        data: body
+    })
+}

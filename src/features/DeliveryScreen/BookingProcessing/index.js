@@ -319,7 +319,6 @@ class BookingProcessing extends React.Component {
                     <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Ảnh hàng hoá </Text>
                     <View style={{ flexDirection: 'row', alignItems: "center", borderRadius: scale(7), marginTop: scale(7) }}>
                         {orderInfo.lst_image && orderInfo.lst_image.map((img, index) => {
-                            console.log("img", img)
                             return <TouchableOpacity style={{}}>
                                 <FastImage
                                     source={{ uri: img }}
@@ -328,6 +327,8 @@ class BookingProcessing extends React.Component {
                             </TouchableOpacity>
 
                         })}
+                        {(!orderInfo.lst_image || orderInfo?.lst_image && orderInfo?.lst_image.length == 0) && <Text style={{ fontSize: scale(15), fontWeight: '600', marginTop: scale(4) }}>Không có ảnh</Text>}
+
                     </View>
                 </View>
             </View>

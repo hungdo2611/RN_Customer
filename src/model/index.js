@@ -11,13 +11,15 @@ const getPreData = async () => {
     store.dispatch(actionsHome.action.getCurrentBooking())
     AsyncStorage.getItem(constant_key.SHOW_HELP).then(value => {
         if (value) {
+            console.log('value data async', value)
             instanceData.show_help = JSON.parse(value);
         }
     })
 
 }
 export const disable_help_coach = async (dt) => {
-    AsyncStorage.setItem(constant_key.SHOW_HELP, JSON.stringify(dt))
+    AsyncStorage.setItem(constant_key.SHOW_HELP, JSON.stringify(dt));
+    instanceData.show_help = dt
 }
 
 export let instanceData = {
@@ -26,7 +28,8 @@ export let instanceData = {
     current_component_id: '',
     show_help: {
         coach: true,
-        hybird: true
+        hybird: true,
+        delivery: true
     },
 }
 export const setToken = (token) => {

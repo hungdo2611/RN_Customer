@@ -330,7 +330,7 @@ class AdditionalInfo extends React.Component {
                     style={{ marginHorizontal: scale(10), opacity: 0.7 }}
                 />
                 {!method_take && <Text style={{ fontSize: scale(14), fontWeight: '500', color: color.GRAY_COLOR_400 }}>Chọn cách thức lấy và giao hàng</Text>}
-                {method_take && <Text style={{ fontSize: scale(14), fontWeight: '500' }}> {method_take == CONSTANT_TYPE_BOOKING.COACH_DELIVERY_CAR ? 'Lấy và giao hàng tại điểm xe đi qua' : 'Lấy và giao hàng tại nhà'}</Text>}
+                {method_take && <Text style={{ fontSize: scale(14), fontWeight: '500' }}> {method_take == CONSTANT_TYPE_BOOKING.COACH_DELIVERY_CAR ? 'Lấy và giao hàng tại điểm xe đi qua' : 'Lấy và giao hàng tại điểm chỉ định'}</Text>}
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                     <FontAwesomeIcon
                         name='angle-down'
@@ -403,6 +403,7 @@ class AdditionalInfo extends React.Component {
                 <Text style={{ marginLeft: scale(10), fontSize: scale(14) }}>Thanh toán bằng tiền mặt</Text>
             </View>
             <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
+
         </View>
     }
     onShowImage = (index) => {
@@ -476,7 +477,7 @@ class AdditionalInfo extends React.Component {
 
         const data = [
             { key: index++, section: true, label: 'Cách thức nhà xe lấy và giao hàng' },
-            { key: index++, label: 'Lấy và giao hàng tại nhà', type: CONSTANT_TYPE_BOOKING.HYBIRD_DELIVERY_CAR },
+            { key: index++, label: 'Lấy và giao hàng điểm chỉ định', type: CONSTANT_TYPE_BOOKING.HYBIRD_DELIVERY_CAR },
             { key: index++, label: 'Lấy và giao hàng tại điểm xe đi qua', type: CONSTANT_TYPE_BOOKING.COACH_DELIVERY_CAR },
 
         ];
@@ -517,7 +518,7 @@ class AdditionalInfo extends React.Component {
                 <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
                 <KeyboardAwareScrollView
                     extraScrollHeight={scale(50)}
-                    extraHeight={100}
+                    extraHeight={scale(340)}
                     innerRef={ref => {
                         this.scroll = ref
                     }}
@@ -532,8 +533,8 @@ class AdditionalInfo extends React.Component {
                     {this.renderWeight()}
                     {this.renderMethodTake()}
                     {this.renderNote()}
-                    {this.renderImageOrder()}
                     {this.renderPayment()}
+                    {this.renderImageOrder()}
                     <View style={{ marginBottom: scale(30) }}></View>
 
                 </KeyboardAwareScrollView>
@@ -541,7 +542,7 @@ class AdditionalInfo extends React.Component {
                 <ActionSheet
                     ref={o => this.methodTake = o}
                     title={'Cách thức nhà xe lấy và giao hàng'}
-                    options={['Lấy và giao hàng tại nhà', 'Lấy và giao hàng tại điểm xe đi qua', 'Huỷ']}
+                    options={['Lấy và giao hàng tại điểm chỉ định', 'Lấy và giao hàng tại điểm xe đi qua', 'Huỷ']}
                     cancelButtonIndex={2}
                     // destructiveButtonIndex={2}
                     onPress={(index) => {

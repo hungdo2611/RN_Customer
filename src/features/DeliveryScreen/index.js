@@ -6,7 +6,7 @@ import { Navigation } from 'react-native-navigation';
 import MapViewDirections from 'react-native-maps-directions';
 import Placeholder from 'rn-placeholder';
 import Permissions from 'react-native-permissions';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import LocationAnimate from '../../component/LocationAnimation'
 import {
     Text,
@@ -136,7 +136,7 @@ class CreateTripScreen extends Component {
             routeAPI: [],
             EnablePull: true,
             appState: AppState.currentState,
-            show_help: instanceData.show_help.hybird
+            show_help: instanceData.show_help.delivery
         };
         Navigation.events().bindComponent(this);
 
@@ -153,7 +153,7 @@ class CreateTripScreen extends Component {
 
     componentDidMount() {
 
-        disable_help_coach({ ...instanceData.show_help, hybird: false })
+        disable_help_coach({ ...instanceData.show_help, delivery: false })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         AppState.addEventListener('change', this._handleAppStateChange);
         Permissions.check('location').then(response => {
@@ -207,7 +207,7 @@ class CreateTripScreen extends Component {
                 this.map.animateToRegion(r, 500);
             },
             error => console.log('error', error),
-            { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
 
         if (this.props.currentBooking) {
@@ -271,7 +271,7 @@ class CreateTripScreen extends Component {
                     });
                 },
                 error => console.log('error', error),
-                { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
             );
 
         }
@@ -337,7 +337,7 @@ class CreateTripScreen extends Component {
                 this.setState({ latitude: position.coords.latitude, longitude: position.coords.longitude });
             },
             error => console.log('get current location false', error),
-            { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
     };
 
@@ -781,95 +781,95 @@ class CreateTripScreen extends Component {
                         IsIncreaseFromStart={true}
                         BottomViewHeight={scale(200)}
                         heightIncreased={height * 6 / 7}
-                    allowIncrease={!isPickWithGGMap}
-                    onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
-                    onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                    EnablePull={true}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={true}
                     >
-                    <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
-                    <View style={{ flex: 1, marginTop: scale(10) }}>
-                        <UserCancelBooking
-                            isInCreaseHeight={isInCreaseHeight}
-                            onNavigationBack={this.onNavigationBack}
-                        />
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <UserCancelBooking
+                                isInCreaseHeight={isInCreaseHeight}
+                                onNavigationBack={this.onNavigationBack}
+                            />
 
-                    </View>
+                        </View>
                     </BottomTab>}
-                {currentBooking && currentBooking.status === constant_type_status_booking.PROCESSING && <BottomTab
-                    ref={e => {
-                        this.BottomView = e;
-                    }}
-                    IsIncreaseFromStart={true}
-                    BottomViewHeight={scale(200)}
-                    heightIncreased={height * 6 / 7}
-                    allowIncrease={!isPickWithGGMap}
-                    onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
-                    onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                    EnablePull={true}
-                >
-                    <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+                    {currentBooking && currentBooking.status === constant_type_status_booking.PROCESSING && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={true}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
-                    <View style={{ flex: 1, marginTop: scale(10) }}>
-                        <BookingProcessing
-                            isInCreaseHeight={isInCreaseHeight}
-                            onNavigationBack={this.onNavigationBack}
-                            inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <BookingProcessing
+                                isInCreaseHeight={isInCreaseHeight}
+                                onNavigationBack={this.onNavigationBack}
+                                inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
 
-                        />
+                            />
 
-                    </View>
-                </BottomTab>}
-                {currentBooking && currentBooking.status === constant_type_status_booking.END && <BottomTab
-                    ref={e => {
-                        this.BottomView = e;
-                    }}
-                    IsIncreaseFromStart={true}
-                    BottomViewHeight={scale(200)}
-                    heightIncreased={height * 6 / 7}
-                    allowIncrease={!isPickWithGGMap}
-                    onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
-                    onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                    EnablePull={true}
-                >
-                    <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+                        </View>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.END && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={true}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
-                    <View style={{ flex: 1, marginTop: scale(10) }}>
-                        <BookingFinish
-                            isInCreaseHeight={isInCreaseHeight}
-                            onNavigationBack={this.onNavigationBack}
-                            inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <BookingFinish
+                                isInCreaseHeight={isInCreaseHeight}
+                                onNavigationBack={this.onNavigationBack}
+                                inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
 
-                        />
+                            />
 
-                    </View>
-                </BottomTab>}
-                {currentBooking && currentBooking.status === constant_type_status_booking.WAITING_DRIVER && <BottomTab
-                    ref={e => {
-                        this.BottomView = e;
-                    }}
-                    IsIncreaseFromStart={true}
-                    BottomViewHeight={scale(200)}
-                    heightIncreased={height * 6 / 7}
-                    allowIncrease={!isPickWithGGMap}
-                    onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
-                    onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
-                    EnablePull={true}
-                >
-                    <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
+                        </View>
+                    </BottomTab>}
+                    {currentBooking && currentBooking.status === constant_type_status_booking.WAITING_DRIVER && <BottomTab
+                        ref={e => {
+                            this.BottomView = e;
+                        }}
+                        IsIncreaseFromStart={true}
+                        BottomViewHeight={scale(200)}
+                        heightIncreased={height * 6 / 7}
+                        allowIncrease={!isPickWithGGMap}
+                        onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
+                        onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
+                        EnablePull={true}
+                    >
+                        <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
 
-                    <View style={{ flex: 1, marginTop: scale(10) }}>
-                        <WaitingPickup
-                            isInCreaseHeight={isInCreaseHeight}
-                            onNavigationBack={this.onNavigationBack}
-                            inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
+                        <View style={{ flex: 1, marginTop: scale(10) }}>
+                            <WaitingPickup
+                                isInCreaseHeight={isInCreaseHeight}
+                                onNavigationBack={this.onNavigationBack}
+                                inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
 
-                        />
+                            />
 
-                    </View>
-                </BottomTab>}
+                        </View>
+                    </BottomTab>}
 
-            </View>
+                </View>
 
             </View >
         );

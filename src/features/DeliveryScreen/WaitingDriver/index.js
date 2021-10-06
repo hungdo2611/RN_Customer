@@ -76,7 +76,7 @@ class WaitingDriverScreen extends React.Component {
         const { orderInfo } = this.props.currentBooking;
         const { isShowOrderInfo } = this.state;
         const widthButton = (width - scale(60)) / 5
-
+        console.log("orderInfo,", orderInfo.lst_image)
         return <View style={{}}>
             <View style={{ marginHorizontal: scale(10), marginTop: scale(5), flexDirection: 'row', justifyContent: "space-between", alignItems: 'center' }}>
                 <Text style={{ fontSize: scale(16), fontWeight: 'bold' }}>Thông tin đơn hàng</Text>
@@ -107,7 +107,7 @@ class WaitingDriverScreen extends React.Component {
                     <Text style={{ fontSize: scale(15), fontWeight: '600', marginTop: scale(4) }}>{orderInfo.note}</Text>
                 </View>
                 <View style={{ marginHorizontal: scale(10), marginVertical: scale(7) }}>
-                    <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Ảnh hàng hoá </Text>
+                    <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Ảnh hàng hoá</Text>
                     <View style={{ flexDirection: 'row', alignItems: "center", borderRadius: scale(7), marginTop: scale(7) }}>
                         {orderInfo.lst_image && orderInfo.lst_image.map((img, index) => {
                             console.log("img", img)
@@ -119,6 +119,7 @@ class WaitingDriverScreen extends React.Component {
                             </TouchableOpacity>
 
                         })}
+                        {(!orderInfo.lst_image || orderInfo?.lst_image && orderInfo?.lst_image.length == 0) && <Text style={{ fontSize: scale(15), fontWeight: '600', marginTop: scale(4) }}>Không có ảnh</Text>}
                     </View>
                 </View>
             </View>

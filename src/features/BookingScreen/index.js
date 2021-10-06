@@ -6,7 +6,7 @@ import { Navigation } from 'react-native-navigation';
 import MapViewDirections from 'react-native-maps-directions';
 import Placeholder from 'rn-placeholder';
 import Permissions from 'react-native-permissions';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import LocationAnimate from '../../component/LocationAnimation'
 import {
     Text,
@@ -205,8 +205,7 @@ class CreateTripScreen extends Component {
                 this.map.animateToRegion(r, 500);
             },
             error => console.log('error', error),
-            { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
-        );
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 });
 
         if (this.props.currentBooking) {
             this.setDataRouteBooking()
@@ -269,7 +268,7 @@ class CreateTripScreen extends Component {
                     });
                 },
                 error => console.log('error', error),
-                { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
             );
 
         }
@@ -335,7 +334,7 @@ class CreateTripScreen extends Component {
                 this.setState({ latitude: position.coords.latitude, longitude: position.coords.longitude });
             },
             error => console.log('get current location false', error),
-            { enableHighAccuracy: Platform.OS !== 'android', timeout: 360000 },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
     };
 

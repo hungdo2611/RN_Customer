@@ -228,6 +228,8 @@ class UserCancelBooking extends React.Component {
                             </TouchableOpacity>
 
                         })}
+                        {(!orderInfo.lst_image || orderInfo?.lst_image && orderInfo?.lst_image.length == 0) && <Text style={{ fontSize: scale(15), fontWeight: '600', marginTop: scale(4) }}>Không có ảnh</Text>}
+
                     </View>
                 </View>
             </View>

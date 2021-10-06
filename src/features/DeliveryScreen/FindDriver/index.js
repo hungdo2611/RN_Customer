@@ -175,7 +175,6 @@ class FindDriver extends React.Component {
     }
 
     renderLstDriver = (lstDriver) => {
-        console.log("lstDriver", lstDriver)
         const { lst_select, seat } = this.state;
 
         if (lstDriver.length == 0) {
@@ -265,7 +264,7 @@ class FindDriver extends React.Component {
                     <View style={{ height: scale(35), flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', margin: scale(5) }}>
                             <MaterialIcons name="attach-money" size={scale(14)} />
-                            <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price) * seat)} VND</Text>
+                            <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price_shipping) * seat)} VND</Text>
                         </View>
                         <CheckBox
                             value={isCheck == -1 ? false : true}
@@ -274,7 +273,7 @@ class FindDriver extends React.Component {
                             style={{ width: scale(20), height: scale(20), marginRight: scale(5) }}
                             onValueChange={(newValue) => {
                                 if (newValue) {
-                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price: driver.price, driver_id: driver.driver_id._id }]
+                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price: driver.price_shipping, driver_id: driver.driver_id._id }]
                                     this.setState({ lst_select: newArr })
                                 } else {
                                     let newArr = lst_select.filter(vl => vl.journey_id !== driver.journey_id)
@@ -295,7 +294,6 @@ class FindDriver extends React.Component {
 
 
         updateCurrentBooking(data);
-        console.log("current booking", data)
 
 
     }
