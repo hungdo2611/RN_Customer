@@ -193,6 +193,16 @@ export default class MainView extends React.Component {
         this.crrNear = data;
         this.ActionSheet.show()
     }
+    renderExplore = () => {
+        return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5) }}>
+            <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Khám phá</Text>
+            <View>
+                <Image style={{ height: scale(170), borderRadius: scale(15), width: '100%', marginTop: scale(10) }} source={require('../DeliveryScreen/res/ic_letgo.jpg')} />
+                <Image style={{ height: scale(170), borderRadius: scale(15), width: '100%', marginTop: scale(20) }} source={require('../DeliveryScreen/res/ic_letgo.jpg')} />
+
+            </View>
+        </View>
+    }
     renderNearJourney = () => {
         const { near_journey } = this.state;
         return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5) }}>
@@ -253,8 +263,28 @@ export default class MainView extends React.Component {
     render() {
         const { isInCreaseHeight } = this.props;
         return (
-            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20), marginHorizontal: scale(10) }}>
-                <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(50), alignItems: 'center', flexDirection: "row" }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF", marginHorizontal: scale(10) }}>
+                <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
+                    <Image style={{ width: scale(120), height: scale(70) }} resizeMode="stretch" source={require('./res/ic_logo.png')} />
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <MaterialCommunityIcons
+                            name='bell'
+                            size={scale(24)}
+                            style={{ marginRight: scale(10) }}
+                            containerStyle={{
+
+                            }}
+                        />
+                        <MaterialCommunityIcons
+                            name='menu'
+                            size={scale(24)}
+                            containerStyle={{
+
+                            }}
+                        />
+                    </View>
+                </View>
+                <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(60), alignItems: 'center', flexDirection: "row" }}>
                     <Image style={{
                         height: scale(50),
                         width: scale(70),
@@ -271,6 +301,7 @@ export default class MainView extends React.Component {
                 </View>
 
                 {this.renderService()}
+                {this.renderExplore()}
                 {this.state.near_journey.length > 0 && this.renderNearJourney()}
                 <ActionSheet
                     ref={o => this.ActionSheet = o}

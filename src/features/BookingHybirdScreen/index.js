@@ -678,7 +678,7 @@ class CreateTripScreen extends Component {
 
 
                 </View>
-                {isInCreaseHeight && <View style={{ width: width, height: height, position: 'absolute', backgroundColor: 'rgba(52, 52, 52, 0.3)' }}></View>}
+                {isInCreaseHeight && <TouchableOpacity activeOpacity={1} onPress={() => this.BottomView.DecreaseHeightBtmView()} style={{ width: width, height: height, position: 'absolute', backgroundColor: 'rgba(52, 52, 52, 0.3)' }}></TouchableOpacity>}
                 <View style={{}}>
                     {!currentBooking && <BottomTab
                         ref={e => {
