@@ -53,3 +53,9 @@ export const getNearJourneyAPI = (page_number, page_size, body) => {
         data: body
     })
 }
+export const getHistoryBookingAPI = (page_number, page_size, type) => {
+    return api.makeAuthRequest({
+        url: `/booking/history?page_nunmber=${page_number}&page_size=${page_size}&type=${type}`,
+        method: 'GET',
+    })
+}

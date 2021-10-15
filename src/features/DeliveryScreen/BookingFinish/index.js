@@ -59,14 +59,10 @@ class BookingFinish extends React.Component {
 
     renderPrice = () => {
         const { seat } = this.props?.currentBooking;
-        const { max_price, min_price } = this.props?.currentBooking.range_price;
+        const { price } = this.props?.currentBooking;
         return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
             <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Giá tiền: </Text>
-            {max_price == min_price && <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(max_price * seat)} VND</Text>}
-            {max_price != min_price && <View>
-                <Text>Từ {new Intl.NumberFormat().format(min_price * seat)} VND - {new Intl.NumberFormat().format(max_price * seat)} VND</Text>
-            </View>}
-
+            <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)} VND</Text>
         </View>
     }
 

@@ -58,14 +58,10 @@ class WaitingPickup extends React.Component {
 
     renderPrice = () => {
         const { seat } = this.props?.currentBooking;
-        const { max_price, min_price } = this.props?.currentBooking.range_price;
+        const { price } = this.props?.currentBooking;
         return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
             <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Giá tiền: </Text>
-            {max_price == min_price && <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(max_price * seat)} VND</Text>}
-            {max_price != min_price && <View>
-                <Text>Từ {new Intl.NumberFormat().format(min_price * seat)} VND - {new Intl.NumberFormat().format(max_price * seat)} VND</Text>
-            </View>}
-
+            <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)} VND</Text>
         </View>
     }
     renderSeat = () => {
@@ -219,7 +215,7 @@ class WaitingPickup extends React.Component {
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                    <Image style={{ width: scale(48), height: scale(48) }} source={require('../res/ic_avatar.png')} />
+                    <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
                     <View style={{ marginLeft: scale(10) }}>
                         <Text style={{ fontSize: scale(18), fontWeight: "600" }}>{userInfo.name}</Text>
                         <Text style={{ fontSize: scale(16), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>

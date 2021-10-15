@@ -48,6 +48,10 @@ export const setLocalData = async (data) => {
     notificationProcessor.checkPermission();
 
 }
+export const deleteLocalData = async () => {
+    await AsyncStorage.setItem(constant_key.USER_INFO, null)
+
+}
 export const getLocalData = async () => {
     let data = await AsyncStorage.getItem(constant_key.USER_INFO);
     console.log("data123", data)

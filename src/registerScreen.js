@@ -15,6 +15,9 @@ import BookingScreen from './features/BookingScreen'
 import BookingHybirdScreen from './features/BookingHybirdScreen'
 import DeliveryScreen from './features/DeliveryScreen'
 import HomeScreen from './features/HomeScreen'
+import MenuScreen from './features/MenuScreen'
+import HistoryScreen from './features/HistoryScreen'
+import OrderInfoScreen from './features/HistoryScreen/infoOrderScreen'
 export const constant_name = {
     LOGIN_SCREEN: `Navigation.LoginScreen`,
     ENTER_PHONE_NUMBER: `Navigation.EnterPhoneNumber`,
@@ -25,10 +28,28 @@ export const constant_name = {
     HOME_SCREEN: `Navigation.HOME.SCREEN`,
     BOOKING_SCREEN: `Navigation.BOOKING.SCREEN`,
     BOOKING_HYBIRD_SCREEN: `Navigation.BOOKING.HYBIRD`,
-    DELIVERY_SCREEN: `Navigation.DELIVERY_SCREEN`
+    DELIVERY_SCREEN: `Navigation.DELIVERY_SCREEN`,
+    MENU_SCREEN: `Navigation.MENU_SCREEN`,
+    HISTORY_SCREEN: `Navigation.HISTORY_SCREEN`,
+    ORDER_INFO_SCREEN: `Navigation.ORDER_INFO_SCREEN`
 }
 
 export const registerScreens = () => {
+    Navigation.registerComponent(constant_name.ORDER_INFO_SCREEN, () => (props) =>
+        <Provider store={store}>
+            <OrderInfoScreen {...props} />
+        </Provider>,
+        () => OrderInfoScreen);
+    Navigation.registerComponent(constant_name.HISTORY_SCREEN, () => (props) =>
+        <Provider store={store}>
+            <HistoryScreen {...props} />
+        </Provider>,
+        () => HistoryScreen);
+    Navigation.registerComponent(constant_name.MENU_SCREEN, () => (props) =>
+        <Provider store={store}>
+            <MenuScreen {...props} />
+        </Provider>,
+        () => MenuScreen);
     Navigation.registerComponent(constant_name.DELIVERY_SCREEN, () => (props) =>
         <Provider store={store}>
             <DeliveryScreen {...props} />

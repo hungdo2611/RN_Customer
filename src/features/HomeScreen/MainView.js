@@ -25,9 +25,10 @@ import Permissions from 'react-native-permissions';
 
 import _ from 'lodash';
 import { StackActions } from '@react-navigation/native';
-import { pushToBookingScreen, pushToBookingHybirdScreen, pushToDeliveryScreen } from '../../NavigationController'
+import { pushToBookingScreen, pushToBookingHybirdScreen, pushToDeliveryScreen, pushToMenuScreen } from '../../NavigationController'
 import Geolocation from 'react-native-geolocation-service';
 import { getNearJourneyAPI } from '../../api/bookingApi'
+import { getAdressFromLatLng } from '../../api/MapApi'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { CONSTANT_TYPE_JOURNEYS } from '../../constant';
@@ -41,7 +42,8 @@ export default class MainView extends React.Component {
         this.state = {
             location: null,
             isloadingNear: true,
-            near_journey: []
+            near_journey: [],
+            txt_crrAddress: ''
         };
         this.crrNear = null
     }
@@ -85,13 +87,21 @@ export default class MainView extends React.Component {
                     location: location
                 });
                 this.getNearJourney(location)
+                this.getCrrLocation(location)
             },
             error => console.log('error', error),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
     }
+    getCrrLocation = async (location) => {
+        const req = await getAdressFromLatLng(location.lat, location.lng)
+        if (req.items && req.items[0]) {
+            this.setState({ txt_crrAddress: req.items[0].address.county })
+        }
+    }
     getNearJourney = async (location) => {
         console.log("location", location)
+
         const req = await getNearJourneyAPI(1, 5, { location: location });
         if (!req.err) {
             this.setState({ near_journey: [...req.data] })
@@ -259,9 +269,13 @@ export default class MainView extends React.Component {
 
         </View>
     }
+    onShowMenu = () => {
+        pushToMenuScreen(this.props.componentId)
+    }
 
     render() {
         const { isInCreaseHeight } = this.props;
+        const { txt_crrAddress } = this.state;
         return (
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF", marginHorizontal: scale(10) }}>
                 <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
@@ -275,13 +289,18 @@ export default class MainView extends React.Component {
 
                             }}
                         />
-                        <MaterialCommunityIcons
-                            name='menu'
-                            size={scale(24)}
-                            containerStyle={{
+                        <TouchableOpacity
+                            onPress={this.onShowMenu}
+                            activeOpacity={0.6}>
+                            <MaterialCommunityIcons
+                                name='menu'
+                                size={scale(24)}
+                                containerStyle={{
 
-                            }}
-                        />
+                                }}
+                            />
+                        </TouchableOpacity>
+
                     </View>
                 </View>
                 <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(60), alignItems: 'center', flexDirection: "row" }}>
@@ -290,9 +309,9 @@ export default class MainView extends React.Component {
                         width: scale(70),
                         transform: [{ rotate: '8deg' }],
                     }} source={require('./res/ic_car_head.png')} />
-                    <View style={{ marginLeft: scale(10) }}>
+                    <View style={{ marginLeft: scale(10), flex: 1 }}>
                         <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, fontWeight: '500' }}>Địa chỉ của bạn</Text>
-                        <Text style={{ fontSize: scale(11), fontWeight: 'bold' }}>Hà Nội</Text>
+                        <Text numberOfLines={1} style={{ fontSize: scale(11), fontWeight: 'bold' }}>{txt_crrAddress}</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center' }}>
                         <View style={{ width: scale(1), height: scale(20), backgroundColor: color.GRAY_COLOR_500 }} />

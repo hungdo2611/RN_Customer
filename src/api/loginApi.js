@@ -44,3 +44,9 @@ export const resetPassAPI = (body) => {
         data: body
     })
 }
+export const logOutAPI = () => {
+    return api.makeAuthRequest({
+        url: `/users/me/logout`,
+        method: 'POST',
+    })
+}

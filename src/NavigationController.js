@@ -134,11 +134,68 @@ export function pushToBookingHybirdScreen(componentId, props) {
         },
     });
 }
+export function pushToMenuScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.MENU_SCREEN}_id`,
+            name: constant_name.MENU_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function pushToDeliveryScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {
             id: `${constant_name.DELIVERY_SCREEN}_id`,
             name: constant_name.DELIVERY_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
+export function pushToOrderInfoScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.ORDER_INFO_SCREEN}_id`,
+            name: constant_name.ORDER_INFO_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
+export function pushToHistoryScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.HISTORY_SCREEN}_id`,
+            name: constant_name.HISTORY_SCREEN,
             passProps: props,
             options: {
                 topBar: {
