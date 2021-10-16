@@ -53,6 +53,19 @@ class BookingProcessing extends React.Component {
     componentDidMount() {
 
     }
+    renderPayment = () => {
+        return <View style={{ marginHorizontal: scale(10) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginTop: scale(10) }}>Cách thanh toán</Text>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginTop: scale(10) }}>
+                <View style={{ height: scale(20), width: scale(20), borderRadius: scale(5), borderWidth: 2, alignItems: 'center', justifyContent: "center" }}>
+                    <Text style={{ fontWeight: '600' }}>đ</Text>
+                </View>
+                <Text style={{ marginLeft: scale(10), fontSize: scale(14) }}>Thanh toán bằng tiền mặt</Text>
+            </View>
+            <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
+
+        </View>
+    }
 
 
     renderPrice = () => {
@@ -216,8 +229,8 @@ class BookingProcessing extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                     <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
                     <View style={{ marginLeft: scale(10) }}>
-                        <Text style={{ fontSize: scale(18), fontWeight: "600" }}>{userInfo.name}</Text>
-                        <Text style={{ fontSize: scale(16), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                        <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
+                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -237,29 +250,29 @@ class BookingProcessing extends React.Component {
         const { inDecreaseHeiht } = this.props;
         inDecreaseHeiht();
     }
-    renderSuggestion = () => {
-        const { suggestion_pick } = this.props.currentBooking
-        console.log("this.props.currentBooking", this.props.currentBooking)
-        return <View style={{ marginHorizontal: scale(10), marginVertical: scale(10) }}>
-            <View style={{ flexDirection: 'row' }}>
-                <Image style={{ width: scale(20), height: scale(20), tintColor: color.ORANGE_COLOR_400 }} source={require('../res/ic_help.png')} />
-                <View style={{ marginHorizontal: scale(10), flex: 1 }}>
-                    <Text style={{ fontSize: scale(12), paddingTop: scale(3) }}>Gợi ý điểm đón</Text>
-                    <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "600", paddingTop: scale(3) }}>{suggestion_pick.address}</Text>
-                </View>
-                <TouchableOpacity onPress={this.onShowMap} activeOpacity={0.6} style={{ width: scale(50), alignItems: 'center', justifyContent: 'center' }}>
-                    <FontAwesomeIcon
-                        name='map'
-                        size={scale(20)}
-                        color={color.GREEN_COLOR_300}
+    // renderSuggestion = () => {
+    //     const { suggestion_pick } = this.props.currentBooking
+    //     console.log("this.props.currentBooking", this.props.currentBooking)
+    //     return <View style={{ marginHorizontal: scale(10), marginVertical: scale(10) }}>
+    //         <View style={{ flexDirection: 'row' }}>
+    //             <Image style={{ width: scale(20), height: scale(20), tintColor: color.ORANGE_COLOR_400 }} source={require('../res/ic_help.png')} />
+    //             <View style={{ marginHorizontal: scale(10), flex: 1 }}>
+    //                 <Text style={{ fontSize: scale(12), paddingTop: scale(3) }}>Gợi ý điểm đón</Text>
+    //                 <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "600", paddingTop: scale(3) }}>{suggestion_pick.address}</Text>
+    //             </View>
+    //             <TouchableOpacity onPress={this.onShowMap} activeOpacity={0.6} style={{ width: scale(50), alignItems: 'center', justifyContent: 'center' }}>
+    //                 <FontAwesomeIcon
+    //                     name='map'
+    //                     size={scale(20)}
+    //                     color={color.GREEN_COLOR_300}
 
-                    />
-                    <Text style={{ fontSize: scale(11), textAlign: 'center' }}>Bản đồ</Text>
-                </TouchableOpacity>
-            </View>
+    //                 />
+    //                 <Text style={{ fontSize: scale(11), textAlign: 'center' }}>Bản đồ</Text>
+    //             </TouchableOpacity>
+    //         </View>
 
-        </View>
-    }
+    //     </View>
+    // }
     onFinishBooking = async () => {
         const { currentBooking, updateCurrentBooking } = this.props;
         Alert.alert(
@@ -321,9 +334,10 @@ class BookingProcessing extends React.Component {
                             {this.renderPrice()}
                             {this.renderLine()}
                             {this.renderInfoDriver()}
+                            {/* {this.renderLine()}
+                            {this.renderSuggestion()} */}
                             {this.renderLine()}
-                            {this.renderSuggestion()}
-                            {this.renderLine()}
+                            {this.renderPayment()}
                         </View>
 
                     </KeyboardAwareScrollView>

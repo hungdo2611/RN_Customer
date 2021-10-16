@@ -16,7 +16,7 @@ import {
 import { connect } from 'react-redux'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { pushToOrderInfoScreen } from '../../NavigationController'
+import { pushToOrderInfoScreen, pushToBookingScreen, pushToBookingHybirdScreen, pushToDeliveryScreen } from '../../NavigationController'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import ActionSheet from 'react-native-actionsheet'
 
@@ -188,7 +188,23 @@ class HistoryScreen extends React.Component {
     }
     onPressJourney = (crrJourneys) => {
         const { componentId } = this.props;
-        pushToOrderInfoScreen(componentId, { data: crrJourneys })
+        if (crrJourneys.status == constant_type_status_booking.WAITING_DRIVER
+            || crrJourneys.status == constant_type_status_booking.PROCESSING
+            || crrJourneys.status == constant_type_status_booking.FINDING_DRIVER) {
+            if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.HYBIRD_CAR) {
+                pushToBookingHybirdScreen(componentId)
+            } else if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.COACH_CAR) {
+                pushToBookingScreen(componentId)
+
+            } else {
+                pushToDeliveryScreen(componentId)
+
+            }
+
+
+        } else {
+            pushToOrderInfoScreen(componentId, { data: crrJourneys })
+        }
 
     }
     getBookingTypeName = (type) => {
@@ -208,6 +224,8 @@ class HistoryScreen extends React.Component {
         const crrJourneys = journey.item;
         const txtStatus = this.getStatusName(crrJourneys.status);
         const txtColor = this.getColorStatus(crrJourneys.status);
+
+
         if (crrJourneys.type == "loading") {
             if (!isloading) {
                 return
@@ -241,7 +259,7 @@ class HistoryScreen extends React.Component {
                         <Text style={{ fontWeight: '700', fontSize: scale(18) }}>{this.getBookingTypeName(crrJourneys.booking_type)}</Text>
                         <Text style={{ fontWeight: "500", marginTop: scale(5) }}>{moment(crrJourneys?.time_start * 1000).format('HH:mm - DD/MM')}</Text>
                     </View>
-                    <View style={{ padding: scale(5), backgroundColor: txtColor, borderRadius: scale(6), width: scale(100), alignItems: "center", justifyContent: "center", marginVertical: scale(7) }}>
+                    <View style={{ padding: scale(5), backgroundColor: txtColor, borderRadius: scale(6), width: scale(125), alignItems: "center", justifyContent: "center", marginVertical: scale(7) }}>
                         <Text style={{ fontSize: scale(14), fontWeight: "700", color: '#FFFFFF' }}>{txtStatus}</Text>
                     </View>
                 </View>

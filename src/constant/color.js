@@ -16,5 +16,6 @@ export const color = {
     GREEN_COLOR_400: '#05944F',
     GREEN_COLOR_500: '#03703C',
     YEALLOW_COLOR_300: '#FFCF70',
+    YEALLOW_COLOR_400: '#FFC043'
 
 }

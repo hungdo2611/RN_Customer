@@ -105,6 +105,19 @@ class BookingProcessing extends React.Component {
         return <View style={{ height: 0.8, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400, marginVertical: scale(5) }} />
 
     }
+    renderPayment = () => {
+        return <View style={{ marginHorizontal: scale(10) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginTop: scale(10) }}>Cách thanh toán</Text>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginTop: scale(10) }}>
+                <View style={{ height: scale(20), width: scale(20), borderRadius: scale(5), borderWidth: 2, alignItems: 'center', justifyContent: "center" }}>
+                    <Text style={{ fontWeight: '600' }}>đ</Text>
+                </View>
+                <Text style={{ marginLeft: scale(10), fontSize: scale(14) }}>Thanh toán bằng tiền mặt</Text>
+            </View>
+            <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
+
+        </View>
+    }
     renderInfo = () => {
         const { from, to } = this.props?.currentBooking;
 
@@ -204,8 +217,8 @@ class BookingProcessing extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                     <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
                     <View style={{ marginLeft: scale(10) }}>
-                        <Text style={{ fontSize: scale(18), fontWeight: "600" }}>{userInfo.name}</Text>
-                        <Text style={{ fontSize: scale(16), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                        <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
+                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -225,6 +238,7 @@ class BookingProcessing extends React.Component {
         const { inDecreaseHeiht } = this.props;
         inDecreaseHeiht();
     }
+
     renderSuggestion = () => {
         const { suggestion_pick } = this.props.currentBooking
         console.log("this.props.currentBooking", this.props.currentBooking)
@@ -368,6 +382,7 @@ class BookingProcessing extends React.Component {
                             <View style={{ height: scale(7), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }}></View>
                             {this.renderOrderInfo()}
                             <View style={{ height: scale(7), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }}></View>
+                            {this.renderPayment()}
                         </View>
                         <View style={{ flexDirection: 'row', height: scale(40), width: width, marginVertical: scale(20) }}>
                             <TouchableOpacity onPress={() => this.onBack()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>

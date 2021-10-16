@@ -8,9 +8,9 @@ import {
     TextInput,
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
-    Keyboard,
+    Platform,
     SafeAreaView,
-    ActivityIndicator,
+    Linking,
     Alert,
     ScrollView
 } from 'react-native'
@@ -81,6 +81,10 @@ class OrderInfoScreen extends React.Component {
         const { data } = this.props;
         const txtStatus = this.getStatusName(data.status);
         const txtColor = this.getColorStatus(data.status);
+        console.log("txtStatus", txtStatus)
+        console.log("txtStatus123", data.status)
+        console.log("txtColor", txtColor)
+
         return <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
             <View style={{}}>
                 <View style={{ alignItems: "center" }}>
@@ -176,32 +180,53 @@ class OrderInfoScreen extends React.Component {
 
         </View>
     }
+    callNumber = phone => {
+        let phoneNumber = phone;
+        if (Platform.OS !== 'android') {
+            phoneNumber = `telprompt:${phone}`;
+        }
+        else {
+            phoneNumber = `tel:${phone}`;
+        }
+        Linking.canOpenURL(phoneNumber)
+            .then(supported => {
+                if (!supported) {
+                    Alert.alert('Phone number is not available');
+                } else {
+                    return Linking.openURL(phoneNumber);
+                }
+            })
+            .catch(err => console.log(err));
+    };
     renderInfoDriver = () => {
         const { data } = this.props;
         const userInfo = data.driver_id;
-        if (userInfo) {
-            return <View style={{ marginBottom: scale(5) }}>
-                <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginVertical: scale(5) }}>Thông tin nhà xe</Text>
+        if (userInfo && (data.status == constant_type_status_booking.WAITING_DRIVER || data.status == constant_type_status_booking.PROCESSING)) {
+            return <View>
+                <View style={{ marginBottom: scale(5) }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginVertical: scale(5) }}>Thông tin nhà xe</Text>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                        <Image style={{ width: scale(36), height: scale(36) }} source={require('./res/ic_avatar.png')} />
-                        <View style={{ marginLeft: scale(10) }}>
-                            <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
-                            <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                            <Image style={{ width: scale(36), height: scale(36) }} source={require('./res/ic_avatar.png')} />
+                            <View style={{ marginLeft: scale(10) }}>
+                                <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
+                                <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                            </View>
                         </View>
-                    </View>
-                    <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
-                        <MaterialCommunityIcons
-                            name='phone-outgoing-outline'
-                            size={scale(23)}
-                            color="#FFFFFF"
-                            containerStyle={{
+                        <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
+                            <MaterialCommunityIcons
+                                name='phone-outgoing-outline'
+                                size={scale(23)}
+                                color="#FFFFFF"
+                                containerStyle={{
 
-                            }}
-                        />
-                    </TouchableOpacity>
+                                }}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
             </View>
         }
         return null
@@ -308,7 +333,7 @@ class OrderInfoScreen extends React.Component {
                     {price ? this.renderPrice() : this.renderPriceRange()}
                     <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
                     {this.renderInfoDriver()}
-                    {userInfo && <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />}
+                    {/* {userInfo && <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />} */}
                     {this.renderOrderInfo()}
                     {orderInfo?.phone_take_order && <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />}
                     {this.renderPayment()}

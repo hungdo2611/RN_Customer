@@ -62,6 +62,19 @@ class BookingFinish extends React.Component {
             <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)} VND</Text>
         </View>
     }
+    renderPayment = () => {
+        return <View style={{ marginHorizontal: scale(10) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginTop: scale(10) }}>Cách thanh toán</Text>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginTop: scale(10) }}>
+                <View style={{ height: scale(20), width: scale(20), borderRadius: scale(5), borderWidth: 2, alignItems: 'center', justifyContent: "center" }}>
+                    <Text style={{ fontWeight: '600' }}>đ</Text>
+                </View>
+                <Text style={{ marginLeft: scale(10), fontSize: scale(14) }}>Thanh toán bằng tiền mặt</Text>
+            </View>
+            <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
+
+        </View>
+    }
     renderSeat = () => {
         const { seat } = this.props?.currentBooking;
         return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(5), alignItems: "center" }}>
@@ -217,7 +230,8 @@ class BookingFinish extends React.Component {
                         {this.renderTime()}
                         {this.renderTimeDay()}
                         {this.renderPrice()}
-                        <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center" }}>
+                        {this.renderPayment()}
+                        <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginTop: scale(15) }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
                         </TouchableOpacity>
                     </KeyboardAwareScrollView>

@@ -58,7 +58,19 @@ class WaitingDriverScreen extends React.Component {
     componentDidMount() {
 
     }
+    renderPayment = () => {
+        return <View style={{ marginHorizontal: scale(10) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginTop: scale(10) }}>Cách thanh toán</Text>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginTop: scale(10) }}>
+                <View style={{ height: scale(20), width: scale(20), borderRadius: scale(5), borderWidth: 2, alignItems: 'center', justifyContent: "center" }}>
+                    <Text style={{ fontWeight: '600' }}>đ</Text>
+                </View>
+                <Text style={{ marginLeft: scale(10), fontSize: scale(14) }}>Thanh toán bằng tiền mặt</Text>
+            </View>
+            <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
 
+        </View>
+    }
 
     renderPrice = () => {
         const { seat } = this.props?.currentBooking;
@@ -289,7 +301,7 @@ class WaitingDriverScreen extends React.Component {
                         <View style={{ height: scale(7), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }}></View>
                         {this.renderOrderInfo()}
                         <View style={{ height: scale(7), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }}></View>
-
+                        {this.renderPayment()}
                         <TouchableOpacity onPress={() => this.setState({ isShowModal: true })} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.RED_COLOR, borderRadius: scale(15), alignSelf: "center", marginVertical: scale(30) }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Huỷ đơn hàng</Text>
                         </TouchableOpacity>

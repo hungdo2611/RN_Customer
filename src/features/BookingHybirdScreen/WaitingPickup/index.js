@@ -205,6 +205,19 @@ class WaitingPickup extends React.Component {
             })
             .catch(err => console.log(err));
     };
+    renderPayment = () => {
+        return <View style={{ marginHorizontal: scale(10) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginTop: scale(10) }}>Cách thanh toán</Text>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginTop: scale(10) }}>
+                <View style={{ height: scale(20), width: scale(20), borderRadius: scale(5), borderWidth: 2, alignItems: 'center', justifyContent: "center" }}>
+                    <Text style={{ fontWeight: '600' }}>đ</Text>
+                </View>
+                <Text style={{ marginLeft: scale(10), fontSize: scale(14) }}>Thanh toán bằng tiền mặt</Text>
+            </View>
+            <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
+
+        </View>
+    }
     renderInfoDriver = () => {
         const { currentBooking } = this.props;
         const userInfo = currentBooking.driver_id;
@@ -215,8 +228,8 @@ class WaitingPickup extends React.Component {
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                     <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
                     <View style={{ marginLeft: scale(10) }}>
-                        <Text style={{ fontSize: scale(18), fontWeight: "600" }}>{userInfo.name}</Text>
-                        <Text style={{ fontSize: scale(16), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                        <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
+                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -299,7 +312,7 @@ class WaitingPickup extends React.Component {
                             {this.renderLine()}
                             {this.renderInfoDriver()}
                             {this.renderLine()}
-
+                            {this.renderPayment()}
                         </View>
 
                     </KeyboardAwareScrollView>
