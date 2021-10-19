@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import notificationProcessor from '../notification'
 import store from '../redux/store'
 import actionsHome from '../features/HomeScreen/redux/actions'
+
 const constant_key = {
     USER_INFO: 'USER_INFO',
     SHOW_HELP: 'SHOW_HELP',
@@ -38,10 +39,19 @@ export const setToken = (token) => {
 export const getToken = () => {
     return instanceData.token;
 }
+export const updateLocalData = async (data) => {
+    if (data) {
+        store.dispatch(actionsHome.action.updateUserInfo(data))
+    }
+    await AsyncStorage.setItem(constant_key.USER_INFO, JSON.stringify(data))
+
+}
 export const setLocalData = async (data) => {
     if (data) {
         instanceData.user_info = JSON.parse(data);
         instanceData.token = JSON.parse(data).token;
+        store.dispatch(actionsHome.action.updateUserInfo(JSON.parse(data)))
+
     }
     await AsyncStorage.setItem(constant_key.USER_INFO, data)
     getPreData();
@@ -58,6 +68,8 @@ export const getLocalData = async () => {
     if (data) {
         instanceData.user_info = JSON.parse(data);
         instanceData.token = JSON.parse(data).token;
+        store.dispatch(actionsHome.action.updateUserInfo(JSON.parse(data)))
+
         getPreData();
 
     }

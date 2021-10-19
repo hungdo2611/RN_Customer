@@ -18,6 +18,7 @@ import HomeScreen from './features/HomeScreen'
 import MenuScreen from './features/MenuScreen'
 import HistoryScreen from './features/HistoryScreen'
 import OrderInfoScreen from './features/HistoryScreen/infoOrderScreen'
+import EditInfoScreen from './features/EditInfoScreen'
 export const constant_name = {
     LOGIN_SCREEN: `Navigation.LoginScreen`,
     ENTER_PHONE_NUMBER: `Navigation.EnterPhoneNumber`,
@@ -31,10 +32,16 @@ export const constant_name = {
     DELIVERY_SCREEN: `Navigation.DELIVERY_SCREEN`,
     MENU_SCREEN: `Navigation.MENU_SCREEN`,
     HISTORY_SCREEN: `Navigation.HISTORY_SCREEN`,
-    ORDER_INFO_SCREEN: `Navigation.ORDER_INFO_SCREEN`
+    ORDER_INFO_SCREEN: `Navigation.ORDER_INFO_SCREEN`,
+    EDIT_INFO_SCREEN: `Navigation.EDIT_INFO_SCREEN`
 }
 
 export const registerScreens = () => {
+    Navigation.registerComponent(constant_name.EDIT_INFO_SCREEN, () => (props) =>
+        <Provider store={store}>
+            <EditInfoScreen {...props} />
+        </Provider>,
+        () => EditInfoScreen);
     Navigation.registerComponent(constant_name.ORDER_INFO_SCREEN, () => (props) =>
         <Provider store={store}>
             <OrderInfoScreen {...props} />

@@ -22,9 +22,18 @@ export const loginAPI = (body) => {
         data: body
     })
 }
+// update ten  va pass luc vua dang ki
 export const updateInfoAPI = (body) => {
     return api.makeAuthRequest({
         url: `/users/profile`,
+        method: 'POST',
+        data: body
+    })
+}
+
+export const UpdateProfileAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/users/info`,
         method: 'POST',
         data: body
     })

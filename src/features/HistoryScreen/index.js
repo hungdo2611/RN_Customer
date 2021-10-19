@@ -254,12 +254,12 @@ class HistoryScreen extends React.Component {
                 width: width - scale(20),
             }}>
             <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'space-between', marginVertical: scale(10) }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: scale(10) }}>
                     <View style={{}}>
                         <Text style={{ fontWeight: '700', fontSize: scale(18) }}>{this.getBookingTypeName(crrJourneys.booking_type)}</Text>
                         <Text style={{ fontWeight: "500", marginTop: scale(5) }}>{moment(crrJourneys?.time_start * 1000).format('HH:mm - DD/MM')}</Text>
                     </View>
-                    <View style={{ padding: scale(5), backgroundColor: txtColor, borderRadius: scale(6), width: scale(125), alignItems: "center", justifyContent: "center", marginVertical: scale(7) }}>
+                    <View style={{ padding: scale(5), backgroundColor: txtColor, borderRadius: scale(6), width: scale(125), alignItems: "center", justifyContent: "center", height: scale(30) }}>
                         <Text style={{ fontSize: scale(14), fontWeight: "700", color: '#FFFFFF' }}>{txtStatus}</Text>
                     </View>
                 </View>

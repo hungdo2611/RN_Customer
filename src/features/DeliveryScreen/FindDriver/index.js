@@ -43,7 +43,6 @@ import ChooseAppointmentTimeModal from '../../../component/PickTime/ChooseAppoin
 import ChooseAppointmentDateModal from '../../../component/PickTime/ChooseAppointmentDate'
 import actionsHome from '../../HomeScreen/redux/actions'
 import { CONSTANT_TYPE_BOOKING } from '../../../constant';
-
 const { width, height } = Dimensions.get('window')
 
 class FindDriver extends React.Component {

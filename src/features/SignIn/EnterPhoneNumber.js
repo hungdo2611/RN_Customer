@@ -133,7 +133,7 @@ class EnterPhoneNumber extends React.Component {
                         <TouchableOpacity
                             disabled={!enableButton || isloading}
                             activeOpacity={0.6}
-                            onPress={_.debounce(() => this.onContinue(), 300)}
+                            onPress={_.debounce(() => this.onContinue(), 1000)}
                             style={{
                                 margin: scale(20),
                                 marginBottom: scale(25),

@@ -218,7 +218,7 @@ class BookingProcessing extends React.Component {
                     <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
                     <View style={{ marginLeft: scale(10) }}>
                         <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
-                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                        <Text style={{ fontSize: scale(16), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -246,7 +246,7 @@ class BookingProcessing extends React.Component {
             <View style={{ flexDirection: 'row' }}>
                 <Image style={{ width: scale(20), height: scale(20), tintColor: color.ORANGE_COLOR_400 }} source={require('../res/ic_help.png')} />
                 <View style={{ marginHorizontal: scale(10), flex: 1 }}>
-                    <Text style={{ fontSize: scale(12), paddingTop: scale(3) }}>Gợi ý điểm lấy hàngÏ</Text>
+                    <Text style={{ fontSize: scale(12), paddingTop: scale(3) }}>Gợi ý điểm lấy hàng</Text>
                     <Text numberOfLines={1} style={{ fontSize: scale(14), fontWeight: "600", paddingTop: scale(3) }}>{suggestion_pick.address}</Text>
                 </View>
                 <TouchableOpacity onPress={this.onShowMap} activeOpacity={0.6} style={{ width: scale(50), alignItems: 'center', justifyContent: 'center' }}>

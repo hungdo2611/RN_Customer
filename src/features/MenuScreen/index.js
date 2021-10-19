@@ -14,6 +14,7 @@ import {
     Alert,
     ScrollView
 } from 'react-native'
+import FastImage from 'react-native-fast-image';
 
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -24,8 +25,9 @@ import { color } from '../../constant/color';
 import { Navigation } from 'react-native-navigation';
 import { logOutAPI } from '../../api/loginApi'
 import { deleteLocalData } from '../../model'
-import { setRootToLogin, pushToHistoryScreen } from '../../NavigationController'
+import { setRootToLogin, pushToHistoryScreen, pushToEditInfoScreen } from '../../NavigationController'
 const { width, height } = Dimensions.get('window')
+
 
 class MenuScreen extends React.Component {
     constructor(props) {
@@ -35,17 +37,28 @@ class MenuScreen extends React.Component {
         };
     }
     renderProfile = () => {
-        return <View style={{ flexDirection: "row", marginTop: scale(10) }}>
-            <View style={{ width: scale(36), height: scale(36), borderRadius: scale(18), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400 }}>
+        const { componentId, user_info } = this.props;
+        const uri_image = user_info?.avatar
+        return <TouchableOpacity onPress={() => pushToEditInfoScreen(componentId)} activeOpacity={0.6} style={{ flexDirection: "row", marginTop: scale(10) }}>
+            {uri_image == undefined || uri_image == null || uri_image == '' ? <View style={{ width: scale(36), height: scale(36), borderRadius: scale(18), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400 }}>
                 <FontAwesomeIcon
                     name="user-alt"
                     color="#FFFFFF"
                     size={scale(14)}
                 />
-            </View>
+            </View> : <View>
+                <FastImage style={{ width: scale(60), height: scale(60), borderRadius: scale(30) }} source={{ uri: uri_image }} />
+                <View style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: color.GRAY_COLOR_400, width: scale(20), height: scale(20), borderRadius: scale(10), alignItems: 'center', justifyContent: "center" }}>
+                    <FontAwesomeIcon
+                        name="camera"
+                        color="#FFFFFF"
+                        size={scale(9)}
+                    />
+                </View>
+            </View>}
             <View style={{ marginLeft: scale(15), flex: 1 }}>
-                <Text style={{ fontWeight: '600', fontSize: scale(20), fontWeight: 'bold', color: color.GRAY_COLOR_900 }}>Hung Do</Text>
-                <Text style={{ fontSize: scale(16), color: color.GRAY_COLOR_500, fontWeight: '500', marginTop: scale(5) }}>+84357519390</Text>
+                <Text style={{ fontWeight: '600', fontSize: scale(20), fontWeight: 'bold', color: color.GRAY_COLOR_900 }}>{user_info?.name}</Text>
+                <Text style={{ fontSize: scale(16), color: color.GRAY_COLOR_500, fontWeight: '500', marginTop: scale(5) }}>{user_info?.phone}</Text>
             </View>
             <FontAwesomeIcon
                 name="chevron-right"
@@ -53,7 +66,7 @@ class MenuScreen extends React.Component {
                 size={scale(20)}
                 style={{ marginHorizontal: scale(10) }}
             />
-        </View>
+        </TouchableOpacity>
     }
     renderOrder = () => {
         return <TouchableOpacity
@@ -141,8 +154,8 @@ class MenuScreen extends React.Component {
     }
     onLogOut = async () => {
         Alert.alert(
-            'Ứng dụng cần quyền truy cập vị trí',
-            'Ứng dụng cần quyền vị trí của bạn để có thể kết nối với mọi người',
+            'Thông báo',
+            'Bạn có chắc chắn muốn đăng xuất?',
             [
                 {
                     text: 'Không',
@@ -152,7 +165,7 @@ class MenuScreen extends React.Component {
                 },
 
                 {
-                    text: 'Ok',
+                    text: 'Đồng ý',
                     onPress: async () => {
                         await logOutAPI();
                         deleteLocalData();
@@ -164,11 +177,11 @@ class MenuScreen extends React.Component {
 
     }
     render() {
-        const { componentId } = this.props;
+        const { componentId, user_info } = this.props;
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity activeOpacity={0.6} onPress={() => Navigation.pop(this.props.componentId)}>
+                    <TouchableOpacity activeOpacity={0.6} onPress={() => Navigation.pop(componentId)}>
                         <Icon
                             name='arrow-back'
                             size={scale(22)}
@@ -199,7 +212,7 @@ class MenuScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-
+        user_info: state.HomeReducer.user_info
     }
 }
 
