@@ -48,13 +48,6 @@ class MenuScreen extends React.Component {
                 />
             </View> : <View>
                 <FastImage style={{ width: scale(60), height: scale(60), borderRadius: scale(30) }} source={{ uri: uri_image }} />
-                <View style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: color.GRAY_COLOR_400, width: scale(20), height: scale(20), borderRadius: scale(10), alignItems: 'center', justifyContent: "center" }}>
-                    <FontAwesomeIcon
-                        name="camera"
-                        color="#FFFFFF"
-                        size={scale(9)}
-                    />
-                </View>
             </View>}
             <View style={{ marginLeft: scale(15), flex: 1 }}>
                 <Text style={{ fontWeight: '600', fontSize: scale(20), fontWeight: 'bold', color: color.GRAY_COLOR_900 }}>{user_info?.name}</Text>
