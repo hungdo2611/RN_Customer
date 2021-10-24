@@ -12,14 +12,6 @@ import moment from 'moment'
 moment.locale('vi');
 
 registerScreens();
-Navigation.setDefaultOptions({
-    statusBar: {
-        drawBehind: true,
-        style: 'dark',
-        backgroundColor: 'rgba(0,0,0,0)'
-
-    }
-})
 
 
 if (Platform.OS === 'android') {
@@ -59,6 +51,16 @@ if (Platform.OS === 'android') {
             },
         },
     });
+} else {
+    Navigation.setDefaultOptions({
+        statusBar: {
+            drawBehind: true,
+            style: 'dark',
+            backgroundColor: 'rgba(0,0,0,0)'
+
+        }
+    })
+
 }
 
 Navigation.events().registerAppLaunchedListener(async () => {

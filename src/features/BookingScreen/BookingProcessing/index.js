@@ -338,16 +338,16 @@ class BookingProcessing extends React.Component {
                             {this.renderLine()}
                             {this.renderPayment()}
                         </View>
-
+                        <View style={{ flexDirection: 'row', height: scale(40), width: width, marginVertical: scale(20) }}>
+                            <TouchableOpacity onPress={() => this.onBack()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>
+                                <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.onFinishBooking()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>
+                                <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Kết thúc chuyến</Text>
+                            </TouchableOpacity>
+                        </View>
                     </KeyboardAwareScrollView>
-                    <View style={{ flexDirection: 'row', height: scale(40), width: width, marginBottom: scale(15) }}>
-                        <TouchableOpacity onPress={() => this.onBack()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>
-                            <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.onFinishBooking()} style={{ flex: 1, height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginHorizontal: scale(10) }}>
-                            <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Kết thúc chuyến</Text>
-                        </TouchableOpacity>
-                    </View>
+
 
                 </View >
             )

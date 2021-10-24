@@ -340,15 +340,15 @@ class WaitingPickup extends React.Component {
                             {this.renderLine()}
                             {this.renderPayment()}
                         </View>
-
+                        <TouchableOpacity
+                            onPress={() => {
+                                onNavigationBack();
+                            }}
+                            style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginVertical: scale(15) }}>
+                            <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
+                        </TouchableOpacity>
                     </KeyboardAwareScrollView>
-                    <TouchableOpacity
-                        onPress={() => {
-                            onNavigationBack();
-                        }}
-                        style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginBottom: scale(15) }}>
-                        <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
-                    </TouchableOpacity>
+
 
                 </View >
             )

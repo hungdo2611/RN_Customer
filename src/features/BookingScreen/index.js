@@ -746,7 +746,7 @@ class CreateTripScreen extends Component {
                         }}
                         IsIncreaseFromStart={true}
                         BottomViewHeight={scale(200)}
-                        heightIncreased={scale(400)}
+                        heightIncreased={height * 6 / 7}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}
@@ -768,7 +768,7 @@ class CreateTripScreen extends Component {
                         }}
                         IsIncreaseFromStart={true}
                         BottomViewHeight={scale(200)}
-                        heightIncreased={scale(400)}
+                        heightIncreased={height * 5 / 6}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}

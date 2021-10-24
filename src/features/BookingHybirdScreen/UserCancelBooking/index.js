@@ -234,7 +234,7 @@ class UserCancelBooking extends React.Component {
                         {this.renderTimeDay()}
                         {this.renderPrice()}
                         {this.renderPayment()}
-                        <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center" }}>
+                        <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginVertical: scale(20) }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
                         </TouchableOpacity>
                     </KeyboardAwareScrollView>

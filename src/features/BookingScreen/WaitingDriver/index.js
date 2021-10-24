@@ -251,7 +251,7 @@ class WaitingDriverScreen extends React.Component {
                         {this.renderTimeDay()}
                         {this.renderPrice()}
                         {this.renderPayment()}
-                        <TouchableOpacity onPress={() => this.setState({ isShowModal: true })} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.RED_COLOR, borderRadius: scale(15), alignSelf: "center" }}>
+                        <TouchableOpacity onPress={() => this.setState({ isShowModal: true })} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.RED_COLOR, borderRadius: scale(15), alignSelf: "center", marginTop: scale(15) }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Huỷ chuyến</Text>
                         </TouchableOpacity>
                     </KeyboardAwareScrollView>
