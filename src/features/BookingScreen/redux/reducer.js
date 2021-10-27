@@ -1,7 +1,6 @@
 import actions from "./actions";
 
 const initState = {
-    isLoading_crrBooking: false,
     isLoading: false,
     lstDriver: [],
     isLoading_route: false,

@@ -17,15 +17,23 @@ import {
 
 import { connect } from 'react-redux'
 
+import { CONSTANT_TYPE_BOOKING } from '../../constant'
 
 import { scale } from '../../ultis/scale'
 
 import { color } from '../../constant/color'
 import Permissions from 'react-native-permissions';
-
+import moment from 'moment'
 import _ from 'lodash';
 import { StackActions } from '@react-navigation/native';
-import { pushToBookingScreen, pushToBookingHybirdScreen, pushToDeliveryScreen, pushToMenuScreen } from '../../NavigationController'
+import {
+    pushToBookingScreen,
+    pushToBookingHybirdScreen,
+    pushToDeliveryScreen,
+    pushToMenuScreen,
+    pushToOrderInfoScreen,
+    pushToCouponScreen
+} from '../../NavigationController'
 import Geolocation from 'react-native-geolocation-service';
 import { getNearJourneyAPI } from '../../api/bookingApi'
 import { getAdressFromLatLng } from '../../api/MapApi'
@@ -40,6 +48,9 @@ import {
     PlaceholderLine,
     Fade
 } from "rn-placeholder";
+import { constant_type_status_booking } from '../BookingScreen/constant';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+
 const { width, height } = Dimensions.get('window')
 
 export default class MainView extends React.Component {
@@ -49,7 +60,8 @@ export default class MainView extends React.Component {
             location: null,
             isloadingNear: true,
             near_journey: [],
-            txt_crrAddress: ''
+            txt_crrAddress: '',
+            activeSlide: 0
         };
         this.crrNear = null
     }
@@ -106,9 +118,9 @@ export default class MainView extends React.Component {
         }
     }
     getNearJourney = async (location) => {
-        console.log("location", location)
 
         const req = await getNearJourneyAPI(1, 5, { location: location });
+        console.log('req near', req)
         if (!req.err) {
             this.setState({ near_journey: [...req.data] })
         }
@@ -150,6 +162,60 @@ export default class MainView extends React.Component {
                 <Image resizeMode="stretch" style={{ width: widthBox / 2 + scale(20), height: widthBox / 2, position: "absolute", bottom: 5, right: 5 }} source={require('./res/ic_shipping.png')} />
 
             </TouchableOpacity>
+        </View>
+    }
+    renderInfoCrrBooking = (data) => {
+        const { from, to } = data;
+        return <View style={{}}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    height: scale(80),
+                    justifyContent: "center",
+                    overflow: 'hidden',
+                }}
+            >
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <FontAwesomeIcon
+                        name='arrow-circle-up'
+                        size={scale(17)}
+                        color={color.GREEN_COLOR_300}
+                        containerStyle={{
+
+                        }}
+                    />
+                    <MaterialCommunityIcons
+                        name='dots-vertical'
+                        size={scale(14)}
+                        color={color.GRAY_COLOR_400}
+                        style={{ opacity: 0.6 }}
+                        containerStyle={{
+
+                        }}
+                    />
+                    <MaterialCommunityIcons
+                        name='record-circle'
+                        size={scale(20)}
+                        color={color.ORANGE_COLOR_400}
+                        containerStyle={{
+
+                        }}
+                    />
+                </View>
+                <View style={{ flex: 1, marginHorizontal: scale(10), paddingVertical: scale(5) }}>
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <Text style={{ fontSize: scale(13), fontWeight: '600' }}>{from.address}</Text>
+                    </View>
+                    <View style={{ height: 0.5, opacity: 0.5, backgroundColor: color.GRAY_COLOR_400 }} />
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        <Text style={{ fontSize: scale(13), fontWeight: '600' }}>{to.address}</Text>
+                    </View>
+
+                </View>
+            </View>
+
+
         </View>
     }
     renderInfo = (from, to) => {
@@ -219,59 +285,73 @@ export default class MainView extends React.Component {
             </View>
         </View>
     }
+    renderNearItem = ({ item, index }) => {
+        return <TouchableOpacity
+            onPress={() => this.onSelectNearJourney(item)}
+            style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: scale(10),
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 5,
+                },
+                shadowOpacity: 0.36,
+                shadowRadius: 6.68,
+
+                elevation: 11,
+                marginHorizontal: scale(5), marginVertical: scale(10),
+                paddingHorizontal: scale(15)
+            }} key={index}>
+            <Text style={{ fontSize: scale(18), fontWeight: "600", paddingTop: scale(10), paddingBottom: scale(5) }}>{item?.driver_id?.name}</Text>
+            <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+            {this.renderInfo(item.from, item.to)}
+            <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Loại chuyến:</Text>
+                <Text style={{ fontWeight: '500' }}>{item.journey_type == CONSTANT_TYPE_JOURNEYS.COACH_CAR ? 'Xe tuyến cố định' : 'Xe tiện chuyến'}</Text>
+            </View>
+            <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Xem ngay</Text>
+                <View
+                    style={{
+                        width: scale(28),
+                        height: scale(28),
+                        borderRadius: scale(14),
+                        backgroundColor: color.ORANGE_COLOR_400,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <MaterialCommunityIcons
+                        name='arrow-right'
+                        size={scale(18)}
+                        color="#FFFFFF"
+                    />
+                </View>
+            </View>
+        </TouchableOpacity>
+    }
     renderNearJourney = () => {
-        const { near_journey } = this.state;
+        const { near_journey, activeSlide } = this.state;
         return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5) }}>
             <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Hành trình gần bạn</Text>
-            {near_journey.map((vl, index) => {
-                return <TouchableOpacity
-                    onPress={() => this.onSelectNearJourney(vl)}
-                    style={{
-                        backgroundColor: '#FFFFFF',
-                        borderRadius: scale(10),
-                        shadowColor: "#000",
-                        shadowOffset: {
-                            width: 0,
-                            height: 5,
-                        },
-                        shadowOpacity: 0.36,
-                        shadowRadius: 6.68,
+            <Carousel
+                layout={'default'}
+                ref={(c) => { this._carousel = c; }}
+                data={near_journey}
+                renderItem={this.renderNearItem}
+                sliderWidth={width - scale(30)}
+                itemWidth={width - scale(30)}
+                onSnapToItem={(index) => this.setState({ activeSlide: index })}
+                autoplay={true}
+                autoplayInterval={2000}
+            />
 
-                        elevation: 11,
-                        marginHorizontal: scale(5), marginVertical: scale(10),
-                        paddingHorizontal: scale(15)
-                    }} key={index}>
-                    <Text style={{ fontSize: scale(18), fontWeight: "600", paddingTop: scale(10), paddingBottom: scale(5) }}>{vl?.driver_id?.name}</Text>
-                    <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
-                    {this.renderInfo(vl.from, vl.to)}
-                    <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
-                        <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Loại chuyến:</Text>
-                        <Text style={{ fontWeight: '500' }}>{vl.journey_type == CONSTANT_TYPE_JOURNEYS.COACH_CAR ? 'Xe tuyến cố định' : 'Xe tiện chuyến'}</Text>
-                    </View>
-                    <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
-                        <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Xem ngay</Text>
-                        <View
-                            style={{
-                                width: scale(28),
-                                height: scale(28),
-                                borderRadius: scale(14),
-                                backgroundColor: color.ORANGE_COLOR_400,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <MaterialCommunityIcons
-                                name='arrow-right'
-                                size={scale(18)}
-                                color="#FFFFFF"
-                            />
-                        </View>
-                    </View>
-                </TouchableOpacity>
-            })}
+            {/* {near_journey.map((vl, index) => {
 
+            })} */}
 
         </View>
     }
@@ -299,20 +379,155 @@ export default class MainView extends React.Component {
         </View>
     }
     renderCoupon = () => {
-        const { lst_coupon, total } = this.props;
+        const { lst_coupon, total, componentId } = this.props;
         if (lst_coupon.length > 0) {
             return <TouchableOpacity
-                onPress={() => { }}
+                onPress={() => pushToCouponScreen(componentId, { data: lst_coupon })}
                 activeOpacity={0.6}
                 style={{ flexDirection: "row", alignItems: 'center', backgroundColor: color.GRAY_COLOR_100, marginTop: scale(10), paddingVertical: scale(10), borderRadius: scale(10) }}>
-                <Image style={{ width: scale(22), height: scale(22), marginLeft: scale(10) }} source={require('./res/ic_coupon.png')} />
-                <Text style={{ fontWeight: "500", fontSize: scale(16), marginLeft: scale(10), color: color.ORANGE_COLOR_400, flex: 1 }}>Bạn có {total} mã giảm giá </Text>
+                <Image
+                    style={{ width: scale(22), height: scale(22), marginLeft: scale(10) }}
+                    source={require('./res/ic_coupon.png')} />
+                <Text style={{
+                    fontWeight: "500",
+                    fontSize: scale(16),
+                    marginLeft: scale(10),
+                    color: color.ORANGE_COLOR_400, flex: 1
+                }}>
+                    Bạn có {total} mã giảm giá
+                </Text>
                 <MaterialIcons color={color.ORANGE_COLOR_400} name="keyboard-arrow-right" size={scale(22)} />
             </TouchableOpacity>
         }
     }
+    getStatusName = (booking_type) => {
+        switch (booking_type) {
+            case constant_type_status_booking.WAITING_DRIVER:
+                return 'Chờ tài xế'
+            case constant_type_status_booking.USER_CANCEL:
+                return 'Đã Huỷ'
+            case constant_type_status_booking.PROCESSING:
+                return 'Đang di chuyển'
+            case constant_type_status_booking.FINDING_DRIVER:
+                return 'Tìm xe'
+            case constant_type_status_booking.END:
+                return 'Đã kết thúc'
+        }
+    }
+    getColorStatus = (status) => {
+        switch (status) {
+            case constant_type_status_booking.WAITING_DRIVER:
+                return color.YEALLOW_COLOR_400
+            case constant_type_status_booking.FINDING_DRIVER:
+                return color.ORANGE_COLOR_400
+            case constant_type_status_booking.PROCESSING:
+                return color.GREEN_COLOR_400
+            case constant_type_status_booking.USER_CANCEL:
+                return color.RED_COLOR
+            case constant_type_status_booking.END:
+                return color.MAIN_COLOR
+        }
+    }
+    onPressJourney = (crrJourneys) => {
+        const { componentId } = this.props;
+        if (crrJourneys.status == constant_type_status_booking.WAITING_DRIVER
+            || crrJourneys.status == constant_type_status_booking.PROCESSING
+            || crrJourneys.status == constant_type_status_booking.FINDING_DRIVER) {
+            if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.HYBIRD_CAR) {
+                pushToBookingHybirdScreen(componentId)
+            } else if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.COACH_CAR) {
+                pushToBookingScreen(componentId)
+
+            } else {
+                pushToDeliveryScreen(componentId)
+
+            }
+
+
+        } else {
+            pushToOrderInfoScreen(componentId, { data: crrJourneys })
+        }
+
+    }
+    getBookingTypeName = (type) => {
+        switch (type) {
+            case CONSTANT_TYPE_BOOKING.COACH_CAR:
+                return 'Xe tuyến cố định'
+            case CONSTANT_TYPE_BOOKING.HYBIRD_CAR:
+                return 'Xe tiện chuyến'
+            case CONSTANT_TYPE_BOOKING.COACH_DELIVERY_CAR:
+                return 'Gửi hàng'
+            case CONSTANT_TYPE_BOOKING.HYBIRD_DELIVERY_CAR:
+                return 'Gửi hàng'
+        }
+    }
+
+    renderCurrentBooking = (crrJourneys) => {
+        const txtStatus = this.getStatusName(crrJourneys.status);
+        const txtColor = this.getColorStatus(crrJourneys.status);
+
+        return <TouchableOpacity
+            onPress={() => this.onPressJourney(crrJourneys)}
+            activeOpacity={0.5}
+            style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: scale(10),
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 5,
+                },
+                shadowOpacity: 0.36,
+                shadowRadius: 6.68,
+
+                elevation: 11,
+                marginHorizontal: scale(5), marginVertical: scale(10),
+                paddingHorizontal: scale(15)
+            }}>
+            <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: scale(10) }}>
+                    <View style={{}}>
+                        <Text style={{ fontWeight: '700', fontSize: scale(18) }}>{this.getBookingTypeName(crrJourneys.booking_type)}</Text>
+                        <Text style={{ fontWeight: "500", marginTop: scale(5) }}>{moment(crrJourneys?.time_start * 1000).format('HH:mm - DD/MM')}</Text>
+                    </View>
+                    <View style={{ padding: scale(5), backgroundColor: txtColor, borderRadius: scale(6), width: scale(125), alignItems: "center", justifyContent: "center", height: scale(30) }}>
+                        <Text style={{ fontSize: scale(14), fontWeight: "700", color: '#FFFFFF' }}>{txtStatus}</Text>
+                    </View>
+                </View>
+
+                <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+                {this.renderInfoCrrBooking(crrJourneys)}
+
+                <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+                {/* <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
+                    <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Loại chuyến:</Text>
+                    <Text style={{ fontWeight: '500' }}>{this.getBookingTypeName(crrJourneys.booking_type)}</Text>
+                </View> */}
+                <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: scale(10) }}>
+                    <Text style={{ fontSize: scale(14), fontWeight: '600' }}>Xem ngay</Text>
+                    <View
+                        style={{
+                            width: scale(28),
+                            height: scale(28),
+                            borderRadius: scale(14),
+                            backgroundColor: color.ORANGE_COLOR_400,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <MaterialCommunityIcons
+                            name='arrow-right'
+                            size={scale(18)}
+                            color="#FFFFFF"
+                        />
+                    </View>
+                </View>
+            </View>
+        </TouchableOpacity>
+    }
     render() {
-        const { isInCreaseHeight, isLoadingPre, lst_coupon } = this.props;
+        const { isInCreaseHeight, isLoadingPre, currentBooking } = this.props;
         const { txt_crrAddress } = this.state;
         return (
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -359,10 +574,11 @@ export default class MainView extends React.Component {
                         </View>
                     </View>
 
-                    {this.renderService()}
+                    {!currentBooking && this.renderService()}
+                    {currentBooking && this.renderCurrentBooking(currentBooking)}
                     {this.renderCoupon()}
+                    {!currentBooking && this.state.near_journey.length > 0 && this.renderNearJourney()}
                     {this.renderExplore()}
-                    {this.state.near_journey.length > 0 && this.renderNearJourney()}
                 </View>}
                 <ActionSheet
                     ref={o => this.ActionSheet = o}

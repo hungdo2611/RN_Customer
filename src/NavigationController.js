@@ -191,6 +191,25 @@ export function pushToOrderInfoScreen(componentId, props) {
         },
     });
 }
+export function pushToCouponScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.COUPON_SCREEN}_id`,
+            name: constant_name.COUPON_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function pushToEditInfoScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {

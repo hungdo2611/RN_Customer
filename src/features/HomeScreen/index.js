@@ -43,7 +43,7 @@ class HomeScreen extends React.Component {
     }
 
     render() {
-        const { componentId, isLoadingPre } = this.props;
+        const { componentId, isLoadingPre, currentBooking } = this.props;
         const { lst_coupon, total } = this.state;
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -55,7 +55,13 @@ class HomeScreen extends React.Component {
                     behavior={Platform.OS == 'ios' ? 'padding' : ''}>
 
                     <View style={{ paddingHorizontal: scale(10), flex: 1 }}>
-                        <MainView total={total} lst_coupon={lst_coupon} isLoadingPre={isLoadingPre} componentId={componentId} />
+                        <MainView
+                            total={total}
+                            lst_coupon={lst_coupon}
+                            isLoadingPre={isLoadingPre}
+                            componentId={componentId}
+                            currentBooking={currentBooking}
+                        />
                     </View>
 
 
@@ -69,7 +75,8 @@ class HomeScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        isLoadingPre: state.HomeReducer.isLoadingPre
+        isLoadingPre: state.HomeReducer.isLoadingPre,
+        currentBooking: state.HomeReducer.currentBooking
     }
 }
 
