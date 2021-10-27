@@ -3,10 +3,16 @@ import actions from "./actions";
 const initState = {
     isLoading_crrBooking: false,
     currentBooking: null,
-    user_info: null
+    user_info: null,
+    isLoadingPre: false
 };
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actions.type.UPDATE_ISLOADING_PRE:
+            return {
+                ...state,
+                isLoadingPre: action.payload.isloading
+            }
         case actions.type.UPDATE_USER_INFO:
             return {
                 ...state,

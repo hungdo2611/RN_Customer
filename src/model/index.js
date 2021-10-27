@@ -9,6 +9,7 @@ const constant_key = {
     SHOW_HELP: 'SHOW_HELP',
 }
 const getPreData = async () => {
+
     store.dispatch(actionsHome.action.getCurrentBooking())
     AsyncStorage.getItem(constant_key.SHOW_HELP).then(value => {
         if (value) {

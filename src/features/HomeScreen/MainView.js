@@ -30,10 +30,16 @@ import Geolocation from 'react-native-geolocation-service';
 import { getNearJourneyAPI } from '../../api/bookingApi'
 import { getAdressFromLatLng } from '../../api/MapApi'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { CONSTANT_TYPE_JOURNEYS } from '../../constant';
 import ActionSheet from 'react-native-actionsheet'
-
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
 const { width, height } = Dimensions.get('window')
 
 export default class MainView extends React.Component {
@@ -272,12 +278,44 @@ export default class MainView extends React.Component {
     onShowMenu = () => {
         pushToMenuScreen(this.props.componentId)
     }
+    renderLoading = () => {
+        let arr = [1, 2, 3, 4];
+        return <View style={{}}>
+            {arr.map(vl => {
+                return <Placeholder
+                    Animation={Fade}
+                    Left={props => <PlaceholderMedia style={[{ height: scale(40), width: scale(40), marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
+                    style={{ marginVertical: scale(12) }}
+                >
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                </Placeholder>
+            })}
 
+
+        </View>
+    }
+    renderCoupon = () => {
+        const { lst_coupon, total } = this.props;
+        if (lst_coupon.length > 0) {
+            return <TouchableOpacity
+                onPress={() => { }}
+                activeOpacity={0.6}
+                style={{ flexDirection: "row", alignItems: 'center', backgroundColor: color.GRAY_COLOR_100, marginTop: scale(10), paddingVertical: scale(10), borderRadius: scale(10) }}>
+                <Image style={{ width: scale(22), height: scale(22), marginLeft: scale(10) }} source={require('./res/ic_coupon.png')} />
+                <Text style={{ fontWeight: "500", fontSize: scale(16), marginLeft: scale(10), color: color.ORANGE_COLOR_400, flex: 1 }}>Bạn có {total} mã giảm giá </Text>
+                <MaterialIcons color={color.ORANGE_COLOR_400} name="keyboard-arrow-right" size={scale(22)} />
+            </TouchableOpacity>
+        }
+    }
     render() {
-        const { isInCreaseHeight } = this.props;
+        const { isInCreaseHeight, isLoadingPre, lst_coupon } = this.props;
         const { txt_crrAddress } = this.state;
         return (
-            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF", marginHorizontal: scale(10) }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
                 <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
                     <Image style={{ width: scale(120), height: scale(70) }} resizeMode="stretch" source={require('./res/ic_logo.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -303,25 +341,29 @@ export default class MainView extends React.Component {
 
                     </View>
                 </View>
-                <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(60), alignItems: 'center', flexDirection: "row" }}>
-                    <Image style={{
-                        height: scale(50),
-                        width: scale(70),
-                        transform: [{ rotate: '8deg' }],
-                    }} source={require('./res/ic_car_head.png')} />
-                    <View style={{ marginLeft: scale(10), flex: 1 }}>
-                        <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, fontWeight: '500' }}>Địa chỉ của bạn</Text>
-                        <Text numberOfLines={1} style={{ fontSize: scale(11), fontWeight: 'bold' }}>{txt_crrAddress}</Text>
+                {isLoadingPre && this.renderLoading()}
+                {!isLoadingPre && <View>
+                    <View style={{ backgroundColor: color.GRAY_COLOR_50, borderRadius: scale(10), height: scale(60), alignItems: 'center', flexDirection: "row" }}>
+                        <Image style={{
+                            height: scale(50),
+                            width: scale(70),
+                            transform: [{ rotate: '8deg' }],
+                        }} source={require('./res/ic_car_head.png')} />
+                        <View style={{ marginLeft: scale(10), flex: 1 }}>
+                            <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, fontWeight: '500' }}>Địa chỉ của bạn</Text>
+                            <Text numberOfLines={1} style={{ fontSize: scale(11), fontWeight: 'bold' }}>{txt_crrAddress}</Text>
+                        </View>
+                        <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ width: scale(1), height: scale(20), backgroundColor: color.GRAY_COLOR_500 }} />
+                            <Text style={{ fontSize: scale(11), fontWeight: '600', marginHorizontal: scale(12) }}>Bản đồ</Text>
+                        </View>
                     </View>
-                    <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ width: scale(1), height: scale(20), backgroundColor: color.GRAY_COLOR_500 }} />
-                        <Text style={{ fontSize: scale(11), fontWeight: '600', marginHorizontal: scale(12) }}>Bản đồ</Text>
-                    </View>
-                </View>
 
-                {this.renderService()}
-                {this.renderExplore()}
-                {this.state.near_journey.length > 0 && this.renderNearJourney()}
+                    {this.renderService()}
+                    {this.renderCoupon()}
+                    {this.renderExplore()}
+                    {this.state.near_journey.length > 0 && this.renderNearJourney()}
+                </View>}
                 <ActionSheet
                     ref={o => this.ActionSheet = o}
                     title={'Chọn dịch vụ ?'}

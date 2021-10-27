@@ -80,12 +80,14 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>ứng dụng cần quyền truy cập thư viện để lấy hình ảnh cho đơn hàng</string>
 	<key>NSCameraUsageDescription</key>
 	<string>ứng dụng cần quyền truy cập camera để lấy hình ảnh cho đơn hàng</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ứng dụng cần quyền truy cập camera để lấy hình ảnh cho đơn hàng</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>
