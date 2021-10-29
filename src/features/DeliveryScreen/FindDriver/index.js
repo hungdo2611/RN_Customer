@@ -54,12 +54,25 @@ class FindDriver extends React.Component {
             lst_select: [],
             fromTime: moment(new Date()).add(0.25, 'hours').format('HH:mm'),
             day_select: moment(new Date()).format('DD/MM/YYYY'),
-            isloading: false
+            isloading: false,
+            coupon: props.coupon ? props.coupon : null,
+            index_coupon: props.index_coupon ? props.index_coupon : null
         }
 
     }
+    scrollToIndex = (index) => {
+        setTimeout(() => {
+            this.scrollCoupon.scrollTo({
+                x: (width - scale(70)) * (index),
+                animated: true,
+            })
+        }, 300)
+    }
     componentDidMount() {
-        const { disablePull } = this.props;
+        const { disablePull, coupon, index_coupon } = this.props;
+        if (this.scrollCoupon && coupon && index_coupon) {
+            this.scrollToIndex(index_coupon);
+        }
         disablePull();
     }
     componentWillUnmount() {
@@ -161,7 +174,7 @@ class FindDriver extends React.Component {
     }
     getPrice = (lst_price) => {
         const { distance } = this.props;
-        console.log("distance", distance)
+        console.log("lst_price", lst_price)
         let data = lst_price.find(price => {
             return distance < (price.distance * 1000)
         })
@@ -172,9 +185,42 @@ class FindDriver extends React.Component {
             return lst_price[lst_price.length - 1].value
         }
     }
+    renderPrice = (driver, coupon) => {
+        const { seat } = this.state;
+        let crr_price = this.getPrice(driver.price_shipping) * seat
+        if (coupon && crr_price >= coupon?.condition?.min_Price) {
+            const { amount, max_apply, condition } = coupon;
+            let reduce_value = 0;
+            if (amount < 100) {
+                reduce_value = crr_price * amount / 100;
+                if (reduce_value > max_apply) {
+                    reduce_value = max_apply
+                }
+            } else {
+                reduce_value = amount;
+            }
+            return <View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                    <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, textDecorationLine: 'line-through' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price_shipping) * seat)}đ</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(crr_price - reduce_value)}đ</Text>
+                </View>
+            </View>
+        }
+        return <View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500 }}>Tổng tiền</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(crr_price)}đ</Text>
+            </View>
+        </View>
+
+    }
 
     renderLstDriver = (lstDriver) => {
-        const { lst_select, seat } = this.state;
+        const { lst_select, coupon } = this.state;
 
         if (lstDriver.length == 0) {
             return <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: scale(30) }}>
@@ -261,10 +307,7 @@ class FindDriver extends React.Component {
                     </View>
                     <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
                     <View style={{ height: scale(35), flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', margin: scale(5) }}>
-                            <MaterialIcons name="attach-money" size={scale(14)} />
-                            <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price_shipping) * seat)} VND</Text>
-                        </View>
+                        {this.renderPrice(driver, coupon)}
                         <CheckBox
                             value={isCheck == -1 ? false : true}
                             onCheckColor={color.ORANGE_COLOR_400}
@@ -272,7 +315,7 @@ class FindDriver extends React.Component {
                             style={{ width: scale(20), height: scale(20), marginRight: scale(5) }}
                             onValueChange={(newValue) => {
                                 if (newValue) {
-                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price: driver.price_shipping, driver_id: driver.driver_id._id }]
+                                    let newArr = [...lst_select, { journey_id: driver.journey_id, value: driver.driver_id.device_token, price_shipping: driver.price_shipping, driver_id: driver.driver_id._id }]
                                     this.setState({ lst_select: newArr })
                                 } else {
                                     let newArr = lst_select.filter(vl => vl.journey_id !== driver.journey_id)
@@ -306,7 +349,7 @@ class FindDriver extends React.Component {
         let maxPrice = 0;
         let minPrice = 0;
         lst_select.map(lstprice => {
-            let price = this.getPrice(lstprice.price);
+            let price = this.getPrice(lstprice.price_shipping);
             if (maxPrice == 0 && minPrice == 0) {
                 maxPrice = price;
                 minPrice = price;
@@ -380,7 +423,9 @@ class FindDriver extends React.Component {
                                     note: infoOrder.note,
                                     lst_image: list_image_upload,
                                     weight: infoOrder.weight
-                                }
+                                },
+                                coupon_code: this.state.coupon ? this.state.coupon.code : ''
+
 
 
                             }
@@ -435,7 +480,9 @@ class FindDriver extends React.Component {
                                     note: infoOrder.note,
                                     lst_image: list_image_upload,
                                     weight: infoOrder.weight
-                                }
+                                },
+                                coupon_code: this.state.coupon ? this.state.coupon.code : ''
+
 
                             }
 
@@ -498,6 +545,73 @@ class FindDriver extends React.Component {
             </TouchableOpacity>
         </View>
     }
+    onUseCoupon = (item, index) => {
+        this.setState({ coupon: item, index_coupon: index })
+    }
+    renderCouponItem = ({ item, index }) => {
+        const { coupon, index_coupon } = this.state
+        console.log("index_coupon", index_coupon)
+        return <View style={{}} >
+            <View style={{
+                width: width - scale(70),
+                marginHorizontal: scale(10),
+                flexDirection: "row",
+                borderLeftWidth: scale(6),
+                borderLeftColor: color.ORANGE_COLOR_400,
+                paddingVertical: scale(6),
+                borderWidth: scale(1.5),
+                borderTopLeftRadius: scale(5),
+                borderBottomLeftRadius: scale(5),
+                borderTopRightRadius: scale(5),
+                borderBottomRightRadius: scale(5),
+                borderColor: index_coupon == index ? color.ORANGE_COLOR_200 : color.GRAY_COLOR_200,
+                backgroundColor: index_coupon == index ? color.ORANGE_COLOR_100 : '#FFFFFF'
+            }}>
+                {/* <Image
+                    style={{ width: scale(22), height: scale(22), marginLeft: scale(5) }}
+                    source={require('../../HomeScreen/res/ic_coupon.png')} /> */}
+                <View style={{ marginHorizontal: scale(10), flex: 1 }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: '600', color: color.GRAY_COLOR_500 }}>{item.code}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scale(13), fontWeight: '500', paddingTop: scale(3) }}>{item.content}</Text>
+                    <Text style={{ fontSize: scale(13), color: color.GRAY_COLOR_500, paddingTop: scale(3) }}>
+                        Hết hạn: {moment(item.expired_time * 1000).format('DD')} thg {moment(item.expired_time * 1000).format('MM')}, {moment(item.expired_time * 1000).format('YYYY')}
+                    </Text>
+                </View>
+                {index_coupon != index && <TouchableOpacity onPress={() => this.onUseCoupon(item, index)} activeOpacity={0.6} style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: scale(5), borderLeftWidth: scale(1), borderColor: color.ORANGE_COLOR_400, width: scale(60) }}>
+                    <Text style={{ fontWeight: "600", color: color.ORANGE_COLOR_400 }}>Sử dụng</Text>
+                </TouchableOpacity>}
+                {index_coupon == index && <TouchableOpacity onPress={() => this.setState({ coupon: null, index_coupon: -1 })} activeOpacity={0.6} style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: scale(5), borderLeftWidth: scale(1), borderColor: color.ORANGE_COLOR_400, width: scale(60) }}>
+                    <Text style={{ fontWeight: "600", color: color.ORANGE_COLOR_400 }}>Huỷ</Text>
+                </TouchableOpacity>}
+            </View>
+
+        </View>
+    }
+    renderCoupon = () => {
+        const { lst_coupon } = this.props;
+        console.log("lst_coupon", lst_coupon)
+        if (lst_coupon && lst_coupon.length == 0) {
+            return null
+        }
+        if (lst_coupon && lst_coupon.length > 0) {
+            return <View style={{ marginTop: scale(10) }}>
+                <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginLeft: scale(10) }}>Mã giảm giá</Text>
+                <ScrollView
+                    ref={e => this.scrollCoupon = e}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    style={{ marginVertical: scale(10) }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", flex: 1, paddingRight: scale(20) }}>
+                        {[...lst_coupon].map((vl, index) => {
+                            return this.renderCouponItem({ item: vl, index: index })
+                        })}
+                    </View>
+
+                </ScrollView>
+
+            </View>
+        }
+    }
     render() {
         const { seat, lst_select, fromTime } = this.state;
         const { isLoading_getListDriver, lstDriver } = this.props;
@@ -548,6 +662,7 @@ class FindDriver extends React.Component {
                     {this.renderInfo()}
                     {this.renderTimeStart()}
                     {this.renderTimeDay()}
+                    {this.renderCoupon()}
                     {this.renderLine()}
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: scale(10), alignItems: 'center', marginTop: scale(5) }}>
                         <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Danh sách nhà xe</Text>
@@ -562,7 +677,7 @@ class FindDriver extends React.Component {
                                 onValueChange={(newValue) => {
                                     if (newValue) {
                                         let arr = lstDriver.map(journey => {
-                                            return { journey_id: journey.journey_id, value: journey.driver_id.device_token, price: journey.price }
+                                            return { journey_id: journey.journey_id, value: journey.driver_id.device_token, price: journey.price, price_shipping: journey.price_shipping }
                                         })
                                         this.setState({ lst_select: arr })
                                     } else {
@@ -602,6 +717,8 @@ const mapStateToProps = (state) => {
         isLoading_getListDriver: state.BookingReducer.isLoading,
         lstDriver: state.BookingReducer.lstDriver,
         distance: state.BookingReducer.distance,
+        lst_coupon: state.HomeReducer.lst_coupon,
+
     }
 }
 function mapDispatchToProps(dispatch) {

@@ -165,7 +165,7 @@ class OrderInfoScreen extends React.Component {
         const { price } = this.props?.data;
         return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginVertical: scale(10), alignItems: "center" }}>
             <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Giá tiền: </Text>
-            <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)} VND</Text>
+            <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)} đ</Text>
         </View>
     }
     renderPriceRange = () => {
@@ -173,9 +173,9 @@ class OrderInfoScreen extends React.Component {
         const { max_price, min_price } = this.props?.data.range_price;
         return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginVertical: scale(10), alignItems: "center" }}>
             <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Giá tiền: </Text>
-            {max_price == min_price && <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(max_price * seat)} VND</Text>}
+            {max_price == min_price && <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(max_price * seat)} đ</Text>}
             {max_price != min_price && <View>
-                <Text>Từ {new Intl.NumberFormat().format(min_price * seat)} VND - {new Intl.NumberFormat().format(max_price * seat)} VND</Text>
+                <Text>Từ {new Intl.NumberFormat().format(min_price * seat)} đ - {new Intl.NumberFormat().format(max_price * seat)} đ</Text>
             </View>}
 
         </View>
@@ -303,6 +303,75 @@ class OrderInfoScreen extends React.Component {
 
         </View>
     }
+    renderPrice_Coupon = () => {
+        const { seat, coupon_code } = this.props?.data;
+        const { lst_coupon } = this.props;
+        const { price } = this.props?.data;
+        if (!coupon_code) {
+            return
+        }
+        let crr_coupon = lst_coupon.find(vl => {
+            return vl.code == coupon_code
+        })
+
+
+        if (crr_coupon) {
+            const { amount, max_apply, condition } = crr_coupon;
+            let reduce_value = 0;
+            if (amount < 100) {
+                reduce_value = price * amount / 100;
+                if (reduce_value > max_apply) {
+                    reduce_value = max_apply
+                }
+            } else {
+                reduce_value = amount;
+            }
+            let price_coupon = price >= condition?.min_Price ? price - reduce_value : price;
+            return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginVertical: scale(10), alignItems: "center" }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Tổng tiền: </Text>
+                <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price_coupon)}đ</Text>
+
+
+            </View>
+        }
+
+    }
+    renderReduceValue = () => {
+        const { seat, coupon_code } = this.props?.data;
+        const { lst_coupon } = this.props;
+        const { price } = this.props?.data;
+        if (!coupon_code) {
+            return
+        }
+        let crr_coupon = lst_coupon.find(vl => {
+            return vl.code == coupon_code
+        })
+        if (crr_coupon) {
+            const { amount, max_apply, condition } = crr_coupon;
+
+            let reduce_value = 0;
+            if (amount < 100) {
+                reduce_value = price * amount / 100;
+                if (reduce_value > max_apply) {
+                    reduce_value = max_apply
+                }
+            } else {
+                reduce_value = amount;
+            }
+            if (price < condition?.min_Price) {
+                reduce_value = 0;
+            }
+            return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginVertical: scale(10), alignItems: "center" }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Mã giảm giá: </Text>
+                <Text style={{ fontSize: scale(14), fontWeight: '500', color: color.ORANGE_COLOR_400 }}>
+                    {new Intl.NumberFormat().format(reduce_value)}đ
+                </Text>
+
+
+            </View>
+        }
+
+    }
     render() {
         const { componentId, data } = this.props;
         const { price } = this.props?.data;
@@ -331,6 +400,8 @@ class OrderInfoScreen extends React.Component {
                     {this.renderInfo(data)}
                     <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
                     {price ? this.renderPrice() : this.renderPriceRange()}
+                    {this.renderReduceValue()}
+                    {this.renderPrice_Coupon()}
                     <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
                     {this.renderInfoDriver()}
                     {/* {userInfo && <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />} */}
@@ -348,6 +419,7 @@ class OrderInfoScreen extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
+        lst_coupon: state.HomeReducer.lst_coupon,
 
     }
 }

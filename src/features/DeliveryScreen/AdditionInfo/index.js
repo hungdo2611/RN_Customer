@@ -313,7 +313,7 @@ class AdditionalInfo extends React.Component {
                     color={color.MAIN_COLOR}
                     style={{ marginHorizontal: scale(10), opacity: 0.7 }}
                 />
-                <TextInput onChangeText={txt => this.setState({ note: txt })} placeholderTextColor={color.GRAY_COLOR_400} style={{ fontSize: scale(14), fontWeight: '500', flex: 1, marginRight: scale(7) }} multiline={true} placeholder="Lưu ý với tài xế" />
+                <TextInput onChangeText={txt => this.setState({ note: txt })} placeholderTextColor={color.GRAY_COLOR_400} style={{ fontSize: scale(14), fontWeight: '500', flex: 1, marginRight: scale(7) }} multiline={true} placeholder="Hãy mô tả thông tin và lưu ý với tài xế" />
             </View>
         </View>
     }

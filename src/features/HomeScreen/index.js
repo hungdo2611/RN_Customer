@@ -18,7 +18,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import { connect } from 'react-redux'
 import MainView from './MainView'
-
+import actions from './redux/actions'
 import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { getListCoupon } from '../../api/couponAPI'
@@ -30,21 +30,24 @@ class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            lst_coupon: [],
-            total: 0,
+
         };
     }
     async componentDidMount() {
-        const reqCoupon = await getListCoupon(1, 10);
+        const { update_list_coupon } = this.props;
+        const reqCoupon = await getListCoupon();
+        console.log("reqCoupon", reqCoupon)
         if (reqCoupon && !reqCoupon.err) {
-            this.setState({ lst_coupon: reqCoupon.data, total: reqCoupon.total })
+            const length = reqCoupon?.data?.length ? reqCoupon?.data?.length : 0
+            const data_lst = reqCoupon.data ? reqCoupon.data : []
+            update_list_coupon(data_lst, length)
         }
 
     }
 
     render() {
         const { componentId, isLoadingPre, currentBooking } = this.props;
-        const { lst_coupon, total } = this.state;
+        const { lst_coupon, total_coupon } = this.props;
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <KeyboardAvoidingView
@@ -56,7 +59,7 @@ class HomeScreen extends React.Component {
 
                     <View style={{ paddingHorizontal: scale(10), flex: 1 }}>
                         <MainView
-                            total={total}
+                            total={total_coupon}
                             lst_coupon={lst_coupon}
                             isLoadingPre={isLoadingPre}
                             componentId={componentId}
@@ -76,13 +79,17 @@ class HomeScreen extends React.Component {
 const mapStateToProps = (state) => {
     return {
         isLoadingPre: state.HomeReducer.isLoadingPre,
-        currentBooking: state.HomeReducer.currentBooking
+        currentBooking: state.HomeReducer.currentBooking,
+        lst_coupon: state.HomeReducer.lst_coupon,
+        total_coupon: state.HomeReducer.total_coupon
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        update_list_coupon: (coupon, total) => {
+            dispatch(actions.action.updateListCoupon(coupon, total));
+        },
     }
 }
 

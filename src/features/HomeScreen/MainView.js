@@ -590,14 +590,12 @@ export default class MainView extends React.Component {
                         if (index == 0) {
                             const { journey_type, from, to } = this.crrNear;
 
-                            //ffrom library
                             pushToDeliveryScreen(this.props.componentId, { from: from, to: to })
                         }
                         if (index == 1) {
-                            //ffrom camera
                             const { journey_type, from, to } = this.crrNear;
                             if (journey_type == CONSTANT_TYPE_JOURNEYS.HYBIRD_CAR) {
-                                pushToBookingHybirdScreen(this.props.componentId)
+                                pushToBookingHybirdScreen(this.props.componentId, { from: from, to: to })
                             } else {
                                 pushToBookingScreen(this.props.componentId, { from: from, to: to })
                             }

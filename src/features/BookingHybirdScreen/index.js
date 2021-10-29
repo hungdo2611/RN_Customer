@@ -724,6 +724,8 @@ class CreateTripScreen extends Component {
                                         {props => <AdditionalInfo
                                             onBack={this.onCancelPick}
                                             line_string={this.state.lineString}
+                                            coupon={this.props.coupon}
+                                            index_coupon={this.props.index_coupon}
                                             disablePull={() => this.setState({ EnablePull: false })}
                                             enablePull={() => this.setState({ EnablePull: true })}
                                             AnimateHeightTovalue={vl => this.BottomView.AnimateHeightToValue(vl)}
@@ -816,7 +818,7 @@ class CreateTripScreen extends Component {
                         }}
                         IsIncreaseFromStart={true}
                         BottomViewHeight={scale(200)}
-                        heightIncreased={scale(500)}
+                        heightIncreased={height * 6 / 7}
                         allowIncrease={!isPickWithGGMap}
                         onDecrease={() => { this.setState({ isInCreaseHeight: false }) }}
                         onIncrease={() => { this.setState({ isInCreaseHeight: true }) }}

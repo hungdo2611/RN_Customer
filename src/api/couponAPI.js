@@ -1,9 +1,9 @@
 import ApiService from './ApiService'
 
 const api = ApiService()
-export const getListCoupon = (page_nunmber, page_size) => {
+export const getListCoupon = () => {
     return api.makeAuthRequest({
-        url: `/coupon?page_nunmber=${page_nunmber}&page_size=${page_size}`,
+        url: `/coupon`,
         method: 'GET',
     })
 }

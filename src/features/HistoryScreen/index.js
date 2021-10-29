@@ -40,7 +40,7 @@ const { width, height } = Dimensions.get('window')
 const widthBox = width / 2 - scale(30);
 
 
-;
+export let instance_history = null;
 
 class HistoryScreen extends React.Component {
     constructor(props) {
@@ -54,6 +54,8 @@ class HistoryScreen extends React.Component {
             refreshing: false,
         };
     }
+
+
     getDataHistory = async (page_number) => {
         const { total, data, isloading, filter_type } = this.state;
         if (isloading) {
@@ -79,9 +81,26 @@ class HistoryScreen extends React.Component {
             }
         }
     }
+    updateData = (dt) => {
+        if (dt) {
+            let index = this.state.data.findIndex(vl => {
+                return vl._id == dt._id
+            })
+            if (index != -1) {
+                let newData = this.state.data;
+                newData[index] = dt;
+                this.setState({ data: newData })
+            }
+        }
+
+    }
 
     async componentDidMount() {
+        instance_history = this;
         this.getDataHistory(1);
+    }
+    componentWillUnmount() {
+        instance_history = null;
     }
 
 

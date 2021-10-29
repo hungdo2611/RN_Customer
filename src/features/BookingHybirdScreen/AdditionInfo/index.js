@@ -55,12 +55,27 @@ class AdditionalInfo extends React.Component {
             lst_select: [],
             fromTime: moment(new Date()).add(0.25, 'hours').format('HH:mm'),
             day_select: moment(new Date()).format('DD/MM/YYYY'),
-            isloading: false
+            isloading: false,
+            coupon: props.coupon ? props.coupon : null,
+            index_coupon: props.index_coupon ? props.index_coupon : null
         }
 
     }
+    scrollToIndex = (index) => {
+        setTimeout(() => {
+            this.scrollCoupon.scrollTo({
+                x: (width - scale(70)) * (index),
+                animated: true,
+            })
+        }, 300)
+    }
     componentDidMount() {
-        const { disablePull } = this.props;
+        const { disablePull, coupon, index_coupon } = this.props;
+        if (this.scrollCoupon && coupon && index_coupon) {
+
+            this.scrollToIndex(index_coupon);
+
+        }
         disablePull();
     }
     componentWillUnmount() {
@@ -75,6 +90,73 @@ class AdditionalInfo extends React.Component {
         navigation.pop();
         onBack();
         onbackCB();
+    }
+    onUseCoupon = (item, index) => {
+        this.setState({ coupon: item, index_coupon: index })
+    }
+    renderCouponItem = ({ item, index }) => {
+        const { coupon, index_coupon } = this.state
+        console.log("index_coupon", index_coupon)
+        return <View style={{}} >
+            <View style={{
+                width: width - scale(70),
+                marginHorizontal: scale(10),
+                flexDirection: "row",
+                borderLeftWidth: scale(6),
+                borderLeftColor: color.ORANGE_COLOR_400,
+                paddingVertical: scale(6),
+                borderWidth: scale(1.5),
+                borderTopLeftRadius: scale(5),
+                borderBottomLeftRadius: scale(5),
+                borderTopRightRadius: scale(5),
+                borderBottomRightRadius: scale(5),
+                borderColor: index_coupon == index ? color.ORANGE_COLOR_200 : color.GRAY_COLOR_200,
+                backgroundColor: index_coupon == index ? color.ORANGE_COLOR_100 : '#FFFFFF'
+            }}>
+                {/* <Image
+                    style={{ width: scale(22), height: scale(22), marginLeft: scale(5) }}
+                    source={require('../../HomeScreen/res/ic_coupon.png')} /> */}
+                <View style={{ marginHorizontal: scale(10), flex: 1 }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: '600', color: color.GRAY_COLOR_500 }}>{item.code}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scale(13), fontWeight: '500', paddingTop: scale(3) }}>{item.content}</Text>
+                    <Text style={{ fontSize: scale(13), color: color.GRAY_COLOR_500, paddingTop: scale(3) }}>
+                        Hết hạn: {moment(item.expired_time * 1000).format('DD')} thg {moment(item.expired_time * 1000).format('MM')}, {moment(item.expired_time * 1000).format('YYYY')}
+                    </Text>
+                </View>
+                {index_coupon != index && <TouchableOpacity onPress={() => this.onUseCoupon(item, index)} activeOpacity={0.6} style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: scale(5), borderLeftWidth: scale(1), borderColor: color.ORANGE_COLOR_400, width: scale(60) }}>
+                    <Text style={{ fontWeight: "600", color: color.ORANGE_COLOR_400 }}>Sử dụng</Text>
+                </TouchableOpacity>}
+                {index_coupon == index && <TouchableOpacity onPress={() => this.setState({ coupon: null, index_coupon: -1 })} activeOpacity={0.6} style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: scale(5), borderLeftWidth: scale(1), borderColor: color.ORANGE_COLOR_400, width: scale(60) }}>
+                    <Text style={{ fontWeight: "600", color: color.ORANGE_COLOR_400 }}>Huỷ</Text>
+                </TouchableOpacity>}
+            </View>
+
+        </View>
+    }
+    renderCoupon = () => {
+        const { lst_coupon } = this.props;
+        console.log("lst_coupon", lst_coupon)
+        if (lst_coupon && lst_coupon.length == 0) {
+            return null
+        }
+        if (lst_coupon && lst_coupon.length > 0) {
+            return <View style={{ marginTop: scale(10) }}>
+                <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginLeft: scale(10) }}>Mã giảm giá</Text>
+                <ScrollView
+                    ref={e => this.scrollCoupon = e}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    style={{ marginVertical: scale(10) }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", flex: 1, paddingRight: scale(20) }}>
+                        {[...lst_coupon].map((vl, index) => {
+                            return this.renderCouponItem({ item: vl, index: index })
+                        })}
+                    </View>
+
+                </ScrollView>
+
+            </View>
+        }
     }
 
     renderInfo = () => {
@@ -176,11 +258,44 @@ class AdditionalInfo extends React.Component {
             return lst_price[lst_price.length - 1].value
         }
     }
+    renderPrice = (driver, coupon) => {
+        const { seat } = this.state;
+        let crr_price = this.getPrice(driver.price) * seat
+        if (coupon && crr_price >= coupon?.condition?.min_Price) {
+            const { amount, max_apply, condition } = coupon;
+            let reduce_value = 0;
+            if (amount < 100) {
+                reduce_value = crr_price * amount / 100;
+                if (reduce_value > max_apply) {
+                    reduce_value = max_apply
+                }
+            } else {
+                reduce_value = amount;
+            }
+            return <View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                    <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, textDecorationLine: 'line-through' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price) * seat)}đ</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                    <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(crr_price - reduce_value)}đ</Text>
+                </View>
+            </View>
+        }
+        return <View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500 }}>Tổng tiền</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
+                <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(crr_price)}đ</Text>
+            </View>
+        </View>
+
+    }
+
 
     renderLstDriver = (lstDriver) => {
-        console.log("lstDriver", lstDriver)
-        const { lst_select, seat } = this.state;
-
+        const { lst_select, seat, coupon } = this.state;
+        console.log("coupon", coupon)
         if (lstDriver.length == 0) {
             return <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: scale(30) }}>
                 <Image style={{ width: scale(80), height: scale(80) }} source={require('./res/ic_notfound.png')} />
@@ -266,10 +381,7 @@ class AdditionalInfo extends React.Component {
                     </View>
                     <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
                     <View style={{ height: scale(35), flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', margin: scale(5) }}>
-                            <MaterialIcons name="attach-money" size={scale(14)} />
-                            <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price) * seat)} VND</Text>
-                        </View>
+                        {this.renderPrice(driver, coupon)}
                         <CheckBox
                             value={isCheck == -1 ? false : true}
                             onCheckColor={color.ORANGE_COLOR_400}
@@ -364,7 +476,10 @@ class AdditionalInfo extends React.Component {
                                     min_price: minPrice,
                                 },
                                 line_string: line_string,
-                                booking_type: CONSTANT_TYPE_BOOKING.HYBIRD_CAR
+                                booking_type: CONSTANT_TYPE_BOOKING.HYBIRD_CAR,
+                                coupon_code: this.state.coupon ? this.state.coupon.code : ''
+
+
                             }
                             let reqCreateBooking = await createBookingAPI(bodyRequest)
                             this.setState({ isloading: false })
@@ -395,7 +510,9 @@ class AdditionalInfo extends React.Component {
                                     min_price: minPrice,
                                 },
                                 line_string: line_string,
-                                booking_type: CONSTANT_TYPE_BOOKING.HYBIRD_CAR
+                                booking_type: CONSTANT_TYPE_BOOKING.HYBIRD_CAR,
+                                coupon_code: this.state.coupon ? this.state.coupon.code : ''
+
 
 
                             }
@@ -460,6 +577,7 @@ class AdditionalInfo extends React.Component {
             </TouchableOpacity>
         </View>
     }
+
     render() {
         const { seat, lst_select, fromTime } = this.state;
         const { isLoading_getListDriver, lstDriver } = this.props;
@@ -511,20 +629,20 @@ class AdditionalInfo extends React.Component {
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(5), alignItems: "center" }}>
                         <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Số người:</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity disabled={seat == 1} activeOpacity={0.6} onPress={() => this.setState({ seat: seat - 1 })} style={{ width: scale(28), height: scale(28), borderRadius: scale(14), alignItems: "center", justifyContent: "center", backgroundColor: color.GRAY_COLOR_200 }}>
+                            <TouchableOpacity disabled={seat == 1} activeOpacity={0.6} onPress={() => this.setState({ seat: seat - 1 })} style={{ width: scale(22), height: scale(22), borderRadius: scale(14), alignItems: "center", justifyContent: "center", backgroundColor: color.RED_COLOR }}>
                                 <FontAwesomeIcon
                                     name='minus'
                                     size={scale(11)}
-                                    color="black"
+                                    color="#FFFFFF"
 
                                 />
                             </TouchableOpacity>
                             <Text style={{ marginHorizontal: scale(10), fontSize: scale(18), fontWeight: 'bold' }}>{seat}</Text>
-                            <TouchableOpacity onPress={() => this.setState({ seat: seat + 1 })} activeOpacity={0.6} style={{ width: scale(28), height: scale(28), borderRadius: scale(14), alignItems: "center", justifyContent: "center", backgroundColor: color.GRAY_COLOR_200 }}>
+                            <TouchableOpacity onPress={() => this.setState({ seat: seat + 1 })} activeOpacity={0.6} style={{ width: scale(22), height: scale(22), borderRadius: scale(14), alignItems: "center", justifyContent: "center", backgroundColor: color.GREEN_COLOR_400 }}>
                                 <FontAwesomeIcon
                                     name='plus'
                                     size={scale(11)}
-                                    color="black"
+                                    color="#FFFFFF"
 
                                 />
                             </TouchableOpacity>
@@ -532,6 +650,7 @@ class AdditionalInfo extends React.Component {
                     </View>
                     {this.renderTimeStart()}
                     {this.renderTimeDay()}
+                    {this.renderCoupon()}
                     {this.renderLine()}
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: scale(10), alignItems: 'center', marginTop: scale(5) }}>
                         <Text style={{ fontSize: scale(14), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Danh sách nhà xe</Text>
@@ -586,6 +705,8 @@ const mapStateToProps = (state) => {
         isLoading_getListDriver: state.BookingHybirdReducer.isLoading,
         lstDriver: state.BookingHybirdReducer.lstDriver,
         distance: state.BookingHybirdReducer.distance,
+        lst_coupon: state.HomeReducer.lst_coupon,
+
     }
 }
 function mapDispatchToProps(dispatch) {

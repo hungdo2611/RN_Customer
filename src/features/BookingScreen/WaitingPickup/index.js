@@ -61,8 +61,77 @@ class WaitingPickup extends React.Component {
         const { price } = this.props?.currentBooking;
         return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
             <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Giá tiền: </Text>
-            <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)} VND</Text>
+            <Text style={{ fontSize: scale(14), fontWeight: '600' }}>{new Intl.NumberFormat().format(price)}đ</Text>
         </View>
+    }
+    renderPrice_Coupon = () => {
+        const { seat, coupon_code } = this.props?.currentBooking;
+        const { lst_coupon } = this.props;
+        const { price } = this.props?.currentBooking;
+        if (!coupon_code) {
+            return
+        }
+        let crr_coupon = lst_coupon.find(vl => {
+            return vl.code == coupon_code
+        })
+
+
+        if (crr_coupon) {
+            const { amount, max_apply, condition } = crr_coupon;
+            let reduce_value = 0;
+            if (amount < 100) {
+                reduce_value = price * amount / 100;
+                if (reduce_value > max_apply) {
+                    reduce_value = max_apply
+                }
+            } else {
+                reduce_value = amount;
+            }
+            let price_coupon = price >= condition?.min_Price ? price - reduce_value : price;
+            return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Tổng tiền: </Text>
+                <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(price_coupon)}đ</Text>
+
+
+            </View>
+        }
+
+    }
+    renderReduceValue = () => {
+        const { seat, coupon_code } = this.props?.currentBooking;
+        const { lst_coupon } = this.props;
+        const { price } = this.props?.currentBooking;
+        if (!coupon_code) {
+            return
+        }
+        let crr_coupon = lst_coupon.find(vl => {
+            return vl.code == coupon_code
+        })
+        if (crr_coupon) {
+            const { amount, max_apply, condition } = crr_coupon;
+
+            let reduce_value = 0;
+            if (amount < 100) {
+                reduce_value = price * amount / 100;
+                if (reduce_value > max_apply) {
+                    reduce_value = max_apply
+                }
+            } else {
+                reduce_value = amount;
+            }
+            if (price < condition?.min_Price) {
+                reduce_value = 0;
+            }
+            return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Mã giảm giá: </Text>
+                <Text style={{ fontSize: scale(14), fontWeight: '500', color: color.ORANGE_COLOR_400 }}>
+                    {new Intl.NumberFormat().format(reduce_value)}đ
+                </Text>
+
+
+            </View>
+        }
+
     }
     renderSeat = () => {
         const { seat } = this.props?.currentBooking;
@@ -306,6 +375,8 @@ class WaitingPickup extends React.Component {
 
     render() {
         const { onNavigationBack, isInCreaseHeight } = this.props;
+        const { coupon_code } = this.props?.currentBooking;
+
         if (isInCreaseHeight) {
             return (
                 <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
@@ -333,6 +404,8 @@ class WaitingPickup extends React.Component {
                             {this.renderTime()}
                             {this.renderTimeDay()}
                             {this.renderPrice()}
+                            {this.renderReduceValue()}
+                            {this.renderPrice_Coupon()}
                             {this.renderLine()}
                             {this.renderInfoDriver()}
                             {this.renderLine()}
@@ -387,7 +460,8 @@ class WaitingPickup extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        currentBooking: state.HomeReducer.currentBooking
+        currentBooking: state.HomeReducer.currentBooking,
+        lst_coupon: state.HomeReducer.lst_coupon,
 
     }
 }
