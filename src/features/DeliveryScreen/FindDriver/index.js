@@ -43,6 +43,8 @@ import ChooseAppointmentTimeModal from '../../../component/PickTime/ChooseAppoin
 import ChooseAppointmentDateModal from '../../../component/PickTime/ChooseAppointmentDate'
 import actionsHome from '../../HomeScreen/redux/actions'
 import { CONSTANT_TYPE_BOOKING } from '../../../constant';
+import { getListCoupon } from '../../../api/couponAPI'
+
 const { width, height } = Dimensions.get('window')
 
 class FindDriver extends React.Component {
@@ -330,10 +332,19 @@ class FindDriver extends React.Component {
 
         </View>
     }
-    createBookingSuccess = (data) => {
+    createBookingSuccess = async (data) => {
         const { updateCurrentBooking } = this.props;
 
-
+        const { update_list_coupon, update_crr_coupon } = this.props;
+        const { coupon } = this.state;
+        update_crr_coupon(coupon);
+        const reqCoupon = await getListCoupon();
+        console.log("reqCoupon", reqCoupon)
+        if (reqCoupon && !reqCoupon.err) {
+            const length = reqCoupon?.data?.length ? reqCoupon?.data?.length : 0
+            const data_lst = reqCoupon.data ? reqCoupon.data : []
+            update_list_coupon(data_lst, length)
+        }
 
         updateCurrentBooking(data);
 
@@ -726,7 +737,13 @@ function mapDispatchToProps(dispatch) {
         updateCurrentBooking: (dt) => {
             dispatch(actionsHome.action.updateCurrentBooking(dt));
         },
+        update_list_coupon: (coupon, total) => {
+            dispatch(actionsHome.action.updateListCoupon(coupon, total));
+        },
+        update_crr_coupon: (coupon) => {
+            dispatch(actionsHome.action.updateCurrentCoupon(coupon));
 
+        },
         dispatch,
     };
 }

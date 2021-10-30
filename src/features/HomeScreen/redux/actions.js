@@ -6,11 +6,19 @@ const type = {
     GET_CURRENT_BOOKING: prefix + "GET_CURRENT_BOOKING",
     UPDATE_USER_INFO: prefix + "UPDATE_USER_INFO",
     UPDATE_ISLOADING_PRE: prefix + "UPDATE_ISLOADING_PRE",
-    UPDATE_LST_COUPON: prefix + "UPDATE_LST_COUPON"
+    UPDATE_LST_COUPON: prefix + "UPDATE_LST_COUPON",
+    UPDATE_CURRENT_COUPON: prefix + 'UPDATE_CURRENT_COUPON'
 
 };
 
 const action = {
+    updateCurrentCoupon: (coupon) => {
+        return {
+            type: type.UPDATE_CURRENT_COUPON,
+            payload: { coupon }
+
+        }
+    },
     updateListCoupon: (coupon, total) => {
         return {
             type: type.UPDATE_LST_COUPON,
@@ -32,10 +40,10 @@ const action = {
 
         }
     },
-    getCurrentBooking: () => {
+    getCurrentBooking: (_id) => {
         return {
             type: type.GET_CURRENT_BOOKING,
-            payload: {}
+            payload: { _id }
 
         }
     },

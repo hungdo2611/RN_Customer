@@ -254,8 +254,10 @@ class CreateTripScreen extends Component {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log('App has come to the foreground!')
             BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-            const { getCurrentBooking } = this.props;
-            getCurrentBooking();
+            const { getCurrentBooking, currentBooking } = this.props;
+            if (currentBooking) {
+                getCurrentBooking(currentBooking._id);
+            }
             Geolocation.getCurrentPosition(
                 position => {
                     console.log(position);
@@ -897,8 +899,8 @@ function mapDispatchToProps(dispatch) {
         getRouteDone: (data) => {
             dispatch(actions.action.getRouteDone(data));
         },
-        getCurrentBooking: () => {
-            dispatch(actionsHome.action.getCurrentBooking());
+        getCurrentBooking: (_id) => {
+            dispatch(actionsHome.action.getCurrentBooking(_id));
         },
         updateCurrentBooking: (dt) => {
             dispatch(actionsHome.action.updateCurrentBooking(dt));

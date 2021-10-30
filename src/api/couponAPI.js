@@ -7,3 +7,9 @@ export const getListCoupon = () => {
         method: 'GET',
     })
 }
+export const getDetailCoupon = (code) => {
+    return api.makeAuthRequest({
+        url: `/coupon/customer/detail?code=${code}`,
+        method: 'GET',
+    })
+}

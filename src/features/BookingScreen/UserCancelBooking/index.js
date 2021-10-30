@@ -205,6 +205,88 @@ class UserCancelBooking extends React.Component {
         }, 100)
 
     }
+    renderPrice_Coupon = () => {
+        const { seat, coupon_code } = this.props?.currentBooking;
+        const { crr_coupon } = this.props;
+        const { max_price, min_price } = this.props?.currentBooking.range_price;
+        if (!coupon_code) {
+            return
+        }
+
+
+
+        if (crr_coupon) {
+            const { amount, max_apply, condition } = crr_coupon;
+            let reduce_value_max = 0;
+            let reduce_value_min = 0;
+
+            if (amount < 100) {
+                reduce_value_max = max_price * amount / 100;
+                reduce_value_min = min_price * amount / 100;
+                if (reduce_value_max > max_apply) {
+                    reduce_value_max = max_apply
+                }
+                if (reduce_value_min > max_apply) {
+                    reduce_value_min = max_apply
+                }
+            } else {
+                reduce_value_max = amount;
+                reduce_value_min = amount;
+            }
+            let max = max_price * seat >= condition?.min_Price ? max_price * seat - reduce_value_max : max_price * seat;
+            let min = min_price * seat >= condition?.min_Price ? min_price * seat - reduce_value_min : min_price * seat;
+            return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Tổng tiền: </Text>
+                {max_price == min_price && <Text style={{ fontSize: scale(16), fontWeight: '600' }}>{new Intl.NumberFormat().format(max)}đ</Text>}
+                {max_price != min_price && <View>
+                    <Text style={{ fontSize: scale(16), fontWeight: '600' }}>Từ {new Intl.NumberFormat().format(min)}đ - {new Intl.NumberFormat().format(max)}đ</Text>
+                </View>}
+
+            </View>
+        }
+
+    }
+    renderReduceValue = () => {
+        const { seat, coupon_code } = this.props?.currentBooking;
+        const { crr_coupon } = this.props;
+        const { max_price, min_price } = this.props?.currentBooking.range_price;
+        if (!coupon_code) {
+            return
+        }
+
+        if (crr_coupon) {
+            const { amount, max_apply, condition } = crr_coupon;
+            let reduce_value_max = 0;
+            let reduce_value_min = 0;
+
+            if (amount < 100) {
+                reduce_value_max = max_price * amount / 100;
+                reduce_value_min = min_price * amount / 100;
+                if (reduce_value_max > max_apply) {
+                    reduce_value_max = max_apply
+                }
+                if (reduce_value_min > max_apply) {
+                    reduce_value_min = max_apply
+                }
+            } else {
+                reduce_value_max = amount;
+                reduce_value_min = amount;
+            }
+            if (max_price < condition?.min_Price && min_price < condition?.min_Price) {
+                reduce_value_max = 0;
+                reduce_value_min = 0;
+            }
+            return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(10), alignItems: "center" }}>
+                <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Mã giảm giá: </Text>
+                {reduce_value_min == reduce_value_max && <Text style={{ fontSize: scale(14), fontWeight: '500', color: color.ORANGE_COLOR_400 }}>{new Intl.NumberFormat().format(reduce_value_max)}đ</Text>}
+                {reduce_value_max != reduce_value_min && <View>
+                    <Text style={{ fontSize: scale(14), fontWeight: '500', color: color.ORANGE_COLOR_400 }}>Từ {new Intl.NumberFormat().format(reduce_value_min)}đ - {new Intl.NumberFormat().format(reduce_value_max)}đ</Text>
+                </View>}
+
+            </View>
+        }
+
+    }
 
     render() {
         const { onNavigationBack, isInCreaseHeight } = this.props;
@@ -234,6 +316,8 @@ class UserCancelBooking extends React.Component {
                         {this.renderTime()}
                         {this.renderTimeDay()}
                         {this.renderPrice()}
+                        {this.renderReduceValue()}
+                        {this.renderPrice_Coupon()}
                         {this.renderPayment()}
                         <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginVertical: scale(20) }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
@@ -274,8 +358,9 @@ class UserCancelBooking extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        currentBooking: state.HomeReducer.currentBooking
-
+        currentBooking: state.HomeReducer.currentBooking,
+        lst_coupon: state.HomeReducer.lst_coupon,
+        crr_coupon: state.HomeReducer.crr_coupon
     }
 }
 function mapDispatchToProps(dispatch) {

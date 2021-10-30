@@ -6,10 +6,16 @@ const initState = {
     user_info: null,
     isLoadingPre: false,
     lst_coupon: [],
-    total_coupon: 0
+    total_coupon: 0,
+    crr_coupon: null,
 };
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actions.type.UPDATE_CURRENT_COUPON:
+            return {
+                ...state,
+                crr_coupon: action.payload.coupon,
+            }
         case actions.type.UPDATE_LST_COUPON:
             return {
                 ...state,

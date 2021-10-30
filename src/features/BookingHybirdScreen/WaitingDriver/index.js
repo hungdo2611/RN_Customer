@@ -57,14 +57,11 @@ class WaitingDriverScreen extends React.Component {
 
     renderPrice_Coupon = () => {
         const { seat, coupon_code } = this.props?.currentBooking;
-        const { lst_coupon } = this.props;
+        const { crr_coupon } = this.props;
         const { max_price, min_price } = this.props?.currentBooking.range_price;
         if (!coupon_code) {
             return
         }
-        let crr_coupon = lst_coupon.find(vl => {
-            return vl.code == coupon_code
-        })
 
 
         if (crr_coupon) {
@@ -100,14 +97,12 @@ class WaitingDriverScreen extends React.Component {
     }
     renderReduceValue = () => {
         const { seat, coupon_code } = this.props?.currentBooking;
-        const { lst_coupon } = this.props;
+        const { crr_coupon } = this.props;
         const { max_price, min_price } = this.props?.currentBooking.range_price;
         if (!coupon_code) {
             return
         }
-        let crr_coupon = lst_coupon.find(vl => {
-            return vl.code == coupon_code
-        })
+
         if (crr_coupon) {
             const { amount, max_apply, condition } = crr_coupon;
             let reduce_value_max = 0;
@@ -435,6 +430,7 @@ const mapStateToProps = (state) => {
     return {
         currentBooking: state.HomeReducer.currentBooking,
         lst_coupon: state.HomeReducer.lst_coupon,
+        crr_coupon: state.HomeReducer.crr_coupon
 
     }
 }

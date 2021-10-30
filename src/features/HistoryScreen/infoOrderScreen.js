@@ -27,15 +27,24 @@ import { color } from '../../constant/color';
 import { Navigation } from 'react-native-navigation';
 import { CONSTANT_TYPE_BOOKING } from '../../constant'
 import moment from 'moment';
-
+import { getDetailCoupon } from '../../api/couponAPI'
 const { width, height } = Dimensions.get('window')
 
 class OrderInfoScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            crr_coupon: null,
         };
+    }
+    async componentDidMount() {
+        const { data } = this.props;
+        if (data && data?.coupon_code) {
+            let req_detail = await getDetailCoupon(data?.coupon_code);
+            if (req_detail && !req_detail.err) {
+                this.setState({ crr_coupon: req_detail.data })
+            }
+        }
     }
     getBookingTypeName = (type) => {
         switch (type) {
@@ -306,13 +315,13 @@ class OrderInfoScreen extends React.Component {
     renderPrice_Coupon = () => {
         const { seat, coupon_code } = this.props?.data;
         const { lst_coupon } = this.props;
+        const { crr_coupon } = this.state;
+
         const { price } = this.props?.data;
         if (!coupon_code) {
             return
         }
-        let crr_coupon = lst_coupon.find(vl => {
-            return vl.code == coupon_code
-        })
+
 
 
         if (crr_coupon) {
@@ -339,13 +348,12 @@ class OrderInfoScreen extends React.Component {
     renderReduceValue = () => {
         const { seat, coupon_code } = this.props?.data;
         const { lst_coupon } = this.props;
+        const { crr_coupon } = this.state;
         const { price } = this.props?.data;
         if (!coupon_code) {
             return
         }
-        let crr_coupon = lst_coupon.find(vl => {
-            return vl.code == coupon_code
-        })
+
         if (crr_coupon) {
             const { amount, max_apply, condition } = crr_coupon;
 

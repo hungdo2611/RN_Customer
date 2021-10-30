@@ -40,6 +40,13 @@ export const getCurrentBookingAPI = () => {
         method: 'GET',
     })
 }
+export const getBookingWithIdAPI = (_id) => {
+    return api.makeAuthRequest({
+        url: `/booking/state?_id=${_id}`,
+        method: 'GET',
+    })
+}
+
 export const finishBookingAPI = (booking_id) => {
     return api.makeAuthRequest({
         url: `/booking/finish/${booking_id}`,

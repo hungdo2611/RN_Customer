@@ -303,14 +303,12 @@ class BookingProcessing extends React.Component {
     }
     renderPrice_Coupon = () => {
         const { seat, coupon_code } = this.props?.currentBooking;
-        const { lst_coupon } = this.props;
+        const { crr_coupon } = this.props;
         const { price } = this.props?.currentBooking;
         if (!coupon_code) {
             return
         }
-        let crr_coupon = lst_coupon.find(vl => {
-            return vl.code == coupon_code
-        })
+
 
 
         if (crr_coupon) {
@@ -336,14 +334,12 @@ class BookingProcessing extends React.Component {
     }
     renderReduceValue = () => {
         const { seat, coupon_code } = this.props?.currentBooking;
-        const { lst_coupon } = this.props;
+        const { crr_coupon } = this.props;
         const { price } = this.props?.currentBooking;
         if (!coupon_code) {
             return
         }
-        let crr_coupon = lst_coupon.find(vl => {
-            return vl.code == coupon_code
-        })
+
         if (crr_coupon) {
             const { amount, max_apply, condition } = crr_coupon;
 
@@ -459,6 +455,7 @@ const mapStateToProps = (state) => {
     return {
         currentBooking: state.HomeReducer.currentBooking,
         lst_coupon: state.HomeReducer.lst_coupon,
+        crr_coupon: state.HomeReducer.crr_coupon
 
 
     }
