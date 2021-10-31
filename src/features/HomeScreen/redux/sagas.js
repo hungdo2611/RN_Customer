@@ -33,7 +33,7 @@ function* saga_getCurrentBooking(action) {
 
             if (!reqCrrBooking.err) {
                 yield put(actions.action.updateCurrentBooking(reqCrrBooking.data))
-                if (reqCrrBooking.data.coupon_code) {
+                if (reqCrrBooking?.data?.coupon_code) {
                     let crr_coupon = yield call(getDetailCoupon, reqCrrBooking.data.coupon_code)
                     console.log("crr_coupon", crr_coupon)
                     if (crr_coupon && !crr_coupon.err) {

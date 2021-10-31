@@ -38,6 +38,7 @@ import {
     pushToBookingHybirdScreen,
     pushToDeliveryScreen,
 } from '../../NavigationController'
+import { Alert } from 'react-native';
 
 
 const { width, height } = Dimensions.get('window')
@@ -216,6 +217,10 @@ class CouponScreen extends React.Component {
                     cancelButtonIndex={3}
                     // destructiveButtonIndex={2}
                     onPress={(index) => {
+                        if (this.props.currentBooking) {
+                            Alert.alert('Thông báo', "Bạn đang ở trong 1 chuyến đi . Hãy sử dụng mã giảm giá ở chuyến đi tiếp theo nhé")
+                            return
+                        }
                         if (index == 0) {
                             pushToDeliveryScreen(this.props.componentId, { coupon: this.coupon, index_coupon: this.index })
                         }
@@ -238,6 +243,7 @@ const mapStateToProps = (state) => {
     return {
         user_info: state.HomeReducer.user_info,
         lst_coupon: state.HomeReducer.lst_coupon,
+        currentBooking: state.HomeReducer.currentBooking,
 
     }
 }
