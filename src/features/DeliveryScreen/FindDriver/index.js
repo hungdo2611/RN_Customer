@@ -58,7 +58,7 @@ class FindDriver extends React.Component {
             day_select: moment(new Date()).format('DD/MM/YYYY'),
             isloading: false,
             coupon: props.coupon ? props.coupon : null,
-            index_coupon: props.index_coupon ? props.index_coupon : null
+            index_coupon: props.index_coupon
         }
 
     }

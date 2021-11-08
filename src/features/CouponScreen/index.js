@@ -126,6 +126,7 @@ class CouponScreen extends React.Component {
         </View>
     }
     onUseCoupon = (item, index) => {
+        console.log("onUseCoupon", index)
         this.coupon = item;
         this.index = index;
         this.ActionSheet.show();

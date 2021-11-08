@@ -66,3 +66,29 @@ export const getHistoryBookingAPI = (page_number, page_size, type) => {
         method: 'GET',
     })
 }
+export const ratingBookingAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/booking/rating`,
+        method: 'POST',
+        data: body
+    })
+}
+
+export const getDetailRatingAPI = (id) => {
+    return api.makeAuthRequest({
+        url: `/booking/rating?rating_id=${id}`,
+        method: 'GET'
+    })
+}
+export const getLicenseDriver = (id) => {
+    return api.makeAuthRequest({
+        url: `/customer/license/driver?id=${id}`,
+        method: 'GET'
+    })
+}
+export const getRecentRatingDriver = (page_number, page_size, id) => {
+    return api.makeRequest({
+        url: `/driver/recent/rating?page_nunmber=${page_number}&page_size=${page_size}&id=${id}`,
+        method: 'GET'
+    })
+}

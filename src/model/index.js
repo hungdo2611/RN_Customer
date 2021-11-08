@@ -60,7 +60,7 @@ export const setLocalData = async (data) => {
 
 }
 export const deleteLocalData = async () => {
-    await AsyncStorage.setItem(constant_key.USER_INFO, null)
+    await AsyncStorage.removeItem(constant_key.USER_INFO)
 
 }
 export const getLocalData = async () => {

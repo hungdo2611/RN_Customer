@@ -210,6 +210,34 @@ export function pushToCouponScreen(componentId, props) {
         },
     });
 }
+export function showModalDriverInfo(props) {
+    Navigation.showModal({
+        stack: {
+            children: [
+                {
+                    component: {
+                        id: `${constant_name.INFO_DRIVER_SCREEN}_id`,
+                        name: constant_name.INFO_DRIVER_SCREEN,
+                        passProps: props,
+                        options: {
+                            modal: {
+                                swipeToDismiss: false
+                            },
+                            topBar: {
+                                animate: false,
+                                visible: false,
+                                height: 0,
+                            },
+                            bottomTabs: {
+                                visible: false,
+                            },
+                        },
+                    },
+                },
+            ],
+        },
+    });
+}
 export function pushToEditInfoScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {

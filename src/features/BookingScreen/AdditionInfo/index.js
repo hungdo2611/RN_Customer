@@ -25,7 +25,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { getAdressFromLatLng } from '../../../api/MapApi';
-
+import { showModalDriverInfo } from '../../../NavigationController'
 import { createBookingAPI } from '../../../api/bookingApi';
 import { scale } from '../../../ultis/scale'
 import {
@@ -42,7 +42,6 @@ import ChooseAppointmentTimeModal from '../../../component/PickTime/ChooseAppoin
 import ChooseAppointmentDateModal from '../../../component/PickTime/ChooseAppointmentDate'
 import actionsHome from '../../HomeScreen/redux/actions'
 import { CONSTANT_TYPE_BOOKING } from '../../../constant';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { getListCoupon } from '../../../api/couponAPI'
 
 const { width, height } = Dimensions.get('window')
@@ -58,7 +57,7 @@ class AdditionalInfo extends React.Component {
             day_select: moment(new Date()).format('DD/MM/YYYY'),
             isloading: false,
             coupon: props.coupon ? props.coupon : null,
-            index_coupon: props.index_coupon ? props.index_coupon : null
+            index_coupon: props.index_coupon
         }
 
     }
@@ -73,7 +72,6 @@ class AdditionalInfo extends React.Component {
     componentDidMount() {
         const { disablePull, coupon, index_coupon } = this.props;
         if (this.scrollCoupon && coupon && index_coupon) {
-
             this.scrollToIndex(index_coupon);
 
         }
@@ -239,24 +237,31 @@ class AdditionalInfo extends React.Component {
         return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
             {lstDriver.map(driver => {
                 const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
-
+                console.log("driver", driver)
                 return <View
                     style={{
                         width: width / 2 - scale(20),
-                        height: scale(170),
+                        height: scale(180),
                         borderRadius: scale(10),
                         borderWidth: 0.7,
                         borderColor: color.GRAY_COLOR_500,
                         margin: scale(10)
                     }}>
                     <View style={{ flex: 1 }}>
-                        <MaterialIcons
-                            name="tag-faces"
-                            size={scale(30)}
-                            style={{ alignSelf: "center", marginVertical: scale(3) }}
-                        />
-                        <Text style={{ alignSelf: 'center', fontSize: scale(13), fontWeight: "500", paddingBottom: scale(3) }}>{driver.driver_id.name}</Text>
-                        <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
+                        <TouchableOpacity activeOpacity={0.5} onPress={() => showModalDriverInfo({ data: driver?.driver_id})}>
+                            {driver?.driver_id?.avatar == '' && <MaterialIcons
+                                name="tag-faces"
+                                size={scale(30)}
+                                style={{ alignSelf: "center", marginVertical: scale(3) }}
+                            />}
+                            {driver?.driver_id?.avatar != '' && <FastImage
+                                source={{ uri: driver?.driver_id?.avatar }}
+                                style={{ alignSelf: "center", marginVertical: scale(3), height: scale(30), width: scale(30), borderRadius: scale(15) }}
+                            />}
+                            <Text style={{ alignSelf: 'center', fontSize: scale(13), fontWeight: "500", paddingBottom: scale(3) }}>{driver?.driver_id?.name}</Text>
+                            <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
+                        </TouchableOpacity>
+
                         <View
                             style={{
                                 flexDirection: "row",
@@ -310,6 +315,14 @@ class AdditionalInfo extends React.Component {
                                 color={color.YEALLOW_COLOR_300}
                             />
                             <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{moment(driver.time_start * 1000).format('HH:mm')}-{moment(driver.time_end * 1000).format('HH:mm')}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', marginLeft: scale(2), paddingVertical: scale(5) }}>
+                            <FontAwesomeIcon
+                                name="star"
+                                size={scale(14)}
+                                color={color.YEALLOW_COLOR_300}
+                            />
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{driver?.driver_id?.ratingPoint?.value} *</Text>
                         </View>
                     </View>
                     <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />

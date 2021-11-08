@@ -60,7 +60,7 @@ class NotificationProcessor {
 
         // register topic
         // subscribe topic phải có /topic rồi / tên topic , kể cả api cũng vậy , để tránh lỗi InvalidRegistration
-        messaging().subscribeToTopic("ALL");
+        messaging().subscribeToTopic("Customer");
         const req = await registerDeviceToken(deviceToken);
         console.log('register device token', req)
         //

@@ -7,7 +7,7 @@ import {
     Dimensions,
     TextInput,
     KeyboardAvoidingView,
-    TouchableWithoutFeedback,
+    ActivityIndicator,
     Platform,
     SafeAreaView,
     Linking,
@@ -28,6 +28,17 @@ import { Navigation } from 'react-native-navigation';
 import { CONSTANT_TYPE_BOOKING } from '../../constant'
 import moment from 'moment';
 import { getDetailCoupon } from '../../api/couponAPI'
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { ratingBookingAPI, getDetailRatingAPI } from '../../api/bookingApi';
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+
 const { width, height } = Dimensions.get('window')
 
 class OrderInfoScreen extends React.Component {
@@ -35,15 +46,35 @@ class OrderInfoScreen extends React.Component {
         super(props);
         this.state = {
             crr_coupon: null,
+            rating_value: 0,
+            comment: '',
+            loadingCoupon: false,
+            loadingRating: false,
+            isLoadingCreateRating: false
         };
     }
     async componentDidMount() {
         const { data } = this.props;
+
         if (data && data?.coupon_code) {
+            this.setState({ loadingCoupon: true })
             let req_detail = await getDetailCoupon(data?.coupon_code);
             if (req_detail && !req_detail.err) {
                 this.setState({ crr_coupon: req_detail.data })
             }
+            this.setState({ loadingCoupon: false })
+
+        }
+        if (data && data?.rating_id) {
+            this.setState({ loadingRating: true })
+
+            let req_rating = await getDetailRatingAPI(data?.rating_id);
+            console.log("req_rating", req_rating)
+            if (req_rating && req_rating.data) {
+                this.setState({ rating_value: req_rating.data.rate_value })
+            }
+            this.setState({ loadingRating: false })
+
         }
     }
     getBookingTypeName = (type) => {
@@ -97,7 +128,7 @@ class OrderInfoScreen extends React.Component {
         return <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
             <View style={{}}>
                 <View style={{ alignItems: "center" }}>
-                    <Image resizeMode="stretch" style={{ width: scale(60), height: scale(35) }} source={require('../HomeScreen/res/ic_logo_trans.png')} />
+                    <Image resizeMode="stretch" style={{ width: scale(60), height: scale(40) }} source={require('../HomeScreen/res/ic_logo_trans.png')} />
                     <View style={{ padding: scale(5), paddingHorizontal: scale(12), backgroundColor: txtColor, borderRadius: scale(6), alignItems: "center", justifyContent: "center" }}>
                         <Text style={{ fontSize: scale(14), fontWeight: "700", color: '#FFFFFF' }}>{txtStatus}</Text>
                     </View>
@@ -380,13 +411,114 @@ class OrderInfoScreen extends React.Component {
         }
 
     }
+    onRating = async () => {
+        const { data } = this.props;
+        const { rating_value, comment } = this.state;
+        if (!rating_value) {
+            Toast.show({
+                type: 'error',
+                text1: 'Bạn chưa đánh giá sao cho tài xế',
+                text2: '',
+                topOffset: scale(50)
+            })
+            return
+        }
+        const body = { rate_value: rating_value, comment: comment.trim(), driver_id: data.driver_id._id, booking_id: data._id };
+        console.log("body req", body)
+        this.setState({ isLoadingCreateRating: true })
+        let reqRating = await ratingBookingAPI(body);
+        this.setState({ isLoadingCreateRating: false })
+
+        if (reqRating && !reqRating.err) {
+            Navigation.pop(this.props.componentId);
+            this.props.callback(data._id, reqRating.data);
+        }
+    }
+    renderRating = () => {
+        const { data } = this.props;
+        const { isLoadingCreateRating } = this.state;
+        const isRate = data && data?.rating_id ? true : false
+        return <View style={{}}>
+            <Text style={{ fontSize: scale(18), fontWeight: '600', marginTop: scale(10), textAlign: "center" }}>Bạn thấy tài xế như thế nào?</Text>
+            <AirbnbRating
+                count={5}
+                reviews={["Rất tệ", "Tệ", 'Trung bình', 'Tốt', "Rất tốt"]}
+                defaultRating={this.state.rating_value}
+                isDisabled={isRate}
+                size={scale(30)}
+                onFinishRating={rating => {
+
+                    this.setState({ rating_value: rating })
+                }}
+            />
+            {!isRate && <View>
+                <Text style={{ fontWeight: '500', fontSize: scale(14), marginVertical: scale(7) }}>Cảm nhận khi sử đụng dịch vụ</Text>
+                <View style={{ borderWidth: 1, borderColor: color.GRAY_COLOR_200, borderRadius: scale(5), flexDirection: 'row' }}>
+                    <FontAwesomeIcon
+                        name='edit'
+                        size={scale(17)}
+                        color={color.GRAY_COLOR_400}
+                        style={{ marginLeft: scale(10), marginTop: scale(4) }}
+                    />
+                    <TextInput
+                        onChangeText={txt => this.setState({ comment: txt })}
+                        blurOnSubmit={true}
+                        multiline={true}
+                        style={{ fontSize: scale(14), padding: scale(10), flex: 1 }}
+                        placeholder="Gửi phản hồi" />
+                </View>
+                <TouchableOpacity
+                    onPress={_.debounce(() => this.onRating(), 500)}
+                    disabled={isLoadingCreateRating}
+                    activeOpacity={0.6}
+                    style={{
+                        height: scale(40),
+                        backgroundColor: isLoadingCreateRating ? color.GRAY_COLOR_200 : color.ORANGE_COLOR_400,
+                        borderRadius: scale(5),
+                        alignItems: 'center',
+                        justifyContent: "center",
+                        marginVertical: scale(20),
+                        flexDirection: "row"
+                    }}>
+                    {isLoadingCreateRating && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{ paddingHorizontal: scale(10) }} />}
+                    <Text style={{ fontSize: scale(18), fontWeight: '600', color: '#FFFFFF' }}>Gửi</Text>
+                </TouchableOpacity>
+            </View>}
+        </View>
+    }
+    renderLoading = () => {
+        let arr = [1];
+        return <ScrollView showsVerticalScrollIndicator={false}>
+            {arr.map(vl => {
+                return <Placeholder
+                    Animation={Fade}
+                    Left={props => <PlaceholderMedia style={[{ marginLeft: scale(10), marginTop: scale(5), height: 50, width: 50 }, props.style]} />}
+                    style={{ marginVertical: scale(12) }}
+                >
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+
+                </Placeholder>
+            })}
+
+
+        </ScrollView>
+    }
     render() {
         const { componentId, data } = this.props;
         const { price } = this.props?.data;
-        const userInfo = data.driver_id;
         const { orderInfo } = this.props.data;
-
-        console.log("data 123", data)
+        const { loadingCoupon, loadingRating } = this.state;
+        if (loadingCoupon || loadingRating) {
+            return this.renderLoading();
+        }
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -402,7 +534,13 @@ class OrderInfoScreen extends React.Component {
                     <Text style={{ fontSize: scale(22), fontWeight: 'bold', color: color.GRAY_COLOR_900 }}>Chi tiết chuyến</Text>
                 </View>
                 <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
-                <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, marginHorizontal: scale(13) }}>
+                <KeyboardAwareScrollView
+                    extraScrollHeight={scale(50)}
+                    innerRef={ref => {
+                        this.scroll = ref
+                    }}
+                    style={{ marginHorizontal: scale(10) }}
+                    showsVerticalScrollIndicator={false}>
                     {this.renderHead()}
                     <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
                     {this.renderInfo(data)}
@@ -416,8 +554,9 @@ class OrderInfoScreen extends React.Component {
                     {this.renderOrderInfo()}
                     {orderInfo?.phone_take_order && <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />}
                     {this.renderPayment()}
-                </ScrollView>
-
+                    {data.status === constant_type_status_booking.END && this.renderRating()}
+                </KeyboardAwareScrollView>
+                <Toast ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>
         )
     }

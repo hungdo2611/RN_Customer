@@ -36,9 +36,59 @@ import { Navigation } from 'react-native-navigation';
 import { constant_type_status_booking } from '../BookingScreen/constant';
 import moment from 'moment';
 
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+
 const { width, height } = Dimensions.get('window')
 const widthBox = width / 2 - scale(30);
 
+
+const toastConfig = {
+    /* 
+      overwrite 'success' type, 
+      modifying the existing `BaseToast` component
+    */
+    success: (props) => (
+        <BaseToast
+            {...props}
+            style={{ borderLeftColor: color.GREEN_COLOR_300, paddingHorizontal: scale(10), height: scale(70), borderLeftWidth: scale(8) }}
+            text1Style={{
+                color: color.GREEN_COLOR_400,
+                fontSize: 17
+            }}
+            text2Style={{
+                fontSize: 15,
+                color: 'black'
+            }}
+        />
+    ),
+
+    /*
+      Reuse the default ErrorToast toast component
+    */
+    error: (props) => (
+        <BaseToast
+            {...props}
+            style={{ borderLeftColor: color.RED_COLOR, height: scale(70), paddingHorizontal: scale(10), borderLeftWidth: scale(8) }}
+            text1Style={{
+                color: color.RED_COLOR,
+                fontSize: 17
+            }}
+            text2Style={{
+                fontSize: 15,
+                color: 'black'
+            }}
+        />
+    ),
+    /* 
+      or create a completely new type - `my_custom_type`,
+      building the layout from scratch
+    */
+    my_custom_type: ({ text1, props, ...rest }) => (
+        <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
+            <Text>{text1}</Text>
+        </View>
+    )
+};
 
 export let instance_history = null;
 
@@ -205,6 +255,23 @@ class HistoryScreen extends React.Component {
 
         </View>
     }
+    callbackRatingSuccess = (id, rate_id) => {
+        const { data } = this.state;
+        Toast.show({
+            type: 'success',
+            text1: 'Đánh giá tài xế thành công',
+            text2: 'Cảm ơn bạn đã đóng góp để dịch vụ tốt hơn',
+            topOffset: scale(50)
+        })
+        if (id && rate_id) {
+            const newData = data;
+            let index = data.findIndex(vl => {
+                return vl._id == id
+            })
+            newData[index].rating_id = rate_id;
+            this.setState({ data: newData })
+        }
+    }
     onPressJourney = (crrJourneys) => {
         const { componentId } = this.props;
         if (crrJourneys.status == constant_type_status_booking.WAITING_DRIVER
@@ -219,10 +286,8 @@ class HistoryScreen extends React.Component {
                 pushToDeliveryScreen(componentId)
 
             }
-
-
         } else {
-            pushToOrderInfoScreen(componentId, { data: crrJourneys })
+            pushToOrderInfoScreen(componentId, { data: crrJourneys, callback: (dt, id) => this.callbackRatingSuccess(dt, id) })
         }
 
     }
@@ -326,17 +391,17 @@ class HistoryScreen extends React.Component {
             {arr.map(vl => {
                 return <Placeholder
                     Animation={Fade}
-                    Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
+                    Left={props => <PlaceholderMedia style={[{ height: scale(50), width: scale(50), marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
                     style={{ marginVertical: scale(12) }}
                 >
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
-                    <PlaceholderLine width={80} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
 
                 </Placeholder>
             })}
@@ -359,53 +424,52 @@ class HistoryScreen extends React.Component {
         //     </SafeAreaView>
         // }
         return (
-            <TouchableWithoutFeedback style={{ backgroundColor: '#FFFFFF' }} onPress={Keyboard.dismiss}>
-                <SafeAreaView style={{ flex: 1 }}>
-                    <KeyboardAvoidingView
-                        style={{
-                            flex: 1,
-                            justifyContent: "space-between",
-                        }}
-                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-                        {/* <View style={{ flexDirection: "row", marginHorizontal: scale(20), alignItems: 'center' }}>
+            <SafeAreaView style={{ flex: 1 }}>
+                <KeyboardAvoidingView
+                    style={{
+                        flex: 1,
+                        justifyContent: "space-between",
+                    }}
+                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                    {/* <View style={{ flexDirection: "row", marginHorizontal: scale(20), alignItems: 'center' }}>
                             <Text style={{ fontSize: scale(28), fontWeight: 'bold', marginTop: scale(10), marginBottom: scale(5) }}>Lịch sử hành trình</Text>
                         </View> */}
-                        {this.renderHeader()}
-                        <FlatList
-                            data={[...this.state.data, { type: "loading" }]}
-                            renderItem={this.renderItem}
-                            style={{ flex: 1 }}
-                            keyExtractor={item => item._id}
-                            showsVerticalScrollIndicator={false}
-                            onScrollBeginDrag={() => Keyboard.dismiss()}
-                            onEndReached={({ distanceFromEnd }) => {
-                                if (distanceFromEnd < 0) return;
-                                this.getDataHistory(this.state.page_number)
-                            }}
-                            onEndReachedThreshold={0.5}
-                            refreshing={this.state.refreshing}
-                            onRefresh={() => {
-                                this.setState({
-                                    refreshing: true
-                                });
-                                this.getDataHistory(1)
-                                setTimeout(
-                                    function () {
-                                        //console.oldlog("")
-                                        this.setState({
-                                            refreshing: false
-                                        });
-                                    }.bind(this),
-                                    2000
-                                );
-                            }}
-                        />
-                        {this.state.data.length == 0 && !this.state.isloading && this.renderEmpty()}
+                    {this.renderHeader()}
+                    <FlatList
+                        data={[ ...this.state.data, { type: "loading" }]}
+                        renderItem={this.renderItem}
+                        style={{ flex: 1 }}
+                        keyExtractor={item => item._id}
+                        showsVerticalScrollIndicator={false}
+                        onScrollBeginDrag={() => Keyboard.dismiss()}
+                        onEndReached={({ distanceFromEnd }) => {
+                            if (distanceFromEnd < 0) return;
+                            this.getDataHistory(this.state.page_number)
+                        }}
+                        onEndReachedThreshold={0.5}
+                        refreshing={this.state.refreshing}
+                        onRefresh={() => {
+                            this.setState({
+                                refreshing: true
+                            });
+                            this.getDataHistory(1)
+                            setTimeout(
+                                function () {
+                                    //console.oldlog("")
+                                    this.setState({
+                                        refreshing: false
+                                    });
+                                }.bind(this),
+                                2000
+                            );
+                        }}
+                    />
+                    {this.state.data.length == 0 && !this.state.isloading && this.renderEmpty()}
 
-                    </KeyboardAvoidingView>
-                </SafeAreaView>
+                </KeyboardAvoidingView>
+                <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+            </SafeAreaView>
 
-            </TouchableWithoutFeedback >
         )
     }
 }
