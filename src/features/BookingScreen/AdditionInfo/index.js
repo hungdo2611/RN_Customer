@@ -237,7 +237,6 @@ class AdditionalInfo extends React.Component {
         return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
             {lstDriver.map(driver => {
                 const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
-                console.log("driver", driver)
                 return <View
                     style={{
                         width: width / 2 - scale(20),
@@ -248,7 +247,7 @@ class AdditionalInfo extends React.Component {
                         margin: scale(10)
                     }}>
                     <View style={{ flex: 1 }}>
-                        <TouchableOpacity activeOpacity={0.5} onPress={() => showModalDriverInfo({ data: driver?.driver_id})}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={() => showModalDriverInfo({ data: driver?.driver_id })}>
                             {driver?.driver_id?.avatar == '' && <MaterialIcons
                                 name="tag-faces"
                                 size={scale(30)}
@@ -322,7 +321,7 @@ class AdditionalInfo extends React.Component {
                                 size={scale(14)}
                                 color={color.YEALLOW_COLOR_300}
                             />
-                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{driver?.driver_id?.ratingPoint?.value} *</Text>
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{driver?.driver_id?.ratingPoint?.value.toFixed(2)} *</Text>
                         </View>
                     </View>
                     <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />

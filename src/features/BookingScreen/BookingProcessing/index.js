@@ -229,7 +229,7 @@ class BookingProcessing extends React.Component {
                     <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
                     <View style={{ marginLeft: scale(10) }}>
                         <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
-                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.license_plate}</Text>
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>

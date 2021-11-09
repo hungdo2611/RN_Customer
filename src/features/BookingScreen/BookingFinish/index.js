@@ -31,6 +31,9 @@ import { color } from '../../../constant/color'
 import moment from 'moment'
 import _ from 'lodash';
 import actionsHome from '../../HomeScreen/redux/actions'
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import { ratingBookingAPI } from '../../../api/bookingApi';
 
 const { width, height } = Dimensions.get('window')
 
@@ -46,7 +49,12 @@ class BookingFinish extends React.Component {
             err: false,
             isCancel: false,
             message: '',
-            isloading: false
+            isloading: false,
+            isRate: false,
+            isLoadingCreateRating: false,
+            rating_value: 0,
+            comment: '',
+
         }
     }
     componentDidMount() {
@@ -264,6 +272,112 @@ class BookingFinish extends React.Component {
         }
 
     }
+    renderInfoDriver = () => {
+        const { currentBooking } = this.props;
+        const userInfo = currentBooking.driver_id;
+        return <View style={{ marginHorizontal: scale(10), marginBottom: scale(5) }}>
+            <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500, marginVertical: scale(5) }}>Thông tin nhà xe</Text>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                    <Image style={{ width: scale(36), height: scale(36) }} source={require('../res/ic_avatar.png')} />
+                    <View style={{ marginLeft: scale(10) }}>
+                        <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
+                        <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.license_plate}</Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+    }
+    onRating = async () => {
+        const { currentBooking } = this.props;
+        const { rating_value, comment } = this.state;
+        if (!rating_value) {
+            Toast.show({
+                type: 'error',
+                text1: 'Lỗi',
+                text2: 'Bạn chưa đánh giá sao cho tài xế',
+                topOffset: scale(50)
+            })
+            return
+        }
+        const body = { rate_value: rating_value, comment: comment.trim(), driver_id: currentBooking.driver_id._id, booking_id: currentBooking._id };
+        console.log("body req", body)
+
+
+        this.setState({ isLoadingCreateRating: true })
+        let reqRating = await ratingBookingAPI(body);
+        this.setState({ isLoadingCreateRating: false })
+
+        if (reqRating && !reqRating.err) {
+            Toast.show({
+                type: 'success',
+                text1: 'Đánh giá tài xế thành công',
+                text2: 'Cảm ơn bạn đã đóng góp để dịch vụ tốt hơn',
+                topOffset: scale(70)
+            })
+            this.setState({ isRate: true })
+
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Lỗi',
+                text2: 'Đã có lỗi xảy ra',
+                topOffset: scale(70)
+            })
+        }
+    }
+    renderRating = () => {
+        const { data } = this.props;
+        const { isLoadingCreateRating, isRate } = this.state;
+        return <View style={{ marginHorizontal: scale(15) }}>
+            <Text style={{ fontSize: scale(18), fontWeight: '600', marginTop: scale(10), textAlign: "center" }}>Bạn thấy tài xế như thế nào?</Text>
+            <AirbnbRating
+                count={5}
+                reviews={["Rất tệ", "Tệ", 'Trung bình', 'Tốt', "Rất tốt"]}
+                defaultRating={0}
+                isDisabled={isRate}
+                size={scale(30)}
+                onFinishRating={rating => {
+
+                    this.setState({ rating_value: rating })
+                }}
+            />
+            {!isRate && <View>
+                <Text style={{ fontWeight: '500', fontSize: scale(14), marginVertical: scale(7) }}>Cảm nhận khi sử đụng dịch vụ</Text>
+                <View style={{ borderWidth: 1, borderColor: color.GRAY_COLOR_200, borderRadius: scale(5), flexDirection: 'row' }}>
+                    <FontAwesomeIcon
+                        name='edit'
+                        size={scale(17)}
+                        color={color.GRAY_COLOR_400}
+                        style={{ marginLeft: scale(10), marginTop: scale(4) }}
+                    />
+                    <TextInput
+                        onChangeText={txt => this.setState({ comment: txt })}
+                        blurOnSubmit={true}
+                        multiline={true}
+                        style={{ fontSize: scale(14), padding: scale(10), flex: 1 }}
+                        placeholder="Gửi phản hồi" />
+                </View>
+                <TouchableOpacity
+                    onPress={_.debounce(() => this.onRating(), 500)}
+                    disabled={isLoadingCreateRating}
+                    activeOpacity={0.6}
+                    style={{
+                        height: scale(40),
+                        backgroundColor: isLoadingCreateRating ? color.GRAY_COLOR_200 : color.ORANGE_COLOR_400,
+                        borderRadius: scale(5),
+                        alignItems: 'center',
+                        justifyContent: "center",
+                        marginVertical: scale(20),
+                        flexDirection: "row"
+                    }}>
+                    {isLoadingCreateRating && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{ paddingHorizontal: scale(10) }} />}
+                    <Text style={{ fontSize: scale(18), fontWeight: '600', color: '#FFFFFF' }}>Gửi</Text>
+                </TouchableOpacity>
+            </View>}
+        </View>
+    }
 
     render() {
         const { onNavigationBack, isInCreaseHeight } = this.props;
@@ -274,6 +388,7 @@ class BookingFinish extends React.Component {
             return (
                 <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                     <KeyboardAwareScrollView
+                        extraScrollHeight={scale(50)}
                         innerRef={ref => {
                             this.scroll = ref
                         }}
@@ -297,8 +412,10 @@ class BookingFinish extends React.Component {
                         {this.renderPrice()}
                         {this.renderReduceValue()}
                         {this.renderPrice_Coupon()}
+                        {this.renderInfoDriver()}
                         {this.renderPayment()}
-                        <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginTop: scale(15) }}>
+                        {this.renderRating()}
+                        <TouchableOpacity onPress={() => this.onBack()} style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_400, borderRadius: scale(15), alignSelf: "center", marginVertical: scale(15) }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>
                         </TouchableOpacity>
                     </KeyboardAwareScrollView>

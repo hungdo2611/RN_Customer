@@ -257,12 +257,6 @@ class HistoryScreen extends React.Component {
     }
     callbackRatingSuccess = (id, rate_id) => {
         const { data } = this.state;
-        Toast.show({
-            type: 'success',
-            text1: 'Đánh giá tài xế thành công',
-            text2: 'Cảm ơn bạn đã đóng góp để dịch vụ tốt hơn',
-            topOffset: scale(50)
-        })
         if (id && rate_id) {
             const newData = data;
             let index = data.findIndex(vl => {

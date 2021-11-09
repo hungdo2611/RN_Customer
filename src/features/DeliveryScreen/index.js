@@ -31,6 +31,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 import PropTypes from 'prop-types';
 import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 
 import BottomTab from './components/BottomTab';
 import { scale } from '../../ultis/scale';
@@ -874,7 +875,7 @@ class CreateTripScreen extends Component {
                     </BottomTab>}
 
                 </View>
-
+                <Toast ref={(ref) => Toast.setRef(ref)} />
             </View >
         );
     }

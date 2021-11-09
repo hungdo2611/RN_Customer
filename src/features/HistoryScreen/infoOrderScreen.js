@@ -55,7 +55,6 @@ class OrderInfoScreen extends React.Component {
     }
     async componentDidMount() {
         const { data } = this.props;
-
         if (data && data?.coupon_code) {
             this.setState({ loadingCoupon: true })
             let req_detail = await getDetailCoupon(data?.coupon_code);
@@ -251,7 +250,7 @@ class OrderInfoScreen extends React.Component {
                             <Image style={{ width: scale(36), height: scale(36) }} source={require('./res/ic_avatar.png')} />
                             <View style={{ marginLeft: scale(10) }}>
                                 <Text style={{ fontSize: scale(16), fontWeight: "600" }}>{userInfo.name}</Text>
-                                <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.phone}</Text>
+                                <Text style={{ fontSize: scale(15), fontWeight: "400", paddingTop: scale(2) }}>{userInfo.license_plate}</Text>
                             </View>
                         </View>
                         <TouchableOpacity onPress={() => this.callNumber(userInfo.phone)} style={{ width: scale(36), height: scale(36), borderRadius: scale(18), backgroundColor: color.MAIN_COLOR, alignItems: "center", justifyContent: "center" }}>
@@ -417,23 +416,40 @@ class OrderInfoScreen extends React.Component {
         if (!rating_value) {
             Toast.show({
                 type: 'error',
-                text1: 'Bạn chưa đánh giá sao cho tài xế',
-                text2: '',
+                text1: 'Lỗi',
+                text2: 'Bạn chưa đánh giá sao cho tài xế',
                 topOffset: scale(50)
             })
             return
         }
         const body = { rate_value: rating_value, comment: comment.trim(), driver_id: data.driver_id._id, booking_id: data._id };
         console.log("body req", body)
+
+
         this.setState({ isLoadingCreateRating: true })
         let reqRating = await ratingBookingAPI(body);
         this.setState({ isLoadingCreateRating: false })
 
         if (reqRating && !reqRating.err) {
-            Navigation.pop(this.props.componentId);
-            this.props.callback(data._id, reqRating.data);
+            Toast.show({
+                type: 'success',
+                text1: 'Đánh giá tài xế thành công',
+                text2: 'Cảm ơn bạn đã đóng góp để dịch vụ tốt hơn',
+                topOffset: scale(70)
+            })
+            Navigation.updateProps(this.props.componentId, { data: { ...this.props.data, rating_id: reqRating.data } })
+            this.props.callback(data._id, reqRating.data)
+
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Lỗi',
+                text2: 'Đã có lỗi xảy ra',
+                topOffset: scale(70)
+            })
         }
     }
+
     renderRating = () => {
         const { data } = this.props;
         const { isLoadingCreateRating } = this.state;

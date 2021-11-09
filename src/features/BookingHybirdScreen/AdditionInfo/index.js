@@ -25,6 +25,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { getAdressFromLatLng } from '../../../api/MapApi';
+import { showModalDriverInfo } from '../../../NavigationController'
 
 import { createBookingAPI } from '../../../api/bookingApi';
 import { scale } from '../../../ultis/scale'
@@ -317,13 +318,19 @@ class AdditionalInfo extends React.Component {
                         margin: scale(10)
                     }}>
                     <View style={{ flex: 1 }}>
-                        <MaterialIcons
-                            name="tag-faces"
-                            size={scale(30)}
-                            style={{ alignSelf: "center", marginVertical: scale(3) }}
-                        />
-                        <Text style={{ alignSelf: 'center', fontSize: scale(13), fontWeight: "500", paddingBottom: scale(3) }}>{driver.driver_id.name}</Text>
-                        <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
+                        <TouchableOpacity activeOpacity={0.5} onPress={() => showModalDriverInfo({ data: driver?.driver_id })}>
+                            {driver?.driver_id?.avatar == '' && <MaterialIcons
+                                name="tag-faces"
+                                size={scale(30)}
+                                style={{ alignSelf: "center", marginVertical: scale(3) }}
+                            />}
+                            {driver?.driver_id?.avatar != '' && <FastImage
+                                source={{ uri: driver?.driver_id?.avatar }}
+                                style={{ alignSelf: "center", marginVertical: scale(3), height: scale(30), width: scale(30), borderRadius: scale(15) }}
+                            />}
+                            <Text style={{ alignSelf: 'center', fontSize: scale(13), fontWeight: "500", paddingBottom: scale(3) }}>{driver?.driver_id?.name}</Text>
+                            <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
+                        </TouchableOpacity>
                         <View
                             style={{
                                 flexDirection: "row",

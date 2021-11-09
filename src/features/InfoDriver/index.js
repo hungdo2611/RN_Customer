@@ -5,7 +5,7 @@ import {
     Text,
     TouchableOpacity,
     Dimensions,
-
+    FlatList,
     SafeAreaView,
 
 } from 'react-native'
@@ -19,6 +19,15 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 import { color } from '../../constant/color';
 import { Navigation } from 'react-native-navigation';
 import { getLicenseDriver, getRecentRatingDriver } from '../../api/bookingApi'
+import {
+    Placeholder,
+    PlaceholderMedia,
+    PlaceholderLine,
+    Fade
+} from "rn-placeholder";
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import moment from 'moment';
+
 const { width, height } = Dimensions.get('window')
 
 
@@ -27,6 +36,9 @@ class InfoDriverScreen extends React.Component {
         super(props);
         this.state = {
             data_driver: {},
+            page_number: 1,
+            total: 0,
+            data: [],
         };
     }
     async componentDidMount() {
@@ -37,8 +49,33 @@ class InfoDriverScreen extends React.Component {
             console.log("123")
             this.setState({ data_driver: req.data })
         }
-        const reqComment = await getRecentRatingDriver(1, 10, data._id);
-        console.log("reqComment", reqComment)
+        this.getDataRatingRecent(1, data._id);
+
+    }
+    getDataRatingRecent = async (page_number, id) => {
+        const { total, data, isloading } = this.state;
+        if (isloading) {
+            return
+        }
+        if (page_number > 1 && page_number * 10 > total) {
+            console.log('not data')
+            return
+        }
+        this.setState({ isloading: true })
+        const rate_recent = await getRecentRatingDriver(page_number, 10, id);
+        console.log("rate_recent", rate_recent)
+        setTimeout(() => {
+            this.setState({ isloading: false })
+        }, 300)
+
+        if (rate_recent && !rate_recent.err) {
+            if (page_number == 1) {
+                this.setState({ page_number: page_number + 1, total: rate_recent.total, data: rate_recent.data })
+            } else {
+                this.setState({ page_number: page_number + 1, total: rate_recent.total, data: [...data, ...rate_recent.data] })
+
+            }
+        }
     }
     renderAvatar = () => {
         const { componentId, data } = this.props;
@@ -116,21 +153,107 @@ class InfoDriverScreen extends React.Component {
         if (ratingPoint) {
             return <View style={{ marginHorizontal: scale(10), borderBottomWidth: 1, borderColor: color.GRAY_COLOR_200, marginTop: scale(15) }}>
                 <Text style={{ fontSize: scale(15), fontWeight: '500', color: color.GRAY_COLOR_500 }}>Điểm đánh giá trung bình</Text>
-                <Text style={{ fontWeight: "500", paddingVertical: scale(5) }}>{ratingPoint.value} *</Text>
+                <Text style={{ fontWeight: "500", paddingVertical: scale(5) }}>{ratingPoint.value.toFixed(2)} *</Text>
             </View>
         }
     }
-    recentRate = () => {
-        return <View style={{ marginHorizontal: scale(10), marginTop: scale(15) }}>
-            <Text style={{ fontSize: scale(15), fontWeight: '500', color: color.GRAY_COLOR_500 }}>Đánh giá gần đây</Text>
-            <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
+    renderStar = (number) => {
+        let arr = [];
+        let index = 0;
+        while (index < number) {
+            index = index + 1;
+            arr.push(1);
+        }
+        return <View style={{ flexDirection: "row", alignItems: "center", paddingTop: scale(5) }}>
+            {arr.map(vl => {
+                return <FontAwesomeIcon
+                    name="star"
+                    color={color.ORANGE_COLOR_400}
+                    size={scale(16)}
+                />
+            })}
+        </View>
+    }
 
+    renderItem = ({ item, type }) => {
+        const { isloading } = this.state;
+        if (type == "loading") {
+            if (!isloading) {
+                return
+            }
+            return this.renderLoading();
+
+        }
+        let avatar = item?.avatar ? item?.avatar : '';
+        let name = item?.name ? item?.name : 'Người dùng ẩn danh';
+        let rate = item?.rate_value ? item?.rate_value : 0;
+        let comment = item?.comment ? item?.comment : 'Không có bình luận';
+        let time = item?.time ? (item?.time * 1000) >> 0 : Date.now();
+        return <View style={{ flexDirection: 'row', paddingVertical: scale(7), borderBottomWidth: 1, borderColor: color.GRAY_COLOR_200 }}>
+            {!avatar || avatar == '' ? <View style={{ width: scale(24), height: scale(24), borderRadius: scale(12), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400 }}>
+                <FontAwesomeIcon
+                    name="user-alt"
+                    color="#FFFFFF"
+                    size={scale(12)}
+                />
+            </View> : <View>
+                <FastImage style={{ width: scale(24), height: scale(24), borderRadius: scale(12) }} source={{ uri: avatar }} />
+            </View>}
+            <View style={{ marginHorizontal: scale(10) }}>
+                <Text style={{ fontWeight: "500", color: color.GRAY_COLOR_700 }}>{name}</Text>
+                {this.renderStar(rate)}
+                <Text style={{ paddingTop: scale(5), fontWeight: "600" }}>{comment}</Text>
+                <Text style={{ paddingTop: scale(5) }}>{moment(time).format('HH:mm - DD/MM/YYYY')}</Text>
+            </View>
+        </View>
+    }
+    renderLoading = () => {
+        let arr = [1, 2, 3];
+        return <View style={{}}>
+            {arr.map(vl => {
+                return <Placeholder
+                    Animation={Fade}
+                    Left={props => <PlaceholderMedia style={[{ height: scale(50), width: scale(50), marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
+                    style={{ marginVertical: scale(12) }}
+                >
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+                    <PlaceholderLine width={90} height={10} style={{ borderRadius: 10 }} />
+
+                </Placeholder>
+            })}
+
+
+        </View>
+    }
+
+    recentRate = () => {
+        return <View style={{ flex: 1, marginHorizontal: scale(10), marginTop: scale(15) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '500', color: color.GRAY_COLOR_500 }}>Đánh giá gần đây</Text>
+            <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200, marginTop: scale(7) }} />
+            <FlatList
+                data={[...this.state.data, { type: "loading" }]}
+                renderItem={this.renderItem}
+                style={{ flex: 1 }}
+                keyExtractor={item => item._id}
+                showsVerticalScrollIndicator={false}
+                onEndReached={({ distanceFromEnd }) => {
+                    if (distanceFromEnd < 0) return;
+                    this.getDataRatingRecent(this.state.page_number, this.props.data._id)
+                }}
+                onEndReachedThreshold={0.5}
+
+            />
         </View>
     }
     render() {
         const { componentId, data } = this.props;
         const { avatar, name, license_plate } = data;
-        console.log("data", data)
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>

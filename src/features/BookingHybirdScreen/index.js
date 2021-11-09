@@ -56,6 +56,7 @@ import { instanceData, disable_help_coach } from '../../model';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import actionsHome from '../HomeScreen/redux/actions'
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 
 enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
@@ -864,7 +865,7 @@ class CreateTripScreen extends Component {
                     </BottomTab>}
 
                 </View>
-
+                <Toast ref={(ref) => Toast.setRef(ref)} />
             </View >
         );
     }

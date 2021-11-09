@@ -25,7 +25,7 @@ import { color } from '../../constant/color';
 import { Navigation } from 'react-native-navigation';
 import { logOutAPI } from '../../api/loginApi'
 import { deleteLocalData } from '../../model'
-import { setRootToLogin, pushToHistoryScreen, pushToEditInfoScreen } from '../../NavigationController'
+import { setRootToLogin, pushToHistoryScreen, pushToEditInfoScreen, pushToCouponScreen } from '../../NavigationController'
 const { width, height } = Dimensions.get('window')
 
 
@@ -83,7 +83,7 @@ class MenuScreen extends React.Component {
         </TouchableOpacity>
     }
     renderVocher = () => {
-        return <View style={{ flexDirection: 'row', alignItems: "center" }}>
+        return <TouchableOpacity onPress={() => pushToCouponScreen(this.props.componentId)} style={{ flexDirection: 'row', alignItems: "center" }}>
             <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.GRAY_COLOR_500, alignItems: "center", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     name="tag"
@@ -101,7 +101,7 @@ class MenuScreen extends React.Component {
                 />
             </View>
 
-        </View>
+        </TouchableOpacity>
     }
     renderSupport = () => {
         return <View style={{ flexDirection: 'row', alignItems: "center" }}>
