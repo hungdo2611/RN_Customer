@@ -13,8 +13,8 @@ import {
     SafeAreaView,
     ActivityIndicator,
     Alert,
-    ScrollView,
-    Animated
+    Linking,
+    Platform
 } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
 

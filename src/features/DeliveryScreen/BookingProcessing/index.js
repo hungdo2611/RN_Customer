@@ -14,7 +14,7 @@ import {
     ActivityIndicator,
     Alert,
     ScrollView,
-    Animated
+    Platform
 } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
 
