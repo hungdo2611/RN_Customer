@@ -8,6 +8,7 @@ import { Navigation } from "react-native-navigation";
 import store from '../redux/store'
 import actionsBooking from '../features/BookingScreen/redux/actions'
 import { constant_type_notify } from './handleNoti'
+
 class NotificationProcessor {
     async checkTokenRefresh() {
         messaging().onTokenRefresh(token => {
@@ -122,7 +123,14 @@ class NotificationProcessor {
                 importance: 4, // (optional) default: 4. Int value of the Android notification importance
                 vibrate: true,
             });
+           
         });
+
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log("setBackgroundMessageHandler", remoteMessage)
+            
+        });
+
         PushNotification.popInitialNotification((notification) => {
             console.log("popInitialNotification", notification);
             if (notification && notification.data.isLocalNoti) {

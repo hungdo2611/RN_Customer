@@ -9,6 +9,7 @@ import notificationProcessor from './src/notification'
 import 'moment/locale/vi';
 import moment from 'moment'
 
+
 moment.locale('vi');
 
 registerScreens();

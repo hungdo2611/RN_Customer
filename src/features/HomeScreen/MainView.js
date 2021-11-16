@@ -25,14 +25,14 @@ import { color } from '../../constant/color'
 import Permissions from 'react-native-permissions';
 import moment from 'moment'
 import _ from 'lodash';
-import { StackActions } from '@react-navigation/native';
 import {
     pushToBookingScreen,
     pushToBookingHybirdScreen,
     pushToDeliveryScreen,
     pushToMenuScreen,
     pushToOrderInfoScreen,
-    pushToCouponScreen
+    pushToCouponScreen,
+    pushToNotificationScreen
 } from '../../NavigationController'
 import Geolocation from 'react-native-geolocation-service';
 import { getNearJourneyAPI } from '../../api/bookingApi'
@@ -50,6 +50,7 @@ import {
 } from "rn-placeholder";
 import { constant_type_status_booking } from '../BookingScreen/constant';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import notifee from '@notifee/react-native';
 
 const { width, height } = Dimensions.get('window')
 
@@ -61,11 +62,12 @@ export default class MainView extends React.Component {
             isloadingNear: true,
             near_journey: [],
             txt_crrAddress: '',
-            activeSlide: 0
+            activeSlide: 0,
+            badge: 0
         };
         this.crrNear = null
     }
-    componentDidMount() {
+    async componentDidMount() {
         Permissions.check('location').then(response => {
             // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
             console.log('respone check permission', response);
@@ -110,6 +112,8 @@ export default class MainView extends React.Component {
             error => console.log('error', error),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
+        let badge = await notifee.getBadgeCount();
+        this.setState({ badge: badge })
     }
     getCrrLocation = async (location) => {
         const req = await getAdressFromLatLng(location.lat, location.lng)
@@ -526,28 +530,37 @@ export default class MainView extends React.Component {
             </View>
         </TouchableOpacity>
     }
+    onShowNotification = () => {
+        this.setState({ badge: 0 })
+        notifee.setBadgeCount(0)
+        pushToNotificationScreen(this.props.componentId)
+    }
     render() {
         const { isInCreaseHeight, isLoadingPre, currentBooking } = this.props;
-        const { txt_crrAddress } = this.state;
+        const { txt_crrAddress, badge } = this.state;
         return (
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
                 <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
                     <Image style={{ width: scale(120), height: scale(70) }} resizeMode="stretch" source={require('./res/ic_logo.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <MaterialCommunityIcons
-                            name='bell'
-                            size={scale(24)}
+                        <TouchableOpacity
                             style={{ marginRight: scale(10) }}
-                            containerStyle={{
-
-                            }}
-                        />
+                            onPress={this.onShowNotification}
+                            activeOpacity={0.6}>
+                            <MaterialCommunityIcons
+                                name='bell'
+                                size={scale(28)}
+                            />
+                            {badge !== 0 && <View style={{ position: "absolute", right: 0, top: 0, width: scale(14), height: scale(14), borderRadius: scale(7), backgroundColor: color.RED_COLOR, alignItems: "center", justifyContent: "center" }}>
+                                <Text style={{ color: 'white', fontWeight: "500", fontSize: scale(11) }}>{badge}</Text>
+                            </View>}
+                        </TouchableOpacity>
                         <TouchableOpacity
                             onPress={this.onShowMenu}
                             activeOpacity={0.6}>
                             <MaterialCommunityIcons
                                 name='menu'
-                                size={scale(24)}
+                                size={scale(28)}
                                 containerStyle={{
 
                                 }}

@@ -257,6 +257,25 @@ export function pushToEditInfoScreen(componentId, props) {
         },
     });
 }
+export function pushToNotificationScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.NOTIFICATION_SCREEN}_id`,
+            name: constant_name.NOTIFICATION_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function pushToHistoryScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {
