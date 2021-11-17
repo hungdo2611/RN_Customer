@@ -3,11 +3,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MapView, { PROVIDER_GOOGLE, AnimatedRegion, Marker, Polyline } from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import { Navigation } from 'react-native-navigation';
-import MapViewDirections from 'react-native-maps-directions';
-import Placeholder from 'rn-placeholder';
-import Permissions from 'react-native-permissions';
+
 import Geolocation from 'react-native-geolocation-service';
 import LocationAnimate from '../../component/LocationAnimation'
+import { PERMISSIONS, request } from "react-native-permissions";
 import {
     Text,
     View,
@@ -28,9 +27,7 @@ import {
     Easing,
 } from 'react-native';
 
-import * as Animatable from 'react-native-animatable';
-import PropTypes from 'prop-types';
-import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
+
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 
 import BottomTab from './components/BottomTab';
@@ -157,59 +154,69 @@ class CreateTripScreen extends Component {
         disable_help_coach({ ...instanceData.show_help, delivery: false })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         AppState.addEventListener('change', this._handleAppStateChange);
-        Permissions.check('location').then(response => {
-            // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-            console.log('respone check permission', response);
-            if (response !== 'authorized') {
-                if (response !== 'denied') {
-                    Permissions.check('location', { type: 'always' }).then(res => {
-                        console.log('respone request permission ', res);
-                    });
-                } else {
-                    Alert.alert(
-                        'Ứng dụng cần quyền truy cập vị trí',
-                        'Ứng dụng cần quyền vị trí của bạn để có thể kết nối với mọi người',
-                        [
-                            {
-                                text: 'Không',
-
-                                onPress: () => console.log('Permission denied'),
-                                style: 'cancel',
-                            },
-
-                            {
-                                text: 'Cài đặt',
-                                onPress: Permissions.openSettings,
-                            },
-                        ],
+        try {
+            request(
+                Platform.select({
+                    android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+                    ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+                })
+            ).then(res => {
+                console.log("res", res)
+                if (res == "granted") {
+                    Geolocation.getCurrentPosition(
+                        position => {
+                            console.log(position);
+                            this.setState({
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                coordinate: new AnimatedRegion({
+                                    latitude: position.coords.latitude,
+                                    longitude: position.coords.longitude,
+                                    latitudeDelta: LATITUDE_DELTA,
+                                    longitudeDelta: LONGITUDE_DELTA,
+                                }),
+                            });
+                            const r = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                latitudeDelta: LATITUDE_DELTA,
+                                longitudeDelta: LONGITUDE_DELTA,
+                            };
+                            this.map.animateToRegion(r, 500);
+                        },
+                        error => console.log('error', error),
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
                     );
+                } else {
+                    if (Platform.OS === "ios" || res == 'blocked') {
+                        Alert.alert(
+                            'Ứng dụng cần quyền truy cập vị trí',
+                            'Ứng dụng cần quyền vị trí của bạn để có thể tạo chuyến và kết nối với tài xế',
+                            [
+                                {
+                                    text: 'Không',
+
+                                    onPress: () => console.log('Permission denied'),
+                                    style: 'cancel',
+                                },
+
+                                {
+                                    text: 'Cài đặt',
+                                    onPress: () => {
+                                        Linking.openSettings();
+                                    }
+                                },
+                            ],
+                        );
+                    }
+
+                    // console.log("Location is not enabled");
                 }
-            }
-        });
-        Geolocation.getCurrentPosition(
-            position => {
-                console.log(position);
-                this.setState({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    coordinate: new AnimatedRegion({
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA,
-                    }),
-                });
-                const r = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA,
-                };
-                this.map.animateToRegion(r, 500);
-            },
-            error => console.log('error', error),
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
+            });
+        } catch (error) {
+            console.log("location set error:", error);
+        }
+
 
         if (this.props.currentBooking) {
             this.setDataRouteBooking()

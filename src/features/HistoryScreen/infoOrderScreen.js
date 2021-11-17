@@ -474,13 +474,13 @@ class OrderInfoScreen extends React.Component {
                         name='edit'
                         size={scale(17)}
                         color={color.GRAY_COLOR_400}
-                        style={{ marginLeft: scale(10), marginTop: scale(4) }}
+                        style={{ marginLeft: scale(10), marginTop: Platform.OS == 'android' ? scale(10) : scale(4) }}
                     />
                     <TextInput
                         onChangeText={txt => this.setState({ comment: txt })}
                         blurOnSubmit={true}
                         multiline={true}
-                        style={{ fontSize: scale(14), padding: scale(10), flex: 1 }}
+                        style={{ fontSize: scale(14), padding: scale(10), flex: 1, textAlignVertical: 'top' }}
                         placeholder="Gửi phản hồi" />
                 </View>
                 <TouchableOpacity
@@ -551,7 +551,8 @@ class OrderInfoScreen extends React.Component {
                 </View>
                 <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />
                 <KeyboardAwareScrollView
-                    extraScrollHeight={scale(50)}
+                    extraScrollHeight={scale(100)}
+                    extraHeight={scale(100)}
                     innerRef={ref => {
                         this.scroll = ref
                     }}

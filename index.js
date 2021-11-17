@@ -17,12 +17,12 @@ registerScreens();
 
 if (Platform.OS === 'android') {
     Navigation.setDefaultOptions({
-        statusBar: {
-            drawBehind: true,
-            style: 'dark',
-            // backgroundColor: 'rgba(0,0,0,0)'
+        // statusBar: {
+        //     drawBehind: true,
+        //     style: 'dark',
+        //     // backgroundColor: 'rgba(0,0,0,0)'
 
-        },
+        // },
         animations: {
             push: {
                 enabled: 'true',

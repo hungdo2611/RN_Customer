@@ -1,4 +1,4 @@
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import messaging from '@react-native-firebase/messaging';
 import { instanceData } from '../model'
 import { registerDeviceToken } from '../api/loginApi'
@@ -8,6 +8,10 @@ import { Navigation } from "react-native-navigation";
 import store from '../redux/store'
 import actionsBooking from '../features/BookingScreen/redux/actions'
 import { constant_type_notify } from './handleNoti'
+import AsyncStorage from '@react-native-community/async-storage';
+import { KEY_ASYNC_NOTI } from '../constant'
+import { homeInstance } from '../features/HomeScreen/MainView'
+import notifee from '@notifee/react-native';
 
 class NotificationProcessor {
     async checkTokenRefresh() {
@@ -123,12 +127,31 @@ class NotificationProcessor {
                 importance: 4, // (optional) default: 4. Int value of the Android notification importance
                 vibrate: true,
             });
-           
-        });
 
+        });
+        // android only
         messaging().setBackgroundMessageHandler(async remoteMessage => {
+            if (remoteMessage?.data?.type === constant_type_notify.ALERT_NOTIFICATION || remoteMessage?.data?.type === constant_type_notify.PROMOTION_NOTIFICATION) {
+                if (homeInstance) {
+                    homeInstance.inCreaseBaddge();
+                }
+                let count = await AsyncStorage.getItem(KEY_ASYNC_NOTI)
+                if (!count) {
+                    AsyncStorage.setItem(KEY_ASYNC_NOTI, '1');
+                    if (Platform.OS == 'ios') {
+                        notifee.setBadgeCount(1)
+                    }
+                } else {
+                    let new_count = (count >> 0) + 1;
+                    AsyncStorage.setItem(KEY_ASYNC_NOTI, new_count + '');
+                    if (Platform.OS == 'ios') {
+                        notifee.setBadgeCount(new_count)
+                    }
+                }
+            }
+
             console.log("setBackgroundMessageHandler", remoteMessage)
-            
+
         });
 
         PushNotification.popInitialNotification((notification) => {

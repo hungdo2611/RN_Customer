@@ -9,20 +9,20 @@ import {
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
     Keyboard,
-    SafeAreaView,
-    ActivityIndicator,
+    Linking,
+    Platform,
     Alert,
     ScrollView
 } from 'react-native'
 
 import { connect } from 'react-redux'
 
-import { CONSTANT_TYPE_BOOKING } from '../../constant'
+import { CONSTANT_TYPE_BOOKING, KEY_ASYNC_NOTI } from '../../constant'
 
 import { scale } from '../../ultis/scale'
 
 import { color } from '../../constant/color'
-import Permissions from 'react-native-permissions';
+import { PERMISSIONS, request } from "react-native-permissions";
 import moment from 'moment'
 import _ from 'lodash';
 import {
@@ -51,9 +51,10 @@ import {
 import { constant_type_status_booking } from '../BookingScreen/constant';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import notifee from '@notifee/react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 
 const { width, height } = Dimensions.get('window')
-
+export let homeInstance = null;
 export default class MainView extends React.Component {
     constructor(props) {
         super(props);
@@ -65,55 +66,76 @@ export default class MainView extends React.Component {
             activeSlide: 0,
             badge: 0
         };
-        this.crrNear = null
+        this.crrNear = null;
+        homeInstance = this;
+    }
+    // android only
+    inCreaseBaddge = () => {
+        const { badge } = this.state;
+        this.setState({ badge: badge + 1 })
     }
     async componentDidMount() {
-        Permissions.check('location').then(response => {
-            // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
-            console.log('respone check permission', response);
-            if (response !== 'authorized') {
-                if (response !== 'denied') {
-                    Permissions.check('location', { type: 'always' }).then(res => {
-                        console.log('respone request permission ', res);
-                    });
-                } else {
-                    Alert.alert(
-                        'Ứng dụng cần quyền truy cập vị trí',
-                        'Ứng dụng cần quyền vị trí của bạn để có thể kết nối với mọi người',
-                        [
-                            {
-                                text: 'Không',
-
-                                onPress: () => console.log('Permission denied'),
-                                style: 'cancel',
-                            },
-
-                            {
-                                text: 'Cài đặt',
-                                onPress: Permissions.openSettings,
-                            },
-                        ],
+        try {
+            request(
+                Platform.select({
+                    android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+                    ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+                })
+            ).then(res => {
+                console.log("res", res)
+                if (res == "granted") {
+                    console.log("permsision ok")
+                    Geolocation.getCurrentPosition(
+                        position => {
+                            let location = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            }
+                            this.setState({
+                                location: location
+                            });
+                            this.getNearJourney(location)
+                            this.getCrrLocation(location)
+                        },
+                        error => console.log('error', error),
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
                     );
+                } else {
+                    if (Platform.OS === "ios" || res == 'blocked') {
+                        Alert.alert(
+                            'Ứng dụng cần quyền truy cập vị trí',
+                            'Ứng dụng cần quyền vị trí của bạn để có thể tạo chuyến và kết nối với tài xế',
+                            [
+                                {
+                                    text: 'Không',
+
+                                    onPress: () => console.log('Permission denied'),
+                                    style: 'cancel',
+                                },
+
+                                {
+                                    text: 'Cài đặt',
+                                    onPress: () => {
+                                        Linking.openSettings();
+                                    }
+                                },
+                            ],
+                        );
+                    }
+
+                    // console.log("Location is not enabled");
                 }
-            }
-        });
-        Geolocation.getCurrentPosition(
-            position => {
-                let location = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                }
-                this.setState({
-                    location: location
-                });
-                this.getNearJourney(location)
-                this.getCrrLocation(location)
-            },
-            error => console.log('error', error),
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
-        let badge = await notifee.getBadgeCount();
-        this.setState({ badge: badge })
+            });
+        } catch (error) {
+            console.log("location set error:", error);
+        }
+
+        let badge = await AsyncStorage.getItem(KEY_ASYNC_NOTI);
+        if (badge) {
+            this.setState({ badge: badge >> 0 })
+        }
+
+
     }
     getCrrLocation = async (location) => {
         const req = await getAdressFromLatLng(location.lat, location.lng)
@@ -532,16 +554,23 @@ export default class MainView extends React.Component {
     }
     onShowNotification = () => {
         this.setState({ badge: 0 })
-        notifee.setBadgeCount(0)
+        if (Platform.OS == 'ios') {
+            AsyncStorage.setItem(KEY_ASYNC_NOTI, '0');
+            notifee.setBadgeCount(0)
+        } else {
+            AsyncStorage.setItem(KEY_ASYNC_NOTI, '0');
+
+        }
         pushToNotificationScreen(this.props.componentId)
     }
     render() {
         const { isInCreaseHeight, isLoadingPre, currentBooking } = this.props;
         const { txt_crrAddress, badge } = this.state;
+        console.log('badge', badge)
         return (
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
                 <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-between" }}>
-                    <Image style={{ width: scale(120), height: scale(70) }} resizeMode="stretch" source={require('./res/ic_logo.png')} />
+                    <Image style={{ width: scale(120), height: scale(70), }} resizeMode="stretch" source={require('./res/ic_logo.png')} />
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         <TouchableOpacity
                             style={{ marginRight: scale(10) }}

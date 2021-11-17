@@ -50,25 +50,15 @@ class HomeScreen extends React.Component {
         const { lst_coupon, total_coupon } = this.props;
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <KeyboardAvoidingView
-                    style={{
-                        flex: 1,
-                        justifyContent: "space-between",
-                    }}
-                    behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-
-                    <View style={{ paddingHorizontal: scale(10), flex: 1 }}>
-                        <MainView
-                            total={total_coupon}
-                            lst_coupon={lst_coupon}
-                            isLoadingPre={isLoadingPre}
-                            componentId={componentId}
-                            currentBooking={currentBooking}
-                        />
-                    </View>
-
-
-                </KeyboardAvoidingView>
+                <View style={{ paddingHorizontal: scale(10), flex: 1 }}>
+                    <MainView
+                        total={total_coupon}
+                        lst_coupon={lst_coupon}
+                        isLoadingPre={isLoadingPre}
+                        componentId={componentId}
+                        currentBooking={currentBooking}
+                    />
+                </View>
             </SafeAreaView>
         )
     }

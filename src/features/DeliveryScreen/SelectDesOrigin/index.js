@@ -480,7 +480,7 @@ class SelectDesOrigin extends React.Component {
                                 }}
                             />
                         </View>
-                        <View style={{ flex: 1, marginHorizontal: scale(10), paddingVertical: scale(5) }}>
+                        <View style={{ flex: 1, marginHorizontal: scale(10), paddingVertical: scale(3) }}>
                             <TextInput
                                 ref={e => this.inPutDiemDon = e}
                                 onFocus={() => {
