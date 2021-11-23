@@ -22,6 +22,7 @@ import CheckBox from '@react-native-community/checkbox';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import { getListDriverDeliveryAPI } from '../../../api/bookingApi'
 import { CONSTANT_TYPE_JOURNEYS } from '../../../constant';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { connect } from 'react-redux'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
@@ -591,6 +592,10 @@ class AdditionalInfo extends React.Component {
                         enableSwipeDown
                         imageUrls={UrlImageShow} />
                 </Modal>
+                <Spinner
+                    visible={this.props.isLoading_getListDriver}
+                    color={color.ORANGE_COLOR_400}
+                />
             </View>
         )
     }
@@ -602,6 +607,7 @@ const mapStateToProps = (state) => {
         isLoading_getListDriver: state.DeliveryReducer.isLoading,
         lstDriver: state.DeliveryReducer.lstDriver,
         distance: state.DeliveryReducer.distance,
+
     }
 }
 function mapDispatchToProps(dispatch) {

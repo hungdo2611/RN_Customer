@@ -1,5 +1,5 @@
 export const color = {
-    MAIN_COLOR: '#00C0B3',
+    MAIN_COLOR: '#FF6937',
     RED_COLOR: '#ff001e',
     RED_300: '#E85C4A',
     GRAY_COLOR: '#8A8A8F',
@@ -18,6 +18,7 @@ export const color = {
     GREEN_COLOR_400: '#05944F',
     GREEN_COLOR_500: '#03703C',
     YEALLOW_COLOR_300: '#FFCF70',
-    YEALLOW_COLOR_400: '#FFC043'
+    YEALLOW_COLOR_400: '#FFC043',
+    BLUE_COLOR_300: '#5B91F5'
 
 }

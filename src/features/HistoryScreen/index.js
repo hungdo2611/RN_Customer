@@ -233,7 +233,7 @@ class HistoryScreen extends React.Component {
             case constant_type_status_booking.WAITING_DRIVER:
                 return color.YEALLOW_COLOR_400
             case constant_type_status_booking.FINDING_DRIVER:
-                return color.ORANGE_COLOR_400
+                return color.BLUE_COLOR_300
             case constant_type_status_booking.PROCESSING:
                 return color.GREEN_COLOR_400
             case constant_type_status_booking.USER_CANCEL:

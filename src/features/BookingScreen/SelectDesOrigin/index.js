@@ -26,7 +26,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { AutoCompleteAPI, getFromLocationId } from '../../../api/MapApi';
 import { scale } from '../../../ultis/scale'
-import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -34,7 +34,7 @@ import {
     Fade
 } from "rn-placeholder";
 import { color } from '../../../constant/color'
-import { getListDriverAPI } from '../../../api/bookingApi'
+import { getListDriverAPI, getFreeDriverAPI } from '../../../api/bookingApi'
 import _ from 'lodash';
 import actions from '../redux/actions'
 import { CONSTANT_TYPE_JOURNEYS } from '../../../constant';
@@ -61,7 +61,8 @@ class SelectDesOrigin extends React.Component {
             dataPickWithGG: {},
             select_origin_or_des: CONSTANT_SELECT.NONE,
             text_temp: '',
-            type_autocompleteNull: null
+            type_autocompleteNull: null,
+
         }
         this.props.setRef(this)
     }
@@ -159,10 +160,11 @@ class SelectDesOrigin extends React.Component {
             journey_type: CONSTANT_TYPE_JOURNEYS.COACH_CAR
         };
         let reqGetDriver = await getListDriverAPI(body_booking);
-        console.log("reqGetDriver", reqGetDriver)
-        if (!reqGetDriver.err) {
-            getListDriverDone(reqGetDriver.data)
-        }
+        let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
+        console.log("reqGetFreeDriver",reqGetFreeDriver)
+        let dataDriver = reqGetDriver?.data ? reqGetDriver?.data : [];
+        let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
+        getListDriverDone(dataDriver, dataFree);
 
     }
 
@@ -606,13 +608,21 @@ class SelectDesOrigin extends React.Component {
                         {!isInCreaseHeight && this.renderLow()}
                     </View>
                     {isInCreaseHeight && this.renderHight()}
+                    <Spinner
+                        visible={this.props.isLoadingLstDriver}
+                        color={color.ORANGE_COLOR_400}
+                    />
                 </KeyboardAvoidingView>
             </View>
         )
     }
 }
 
-
+const mapStateToProps = (state) => {
+    return {
+        isLoadingLstDriver: state.BookingReducer.isLoading
+    }
+}
 
 
 function mapDispatchToProps(dispatch) {
@@ -627,7 +637,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
 )(SelectDesOrigin);
 

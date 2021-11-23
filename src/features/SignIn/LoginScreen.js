@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { scale } from '../../ultis/scale'
 
 import { pushToEnterPhoneNumberScreen } from '../../NavigationController'
+import { color } from '../../constant/color'
 
 const { width, height } = Dimensions.get('window')
 
@@ -36,7 +37,7 @@ class LoginScreen extends React.Component {
   render() {
     const window = Dimensions.get('window');
     return (
-      <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: 'red', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: color.ORANGE_COLOR_100, alignItems: 'center' }}>
 
 
         <View style={{
@@ -61,8 +62,10 @@ class LoginScreen extends React.Component {
           </View>
         </View>
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: width / 2 + scale(50), justifyContent: 'center', alignItems: 'center' }}>
-          <Image style={{ width: width / 1.2, height: width / 1.2, resizeMode: "cover" }} source={require('./res/logo_trans.png')} />
-          <Text style={{ fontSize: scale(14) }}>Enter your phone number to continue</Text>
+          <View style={{ height: width / 2, width: width / 2, backgroundColor: color.ORANGE_COLOR_400, borderRadius: width / 4, alignItems: "center", justifyContent: "center" }}>
+            <Image style={{ width: width / 2.5, height: width / 2.5, resizeMode: "cover", tintColor: 'white' }} source={require('./res/ic_logo_trans.png')} />
+          </View>
+          <Text style={{ fontSize: scale(16), fontWeight: "600", marginTop: scale(20) }}>Nhập số điện thoại để tiếp tục</Text>
           <TouchableOpacity
             onPress={this.onClickPhoneNumber}
             activeOpacity={1}
@@ -73,18 +76,14 @@ class LoginScreen extends React.Component {
               borderWidth: 1,
               borderColor: 'gray',
               height: scale(47),
-              alignItems: 'center', marginTop: scale(10)
+              alignItems: 'center', marginTop: scale(15)
             }}>
             <Image style={{ width: scale(17), height: scale(14), marginLeft: scale(12) }} source={require('./res/ic_flag_vn.png')} />
             <Text style={{ fontSize: scale(14), marginLeft: scale(5) }}>+84</Text>
             <View style={{ width: 1, height: scale(16), backgroundColor: 'gray', marginHorizontal: scale(8) }} />
-            <Text style={{ fontSize: scale(15), color: 'gray' }}>Phone number</Text>
+            <Text style={{ fontSize: scale(15), color: 'gray' }}>Số điện thoại</Text>
           </TouchableOpacity>
-          <View style={{ width: width - scale(40), flexDirection: 'row', alignItems: "center", marginTop: scale(35) }}>
-            <View style={{ flex: 1, height: 1, backgroundColor: "#8A8A8F", opacity: 0.5 }} />
-            <Text style={{ fontSize: scale(13), marginHorizontal: scale(20), color: '#8A8A8F' }}>Tiếp tục với</Text>
-            <View style={{ flex: 1, height: 1, backgroundColor: "#8A8A8F", opacity: 0.5 }} />
-          </View>
+
         </View>
 
       </View>

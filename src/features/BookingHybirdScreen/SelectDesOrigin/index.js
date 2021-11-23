@@ -26,7 +26,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { AutoCompleteAPI, getFromLocationId } from '../../../api/MapApi';
 import { scale } from '../../../ultis/scale'
-import { RecyclerListView, LayoutProvider, DataProvider } from 'recyclerlistview';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
     Placeholder,
     PlaceholderMedia,
@@ -605,13 +605,21 @@ class SelectDesOrigin extends React.Component {
                         {!isInCreaseHeight && this.renderLow()}
                     </View>
                     {isInCreaseHeight && this.renderHight()}
+                    <Spinner
+                        visible={this.props.isLoadingLstDriver}
+                        color={color.ORANGE_COLOR_400}
+                    />
                 </KeyboardAvoidingView>
             </View>
         )
     }
 }
 
-
+const mapStateToProps = (state) => {
+    return {
+        isLoadingLstDriver: state.BookingHybirdReducer.isLoading
+    }
+}
 
 
 function mapDispatchToProps(dispatch) {
@@ -626,7 +634,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
 )(SelectDesOrigin);
 

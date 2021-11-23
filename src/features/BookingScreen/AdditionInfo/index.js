@@ -602,6 +602,36 @@ class AdditionalInfo extends React.Component {
         const enablebtn = lst_select.length > 0 ? true : false
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
+                <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
+                            <MaterialIcons
+                                name='arrow-back-ios'
+                                size={scale(22)}
+                                color="black"
+                            />
+                        </TouchableOpacity>
+                        <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định</Text>
+
+                    </View>
+                    <TouchableOpacity
+                        onPress={this.onSendRequestToDriver}
+                        disabled={!enablebtn}
+                        style={{
+                            height: scale(30),
+                            borderRadius: scale(20),
+                            alignItems: "center",
+                            justifyContent: 'center',
+                            backgroundColor: enablebtn ? color.ORANGE_COLOR_400 : color.GRAY_COLOR_400,
+                            marginRight: scale(10),
+                            width: scale(120),
+                            flexDirection: 'row'
+                        }}>
+                        {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{}} />}
+                        <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: '#FFFFFF' }}>Gửi yêu cầu</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
                 <KeyboardAwareScrollView
                     extraScrollHeight={scale(50)}
                     extraHeight={100}
@@ -609,36 +639,6 @@ class AdditionalInfo extends React.Component {
                         this.scroll = ref
                     }}
                     showsVerticalScrollIndicator={false}>
-                    <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={this.onBack} style={{ paddingRight: 0 }}>
-                                <MaterialIcons
-                                    name='arrow-back-ios'
-                                    size={scale(22)}
-                                    color="black"
-                                />
-                            </TouchableOpacity>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Xe tuyến cố định</Text>
-
-                        </View>
-                        <TouchableOpacity
-                            onPress={this.onSendRequestToDriver}
-                            disabled={!enablebtn}
-                            style={{
-                                height: scale(30),
-                                borderRadius: scale(20),
-                                alignItems: "center",
-                                justifyContent: 'center',
-                                backgroundColor: enablebtn ? color.ORANGE_COLOR_400 : color.GRAY_COLOR_400,
-                                marginRight: scale(10),
-                                width: scale(120),
-                                flexDirection: 'row'
-                            }}>
-                            {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{}} />}
-                            <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: '#FFFFFF' }}>Gửi yêu cầu</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
 
                     <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
                         <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>

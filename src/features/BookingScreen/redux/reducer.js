@@ -3,6 +3,7 @@ import actions from "./actions";
 const initState = {
     isLoading: false,
     lstDriver: [],
+    freeDriver: [],
     isLoading_route: false,
     distance: 0,
 };
@@ -18,6 +19,7 @@ const reducer = (state = initState, action) => {
             return {
                 ...state,
                 lstDriver: action.payload.data,
+                freeDriver: action.payload.dataFree,
                 isLoading: false
 
             }

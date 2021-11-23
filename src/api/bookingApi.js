@@ -92,3 +92,12 @@ export const getRecentRatingDriver = (page_number, page_size, id) => {
         method: 'GET'
     })
 }
+export const getFreeDriverAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/booking/free/driver`,
+        method: 'POST',
+        data: body
+    })
+}
+
+
