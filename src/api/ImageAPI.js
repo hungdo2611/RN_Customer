@@ -1,6 +1,6 @@
 import Axios from 'axios'
 
-const url = `http://192.168.1.8:4999`
+const url = `http://192.168.2.9:4999`
 export const UploadImageApi = async (formdata) => {
     let request = await Axios.post(`${url}/upload/single`, formdata, { headers: { 'Content-Type': 'multipart/form-data' } });
     return request.data

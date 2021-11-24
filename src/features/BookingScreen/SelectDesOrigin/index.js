@@ -161,7 +161,7 @@ class SelectDesOrigin extends React.Component {
         };
         let reqGetDriver = await getListDriverAPI(body_booking);
         let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
-        console.log("reqGetFreeDriver",reqGetFreeDriver)
+        console.log("reqGetFreeDriver", reqGetFreeDriver?.data)
         let dataDriver = reqGetDriver?.data ? reqGetDriver?.data : [];
         let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
         getListDriverDone(dataDriver, dataFree);
@@ -630,8 +630,8 @@ function mapDispatchToProps(dispatch) {
         getListDriver: () => {
             dispatch(actions.action.getListDriver());
         },
-        getListDriverDone: (data) => {
-            dispatch(actions.action.getListDriverDone(data));
+        getListDriverDone: (data, datafree) => {
+            dispatch(actions.action.getListDriverDone(data, datafree));
         },
     };
 }

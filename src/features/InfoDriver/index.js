@@ -27,6 +27,7 @@ import {
 } from "rn-placeholder";
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import moment from 'moment';
+import { Table, Row, Rows } from 'react-native-table-component';
 
 const { width, height } = Dimensions.get('window')
 
@@ -42,7 +43,7 @@ class InfoDriverScreen extends React.Component {
         };
     }
     async componentDidMount() {
-        const { data } = this.props;
+        const { data, price_list } = this.props;
 
         let req = await getLicenseDriver(data.verified_status)
         if (req && !req.err) {
@@ -81,15 +82,13 @@ class InfoDriverScreen extends React.Component {
         const { componentId, data } = this.props;
         const { avatar, name, license_plate } = data;
         return <View style={{ flexDirection: "row", margin: scale(10), alignItems: "center" }}>
-            {avatar == undefined || avatar == null || avatar == '' ? <View style={{ width: scale(36), height: scale(36), borderRadius: scale(18), alignItems: 'center', justifyContent: 'center', backgroundColor: color.ORANGE_COLOR_400 }}>
-                <FontAwesomeIcon
-                    name="user-alt"
-                    color="#FFFFFF"
-                    size={scale(14)}
-                />
-            </View> : <View>
-                <FastImage style={{ width: scale(60), height: scale(60), borderRadius: scale(30) }} source={{ uri: avatar }} />
-            </View>}
+            {avatar == undefined || avatar == null || avatar == '' ?
+                <Image
+                    style={{ alignSelf: "center", marginVertical: scale(3), width: scale(36), height: scale(36) }}
+                    source={require('../../resource/ic_driver.png')} />
+                : <View>
+                    <FastImage style={{ width: scale(60), height: scale(60), borderRadius: scale(30) }} source={{ uri: avatar }} />
+                </View>}
             <View style={{ marginHorizontal: scale(15), flex: 1 }}>
                 <Text style={{ fontSize: scale(17), fontWeight: "600" }}>{name}</Text>
                 <Text style={{ fontSize: scale(15), fontWeight: "500" }}>{license_plate}</Text>
@@ -251,8 +250,37 @@ class InfoDriverScreen extends React.Component {
             />
         </View>
     }
+    renderPriceList = (lst_price) => {
+        const data_list = lst_price.map((vl, index) => {
+            if (lst_price.length == 1) {
+                return ['Đồng giá', `${new Intl.NumberFormat("es-ES").format(vl.value)} đ`]
+            }
+            if (index == lst_price.length - 1) {
+                return [`Từ ${vl.distance} km`, `${new Intl.NumberFormat("es-ES").format(vl.value)} đ`]
+            }
+            if (index == 0) {
+                return [`Từ 0 - ${vl.distance} km`, `${new Intl.NumberFormat("es-ES").format(vl.value)} đ`]
+            }
+            return [`Từ ${lst_price[index - 1].distance} - ${vl.distance} km`, `${new Intl.NumberFormat("es-ES").format(vl.value)} đ`]
+
+        });
+
+        return <View style={{ marginHorizontal: scale(10), marginTop: scale(15) }}>
+            <Text style={{ fontSize: scale(15), fontWeight: '500', color: color.GRAY_COLOR_500 }}>Bảng giá chi tiết</Text>
+            <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200, marginTop: scale(7) }} />
+            <Table borderStyle={{ borderWidth: 2, borderColor: color.GRAY_COLOR_200 }}>
+                <Row data={["Quãng đường", "Bảng giá"]} style={{ height: scale(40) }} textStyle={{ textAlign: "center", fontSize: scale(15), fontWeight: '600' }} />
+                {data_list.map(vl => {
+                    return <Rows data={[vl]} style={{ height: scale(30), }} textStyle={{ textAlign: "center" }} />
+
+                })}
+            </Table>
+        </View>
+    }
     render() {
         const { componentId, data } = this.props;
+        const { price_list } = this.props;
+
         const { avatar, name, license_plate } = data;
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -273,6 +301,7 @@ class InfoDriverScreen extends React.Component {
                 {this.renderCarType()}
                 {this.renderTurnRate()}
                 {this.renderValueRate()}
+                {price_list && this.renderPriceList(price_list)}
                 {this.recentRate()}
             </SafeAreaView>
         )
