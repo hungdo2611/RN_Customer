@@ -224,6 +224,7 @@ class AdditionalInfo extends React.Component {
 
     }
     getNameVehicle = (type) => {
+        console.log("type", type)
         const vehicleTypeData = [
             { label: "Xe mô tô", value: 1 },
             { label: "Xe 4 chỗ nhỏ", value: 4 },
@@ -236,11 +237,13 @@ class AdditionalInfo extends React.Component {
             { label: "Xe tải", value: 71 }
         ];
         const data = vehicleTypeData.find(vl => vl.value == type);
-        return data.label;
+        if(data){
+            return data.label;
+        }
+        return "Không xác định"
     }
     renderFreeDriver = (lstDriver) => {
         const { lst_select, seat, coupon } = this.state;
-        console.log("lst_select", lst_select)
         return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
             {lstDriver.map(driver => {
                 const isCheck = lst_select.findIndex(vl => vl.driver_id == driver._id)
@@ -270,7 +273,7 @@ class AdditionalInfo extends React.Component {
 
                         <View style={{ flexDirection: 'row', marginLeft: scale(2), paddingVertical: scale(5) }}>
                             <Image style={{ width: scale(15), height: scale(15) }} source={require('../../../resource/ic_driver.png')} />
-                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>Tài xế tự do</Text>
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>Tài xế chưa có chuyến</Text>
                         </View>
                         <View style={{ flexDirection: 'row', marginLeft: scale(2), paddingVertical: scale(5) }}>
                             <Image style={{ width: scale(15), height: scale(15), tintColor: color.ORANGE_COLOR_400 }} source={require('../../../resource/ic_volang.png')} />
@@ -317,11 +320,12 @@ class AdditionalInfo extends React.Component {
 
         return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
             {lstDriver.map(driver => {
+                console.log("driver", driver)
                 const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
                 return <View
                     style={{
                         width: width / 2 - scale(20),
-                        height: scale(180),
+                        height: scale(200),
                         borderRadius: scale(10),
                         borderWidth: 0.7,
                         borderColor: color.GRAY_COLOR_500,
@@ -673,7 +677,6 @@ class AdditionalInfo extends React.Component {
         const { seat, lst_select, fromTime } = this.state;
         const { isLoading_getListDriver, lstDriver, freeDriver } = this.props;
         const enablebtn = lst_select.length > 0 ? true : false
-        console.log("freeDriver", freeDriver)
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                 <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>

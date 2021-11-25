@@ -372,6 +372,7 @@ class WaitingPickup extends React.Component {
     render() {
         const { onNavigationBack, isInCreaseHeight } = this.props;
         const { coupon_code } = this.props?.currentBooking;
+        const { suggestion_pick } = this.props.currentBooking
 
         if (isInCreaseHeight) {
             return (
@@ -405,7 +406,7 @@ class WaitingPickup extends React.Component {
                             {this.renderLine()}
                             {this.renderInfoDriver()}
                             {this.renderLine()}
-                            {this.renderSuggestion()}
+                            {suggestion_pick && this.renderSuggestion()}
                             {this.renderLine()}
                             {this.renderPayment()}
                         </View>

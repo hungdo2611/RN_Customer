@@ -160,11 +160,11 @@ class SelectDesOrigin extends React.Component {
             journey_type: CONSTANT_TYPE_JOURNEYS.COACH_CAR
         };
         let reqGetDriver = await getListDriverAPI(body_booking);
-        let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
-        console.log("reqGetFreeDriver", reqGetFreeDriver?.data)
+        // let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
+        // console.log("reqGetFreeDriver", reqGetFreeDriver?.data)
         let dataDriver = reqGetDriver?.data ? reqGetDriver?.data : [];
-        let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
-        getListDriverDone(dataDriver, dataFree);
+        // let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
+        getListDriverDone(dataDriver, []);
 
     }
 

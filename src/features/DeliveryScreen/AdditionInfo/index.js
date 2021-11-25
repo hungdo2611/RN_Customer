@@ -20,7 +20,7 @@ import {
 } from 'react-native'
 import CheckBox from '@react-native-community/checkbox';
 import { PERMISSIONS, request } from 'react-native-permissions';
-import { getListDriverDeliveryAPI } from '../../../api/bookingApi'
+import { getListDriverDeliveryAPI, getFreeDriverAPI } from '../../../api/bookingApi'
 import { CONSTANT_TYPE_JOURNEYS } from '../../../constant';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -468,11 +468,22 @@ class AdditionalInfo extends React.Component {
             },
             journey_type: method_take == CONSTANT_TYPE_BOOKING.COACH_DELIVERY_CAR ? CONSTANT_TYPE_JOURNEYS.COACH_CAR : CONSTANT_TYPE_JOURNEYS.HYBIRD_CAR,
         };
-        let reqGetDriver = await getListDriverDeliveryAPI(body_booking);
-        console.log("reqGetDriver", reqGetDriver)
-        if (!reqGetDriver.err) {
-            getListDriverDone(reqGetDriver.data)
+        if (method_take == CONSTANT_TYPE_BOOKING.COACH_DELIVERY_CAR) {
+            let reqGetDriver = await getListDriverDeliveryAPI(body_booking);
+            // let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
+            // console.log("reqGetFreeDriver", reqGetFreeDriver?.data)
+            let dataDriver = reqGetDriver?.data ? reqGetDriver?.data : [];
+            // let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
+            getListDriverDone(dataDriver, []);
+        } else {
+            let reqGetDriver = await getListDriverDeliveryAPI(body_booking);
+            let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
+            console.log("reqGetFreeDriver", reqGetFreeDriver?.data)
+            let dataDriver = reqGetDriver?.data ? reqGetDriver?.data : [];
+            let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
+            getListDriverDone(dataDriver, dataFree);
         }
+
     }
     render() {
         const { phone_number, weight, method_take } = this.state;
@@ -618,8 +629,8 @@ function mapDispatchToProps(dispatch) {
         getListDriver: () => {
             dispatch(actions.action.getListDriver());
         },
-        getListDriverDone: (data) => {
-            dispatch(actions.action.getListDriverDone(data));
+        getListDriverDone: (data, datafree) => {
+            dispatch(actions.action.getListDriverDone(data, datafree));
         },
 
         dispatch,

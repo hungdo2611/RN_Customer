@@ -34,7 +34,7 @@ import {
     Fade
 } from "rn-placeholder";
 import { color } from '../../../constant/color'
-import { getListDriverAPI } from '../../../api/bookingApi'
+import { getListDriverAPI, getFreeDriverAPI } from '../../../api/bookingApi'
 import _ from 'lodash';
 import actions from '../redux/actions'
 import { CONSTANT_TYPE_JOURNEYS } from '../../../constant';
@@ -158,10 +158,11 @@ class SelectDesOrigin extends React.Component {
 
         };
         let reqGetDriver = await getListDriverAPI(body_booking);
-        console.log("reqGetDriver", reqGetDriver)
-        if (!reqGetDriver.err) {
-            getListDriverDone(reqGetDriver.data)
-        }
+        let reqGetFreeDriver = await getFreeDriverAPI({ from: body_booking.from })
+        console.log("reqGetFreeDriver", reqGetFreeDriver?.data)
+        let dataDriver = reqGetDriver?.data ? reqGetDriver?.data : [];
+        let dataFree = reqGetFreeDriver?.data ? reqGetFreeDriver?.data : [];
+        getListDriverDone(dataDriver, dataFree);
 
     }
 
@@ -627,8 +628,8 @@ function mapDispatchToProps(dispatch) {
         getListDriver: () => {
             dispatch(actions.action.getListDriver());
         },
-        getListDriverDone: (data) => {
-            dispatch(actions.action.getListDriverDone(data));
+        getListDriverDone: (data, datafree) => {
+            dispatch(actions.action.getListDriverDone(data, datafree));
         },
     };
 }

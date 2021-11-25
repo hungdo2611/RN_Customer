@@ -279,13 +279,20 @@ class WaitingDriverScreen extends React.Component {
             reason: reason
         }
         let requestCancel = await cancelBookingAPI(body)
-        this.setState({ isloading: false, isShowModal: false })
 
         if (!requestCancel.err) {
             this.setState({ isCancel: true, message: 'Huỷ chuyến thành công' })
+            this.setState({ isloading: false, isShowModal: false })
+
             updateCurrentBooking(requestCancel.data)
         } else {
-            this.setState({ isCancel: true, message: 'Đã có lỗi xảy ra. Vui lòng thử lại sau' })
+            this.setState({ isloading: false })
+            if (requestCancel?.message) {
+                this.props.reloadData();
+                this.setState({ isCancel: true, message: requestCancel?.message })
+            } else {
+                this.setState({ isCancel: true, message: 'Đã có lỗi xảy ra. Vui lòng thử lại sau' })
+            }
 
         }
         console.log("requestCancel", requestCancel)
@@ -386,7 +393,7 @@ class WaitingDriverScreen extends React.Component {
                             <Text style={{ fontSize: scale(17), fontWeight: '600', marginTop: scale(10) }}>{this.state.message}</Text>
                             <TouchableOpacity
                                 onPress={() => {
-                                    onNavigationBack();
+                                    this.setState({ isShowModal: false })
                                 }}
                                 style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: color.GREEN_COLOR_300, borderRadius: scale(15), alignSelf: "center", marginTop: scale(20) }}>
                                 <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Quay lại</Text>

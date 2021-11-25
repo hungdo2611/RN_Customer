@@ -187,9 +187,9 @@ class FindDriver extends React.Component {
             return lst_price[lst_price.length - 1].value
         }
     }
-    renderPrice = (driver, coupon) => {
+    renderPrice = (price, coupon) => {
         const { seat } = this.state;
-        let crr_price = this.getPrice(driver.price_shipping) * seat
+        let crr_price = this.getPrice(price) * seat
         if (coupon && crr_price >= coupon?.condition?.min_Price) {
             const { amount, max_apply, condition } = coupon;
             let reduce_value = 0;
@@ -203,7 +203,7 @@ class FindDriver extends React.Component {
             }
             return <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
-                    <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, textDecorationLine: 'line-through' }}>{new Intl.NumberFormat().format(this.getPrice(driver.price_shipping) * seat)}đ</Text>
+                    <Text style={{ fontSize: scale(12), color: color.GRAY_COLOR_500, textDecorationLine: 'line-through' }}>{new Intl.NumberFormat().format(this.getPrice(price) * seat)}đ</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: scale(5) }}>
                     <Text style={{ fontSize: scale(13), fontWeight: '500' }}>{new Intl.NumberFormat().format(crr_price - reduce_value)}đ</Text>
@@ -224,18 +224,13 @@ class FindDriver extends React.Component {
     renderLstDriver = (lstDriver) => {
         const { lst_select, coupon } = this.state;
 
-        if (lstDriver.length == 0) {
-            return <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: scale(30) }}>
-                <Image style={{ width: scale(80), height: scale(80) }} source={require('./res/ic_notfound.png')} />
-                <Text style={{ fontSize: scale(14), fontWeight: '500', marginHorizontal: scale(20), textAlign: 'center', paddingTop: scale(10) }}>Hiện tại không có nhà xe nào phù hợp với yêu cầu của bạn. Vui lòng thử lại sau</Text>
-            </View>
-        }
 
         return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
             {lstDriver.map(driver => {
                 const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
 
                 return <View
+                    key={driver._id}
                     style={{
                         width: width / 2 - scale(20),
                         height: scale(170),
@@ -305,17 +300,13 @@ class FindDriver extends React.Component {
 
                         </View>
                         <View style={{ flexDirection: 'row', marginLeft: scale(2) }}>
-                            <MaterialCommunityIcons
-                                name="clock"
-                                size={scale(14)}
-                                color={color.YEALLOW_COLOR_300}
-                            />
-                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{moment(driver.time_start * 1000).format('HH:mm')}-{moment(driver.time_end * 1000).format('HH:mm')}</Text>
+                            <Image style={{ width: scale(15), height: scale(15), tintColor: color.ORANGE_COLOR_400 }} source={require('../../../resource/ic_volang.png')} />
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{this.getNameVehicle(driver?.driver_id?.vehicle_type)}</Text>
                         </View>
                     </View>
                     <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
                     <View style={{ height: scale(35), flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
-                        {this.renderPrice(driver, coupon)}
+                        {this.renderPrice(driver.price_shipping, coupon)}
                         <CheckBox
                             value={isCheck == -1 ? false : true}
                             onCheckColor={color.ORANGE_COLOR_400}
@@ -629,9 +620,97 @@ class FindDriver extends React.Component {
             </View>
         }
     }
+    renderFreeDriver = (lstDriver) => {
+        const { lst_select, seat, coupon } = this.state;
+        console.log("lst_select", lst_select)
+        return <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
+            {lstDriver.map(driver => {
+                const isCheck = lst_select.findIndex(vl => vl.driver_id == driver._id)
+                console.log("driver", driver)
+                return <View
+                    key={driver._id}
+                    style={{
+                        width: width / 2 - scale(20),
+                        height: scale(180),
+                        borderRadius: scale(10),
+                        borderWidth: 0.7,
+                        borderColor: color.GRAY_COLOR_500,
+                        margin: scale(10)
+                    }}>
+                    <View style={{ flex: 1 }}>
+                        <TouchableOpacity activeOpacity={0.5} onPress={() => showModalDriverInfo({ data: driver, price_list: driver?.price_free })}>
+                            {driver?.avatar == '' && <Image
+                                style={{ alignSelf: "center", marginVertical: scale(3), width: scale(30), height: scale(30) }}
+                                source={require('../../../resource/ic_driver.png')} />
+                            }
+                            {driver?.avatar != '' && <FastImage
+                                source={{ uri: driver?.avatar }}
+                                style={{ alignSelf: "center", marginVertical: scale(3), height: scale(30), width: scale(30), borderRadius: scale(15) }}
+                            />}
+                            <Text style={{ alignSelf: 'center', fontSize: scale(13), fontWeight: "500", paddingBottom: scale(3) }}>{driver?.name}</Text>
+                            <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
+                        </TouchableOpacity>
+
+                        <View style={{ flexDirection: 'row', marginLeft: scale(2), paddingVertical: scale(5) }}>
+                            <Image style={{ width: scale(15), height: scale(15) }} source={require('../../../resource/ic_driver.png')} />
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>Tài xế chưa có chuyến</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', marginLeft: scale(2), paddingVertical: scale(5) }}>
+                            <Image style={{ width: scale(15), height: scale(15), tintColor: color.ORANGE_COLOR_400 }} source={require('../../../resource/ic_volang.png')} />
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{this.getNameVehicle(driver?.vehicle_type)}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', marginLeft: scale(2), paddingVertical: scale(5) }}>
+                            <FontAwesomeIcon
+                                name="star"
+                                size={scale(14)}
+                                color={color.YEALLOW_COLOR_300}
+                            />
+                            <Text style={{ alignSelf: 'center', fontSize: scale(11), fontWeight: "500", marginLeft: scale(7) }}>{driver?.ratingPoint?.value.toFixed(2)} *</Text>
+                        </View>
+                    </View>
+                    <View style={{ height: 0.8, opacity: 1, backgroundColor: color.GRAY_COLOR_400 }} />
+                    <View style={{ height: scale(35), flexDirection: "row", alignItems: "center", justifyContent: 'space-between' }}>
+                        {this.renderPrice(driver.price_free, coupon)}
+                        <CheckBox
+                            value={isCheck == -1 ? false : true}
+                            onCheckColor={color.ORANGE_COLOR_400}
+                            onTintColor={color.ORANGE_COLOR_400}
+                            style={{ width: scale(20), height: scale(20), marginRight: scale(5) }}
+                            onValueChange={(newValue) => {
+                                if (newValue) {
+                                    let newArr = [...lst_select, { value: driver.device_token, price_shipping: driver.price_free, price: driver.price_free, driver_id: driver._id }]
+                                    this.setState({ lst_select: newArr })
+                                } else {
+                                    let newArr = lst_select.filter(vl => vl.driver_id !== driver._id)
+                                    this.setState({ lst_select: newArr })
+                                }
+                            }}
+
+                        />
+                    </View>
+                </View>
+            })}
+
+        </View>
+    }
+    getNameVehicle = (type) => {
+        const vehicleTypeData = [
+            { label: "Xe mô tô", value: 1 },
+            { label: "Xe 4 chỗ nhỏ", value: 4 },
+            { label: "Xe 4 chỗ cốp rộng", value: 5 },
+            { label: "Xe 7 chỗ phổ thông", value: 7 },
+            { label: "Xe 8 chỗ", value: 9 },
+            { label: "Xe 16 chỗ", value: 16 },
+            { label: "Xe 29-45 chỗ", value: 60 },
+            { label: "Xe bán tải", value: 70 },
+            { label: "Xe tải", value: 71 }
+        ];
+        const data = vehicleTypeData.find(vl => vl.value == type);
+        return data.label;
+    }
     render() {
         const { seat, lst_select, fromTime } = this.state;
-        const { isLoading_getListDriver, lstDriver } = this.props;
+        const { isLoading_getListDriver, lstDriver, freeDriver } = this.props;
         const enablebtn = lst_select.length > 0 ? true : false
         return (
             <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
@@ -687,7 +766,7 @@ class FindDriver extends React.Component {
                             <Text style={{ marginRight: scale(5), fontWeight: '600' }}>Tất cả</Text>
                             <CheckBox
                                 disabled={false}
-                                value={lst_select.length == lstDriver.length ? true : false}
+                                value={lst_select.length == lstDriver.length + freeDriver.length ? true : false}
                                 onCheckColor={color.ORANGE_COLOR_400}
                                 onTintColor={color.ORANGE_COLOR_400}
                                 style={{ width: scale(20), height: scale(20), marginHorizontal: scale(5) }}
@@ -696,7 +775,10 @@ class FindDriver extends React.Component {
                                         let arr = lstDriver.map(journey => {
                                             return { journey_id: journey.journey_id, value: journey.driver_id.device_token, price: journey.price, price_shipping: journey.price_shipping }
                                         })
-                                        this.setState({ lst_select: arr })
+                                        let arrDriver = freeDriver.map(driver => {
+                                            return { driver_id: driver._id, value: driver.device_token, price_shipping: driver.price_free, price: driver.price_free }
+                                        })
+                                        this.setState({ lst_select: [...arr, ...arrDriver] })
                                     } else {
                                         this.setState({ lst_select: [] })
                                     }
@@ -705,7 +787,12 @@ class FindDriver extends React.Component {
                         </View>
                     </View>
                     {isLoading_getListDriver && this.renderLoading()}
-                    {!isLoading_getListDriver && this.renderLstDriver(lstDriver)}
+                    {!isLoading_getListDriver && lstDriver?.length > 0 && this.renderLstDriver(lstDriver)}
+                    {freeDriver && freeDriver?.length > 0 && this.renderFreeDriver(freeDriver)}
+                    {lstDriver?.length == 0 && freeDriver?.length == 0 && <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: scale(30) }}>
+                        <Image style={{ width: scale(80), height: scale(80) }} source={require('./res/ic_notfound.png')} />
+                        <Text style={{ fontSize: scale(14), fontWeight: '500', marginHorizontal: scale(20), textAlign: 'center', paddingTop: scale(10) }}>Hiện tại không có nhà xe nào phù hợp với yêu cầu của bạn. Vui lòng thử lại sau</Text>
+                    </View>}
                 </KeyboardAwareScrollView>
                 <ChooseAppointmentTimeModal
                     confirmAction={(type, date) => {
@@ -735,6 +822,7 @@ const mapStateToProps = (state) => {
         lstDriver: state.BookingReducer.lstDriver,
         distance: state.BookingReducer.distance,
         lst_coupon: state.HomeReducer.lst_coupon,
+        freeDriver: state.BookingReducer.freeDriver
 
     }
 }

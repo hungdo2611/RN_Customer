@@ -18,10 +18,10 @@ const action = {
 
         }
     },
-    getListDriverDone: (data) => {
+    getListDriverDone: (data, dataFree) => {
         return {
             type: type.GET_LIST_DRIVER_DONE,
-            payload: { data }
+            payload: { data, dataFree }
 
         }
     },

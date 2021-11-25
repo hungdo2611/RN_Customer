@@ -66,7 +66,7 @@ class MenuScreen extends React.Component {
             onPress={() => { pushToHistoryScreen(this.props.componentId) }}
             activeOpacity={0.6}
             style={{ flexDirection: 'row', alignItems: "center" }}>
-            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.GRAY_COLOR_500, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center" }}>
                 <Image style={{ tintColor: '#FFFFFF', width: scale(15), height: scale(15) }} source={require('./res/ic_order.png')} />
             </View>
             <View style={{ flex: 1, marginLeft: scale(20), flexDirection: 'row', alignItems: "center", borderBottomWidth: 2, paddingVertical: scale(16), borderColor: color.GRAY_COLOR_200 }}>
@@ -84,7 +84,7 @@ class MenuScreen extends React.Component {
     }
     renderVocher = () => {
         return <TouchableOpacity onPress={() => pushToCouponScreen(this.props.componentId)} style={{ flexDirection: 'row', alignItems: "center" }}>
-            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.GRAY_COLOR_500, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     name="tag"
                     color="#FFFFFF"
@@ -105,7 +105,7 @@ class MenuScreen extends React.Component {
     }
     renderSupport = () => {
         return <View style={{ flexDirection: 'row', alignItems: "center" }}>
-            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.GRAY_COLOR_500, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     name="question"
                     color="#FFFFFF"
@@ -126,7 +126,7 @@ class MenuScreen extends React.Component {
     }
     renderAboutUs = () => {
         return <View style={{ flexDirection: 'row', alignItems: "center" }}>
-            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.GRAY_COLOR_500, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     name="info"
                     color="#FFFFFF"

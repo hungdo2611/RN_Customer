@@ -256,16 +256,21 @@ class WaitingDriverScreen extends React.Component {
             reason: reason
         }
         let requestCancel = await cancelBookingAPI(body)
-        this.setState({ isloading: false })
 
         if (!requestCancel.err) {
-            this.setState({ isCancel: true, message: 'Huỷ đơn hàng thành công', isErrApi: false })
+            this.setState({ isCancel: true, message: 'Huỷ chuyến thành công' })
+            this.setState({ isloading: false, isShowModal: false })
+
             updateCurrentBooking(requestCancel.data)
         } else {
-            this.setState({ isCancel: true, message: requestCancel.message, isErrApi: true })
-            if (requestCancel.data) {
-                this.bookingNew = requestCancel.data;
+            this.setState({ isloading: false })
+            if (requestCancel?.message) {
+                this.props.reloadData();
+                this.setState({ isCancel: true, message: requestCancel?.message })
+            } else {
+                this.setState({ isCancel: true, message: 'Đã có lỗi xảy ra. Vui lòng thử lại sau' })
             }
+
         }
         console.log("requestCancel", requestCancel)
     }

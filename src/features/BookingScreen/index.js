@@ -768,6 +768,11 @@ class CreateTripScreen extends Component {
 
                         <View style={{ flex: 1, marginTop: scale(10) }}>
                             <WaitingDriverScreen
+                                reloadData={() => {
+                                    if (currentBooking) {
+                                        this.props.getCurrentBooking(currentBooking._id);
+                                    }
+                                }}
                                 isInCreaseHeight={isInCreaseHeight}
                                 onNavigationBack={this.onNavigationBack}
                             />
