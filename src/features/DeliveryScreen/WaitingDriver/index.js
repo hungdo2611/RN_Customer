@@ -419,7 +419,7 @@ class WaitingDriverScreen extends React.Component {
                                         {this.state.err && <Text style={{ color: color.RED_COLOR, marginLeft: scale(15) }}>Lý do huỷ đơn hàng không được bỏ trống</Text>}
                                         <TouchableOpacity
                                             disabled={this.state.isloading}
-                                            onPress={_.debounce(() => this.onCancelBooking(), 1000)}
+                                            onPress={_.debounce(() => this.onCancelBooking(), 1000, { leading: true, trailing: false })}
                                             style={{ width: scale(150), height: scale(40), alignItems: 'center', justifyContent: 'center', backgroundColor: this.state.isloading ? color.GRAY_COLOR_400 : color.RED_COLOR, borderRadius: scale(15), alignSelf: "center", marginTop: scale(20), flexDirection: "row" }}>
                                             {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{}} />}
                                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Huỷ đơn hàng</Text>

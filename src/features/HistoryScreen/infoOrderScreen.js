@@ -484,7 +484,7 @@ class OrderInfoScreen extends React.Component {
                         placeholder="Gửi phản hồi" />
                 </View>
                 <TouchableOpacity
-                    onPress={_.debounce(() => this.onRating(), 500)}
+                    onPress={_.debounce(() => this.onRating(), 500, { leading: true, trailing: false })}
                     disabled={isLoadingCreateRating}
                     activeOpacity={0.6}
                     style={{

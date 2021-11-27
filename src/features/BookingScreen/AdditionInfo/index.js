@@ -237,7 +237,7 @@ class AdditionalInfo extends React.Component {
             { label: "Xe tải", value: 71 }
         ];
         const data = vehicleTypeData.find(vl => vl.value == type);
-        if(data){
+        if (data) {
             return data.label;
         }
         return "Không xác định"
@@ -249,6 +249,7 @@ class AdditionalInfo extends React.Component {
                 const isCheck = lst_select.findIndex(vl => vl.driver_id == driver._id)
                 console.log("driver", driver)
                 return <View
+                    key={driver._id}
                     style={{
                         width: width / 2 - scale(20),
                         height: scale(180),
@@ -323,6 +324,7 @@ class AdditionalInfo extends React.Component {
                 console.log("driver", driver)
                 const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
                 return <View
+                    key={driver._id}
                     style={{
                         width: width / 2 - scale(20),
                         height: scale(200),

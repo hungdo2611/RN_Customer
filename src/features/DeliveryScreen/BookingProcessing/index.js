@@ -329,7 +329,7 @@ class BookingProcessing extends React.Component {
                     <Text style={{ fontSize: scale(14), fontWeight: '600', color: color.GRAY_COLOR_500 }}>Ảnh hàng hoá </Text>
                     <View style={{ flexDirection: 'row', alignItems: "center", borderRadius: scale(7), marginTop: scale(7) }}>
                         {orderInfo.lst_image && orderInfo.lst_image.map((img, index) => {
-                            return <TouchableOpacity style={{}}>
+                            return <TouchableOpacity key={index} style={{}}>
                                 <FastImage
                                     source={{ uri: img }}
                                     style={{ width: widthButton, height: widthButton, borderRadius: scale(10), alignItems: 'center', justifyContent: "center", marginLeft: index !== 0 ? scale(10) : 0 }}

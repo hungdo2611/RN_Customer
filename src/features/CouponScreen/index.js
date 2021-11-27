@@ -95,6 +95,7 @@ class CouponScreen extends React.Component {
         return <View style={{}}>
             {arr.map(vl => {
                 return <Placeholder
+                    key={vl}
                     Animation={Fade}
                     Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
                     style={{ marginVertical: scale(12) }}
@@ -186,7 +187,7 @@ class CouponScreen extends React.Component {
                     }}
                     behavior={Platform.OS == 'ios' ? 'padding' : ''}>
                     <FlatList
-                        data={[{ type: "header" }, ...lst_coupon, { type: "loading" }]}
+                        data={[{ type: "header",_id: 'header' }, ...lst_coupon, { type: "loading", _id: 'loading' }]}
                         renderItem={this.renderItem}
                         style={{ flex: 1 }}
                         keyExtractor={item => item._id}

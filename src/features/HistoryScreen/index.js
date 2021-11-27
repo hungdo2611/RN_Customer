@@ -384,6 +384,7 @@ class HistoryScreen extends React.Component {
         return <View style={{}}>
             {arr.map(vl => {
                 return <Placeholder
+                    key={vl}
                     Animation={Fade}
                     Left={props => <PlaceholderMedia style={[{ height: scale(50), width: scale(50), marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
                     style={{ marginVertical: scale(12) }}
@@ -430,7 +431,7 @@ class HistoryScreen extends React.Component {
                         </View> */}
                     {this.renderHeader()}
                     <FlatList
-                        data={[ ...this.state.data, { type: "loading" }]}
+                        data={[...this.state.data, { type: "loading",_id: 'loading' }]}
                         renderItem={this.renderItem}
                         style={{ flex: 1 }}
                         keyExtractor={item => item._id}

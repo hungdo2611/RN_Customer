@@ -233,6 +233,7 @@ class AdditionalInfo extends React.Component {
         return <ScrollView showsVerticalScrollIndicator={false}>
             {arr.map(vl => {
                 return <Placeholder
+                    key={vl}
                     Animation={Fade}
                     Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
                     style={{ marginVertical: scale(12) }}
@@ -303,6 +304,7 @@ class AdditionalInfo extends React.Component {
                 const isCheck = lst_select.findIndex(vl => vl.journey_id == driver.journey_id)
 
                 return <View
+                    key={driver._id}
                     style={{
                         width: width / 2 - scale(20),
                         height: scale(170),
@@ -591,6 +593,7 @@ class AdditionalInfo extends React.Component {
                 const isCheck = lst_select.findIndex(vl => vl.driver_id == driver._id)
                 console.log("driver", driver)
                 return <View
+                    key={driver._id}
                     style={{
                         width: width / 2 - scale(20),
                         height: scale(180),

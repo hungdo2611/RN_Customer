@@ -38,7 +38,6 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import SelectDesOrigin from './SelectDesOrigin'
-import { enableScreens } from 'react-native-screens';
 import { getAdressFromLatLng, getRouteBetween2Point, getPolyline } from '../../api/MapApi'
 import AdditionalInfo from './AdditionInfo'
 import actions from './redux/actions'
@@ -55,7 +54,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import actionsHome from '../HomeScreen/redux/actions'
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 
-enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
 const styles = StyleSheet.create({
@@ -235,14 +233,16 @@ class CreateTripScreen extends Component {
 
         this.setState({ lst_polyline: newRoute })
         setTimeout(() => {
-            this.map.fitToCoordinates(newRoute, {
-                edgePadding: {
-                    right: 20,
-                    bottom: height / 4 + 200,
-                    left: 20,
-                    top: 20,
-                }
-            });
+            if (this.map) {
+                this.map.fitToCoordinates(newRoute, {
+                    edgePadding: {
+                        right: 20,
+                        bottom: height / 4 + 200,
+                        left: 20,
+                        top: 20,
+                    }
+                });
+            }
             if (this.suggestion) {
                 this.suggestion.showCallout();
             }
@@ -253,6 +253,7 @@ class CreateTripScreen extends Component {
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
         AppState.removeEventListener('change', this._handleAppStateChange);
+        Keyboard.dismiss();
     }
 
     _handleAppStateChange = (nextAppState) => {
@@ -355,9 +356,12 @@ class CreateTripScreen extends Component {
 
     _onPressBackIcon = () => {
         const { renderStep } = this.state;
-        const { componentId } = this.props;
+        const { componentId, currentBooking, updateCurrentBooking } = this.props;
 
         if (renderStep === 1) {
+            if (currentBooking && (currentBooking.status === constant_type_status_booking.USER_CANCEL || currentBooking.status === constant_type_status_booking.END)) {
+                updateCurrentBooking(null);
+            }
             Navigation.pop(componentId);
         } else {
             this.setState({ renderStep: 1, isPickWithGGMap: false });
@@ -387,14 +391,16 @@ class CreateTripScreen extends Component {
         });
         let route = convertRouteDataForShowRoute(lst_Point)
         setTimeout(() => {
-            this.map.fitToCoordinates(route, {
-                edgePadding: {
-                    right: width / 4,
-                    bottom: height / 4 + 200,
-                    left: width / 4,
-                    top: height / 4,
-                }
-            });
+            if (this.map) {
+                this.map.fitToCoordinates(route, {
+                    edgePadding: {
+                        right: width / 4,
+                        bottom: height / 4 + 200,
+                        left: width / 4,
+                        top: height / 4,
+                    }
+                });
+            }
         }, 100)
         this.setState({ lst_polyline: route, lineString: line_string })
 
@@ -509,7 +515,6 @@ class CreateTripScreen extends Component {
                 background: '#FFFFFF',
             },
         };
-
 
 
         return (
@@ -703,8 +708,8 @@ class CreateTripScreen extends Component {
                         <View style={{ width: scale(40), height: scale(4), borderRadius: scale(3), backgroundColor: color.GRAY_COLOR_200, alignSelf: 'center', marginTop: scale(5) }} />
                         <View style={{ flex: 1, marginTop: scale(10) }}>
                             <NavigationContainer theme={Theme}>
-                                <Stack.Navigator screenOptions={TransitionScreenOptions}>
-
+                                <Stack.Navigator
+                                    screenOptions={TransitionScreenOptions}>
                                     <Stack.Screen
                                         name="SelectDesOrigin">
                                         {props => <SelectDesOrigin

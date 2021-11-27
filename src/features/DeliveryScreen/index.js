@@ -39,7 +39,6 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 
 import SelectDesOrigin from './SelectDesOrigin'
-import { enableScreens } from 'react-native-screens';
 import { getAdressFromLatLng, getRouteBetween2Point, getPolyline } from '../../api/MapApi'
 import AdditionalInfo from './AdditionInfo'
 import actions from './redux/actions'
@@ -56,7 +55,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import actionsHome from '../HomeScreen/redux/actions'
 import FindDriver from './FindDriver';
 
-enableScreens();
 const Stack = Platform.OS == 'android' ? createStackNavigator() : createNativeStackNavigator();
 
 const styles = StyleSheet.create({
@@ -238,14 +236,16 @@ class CreateTripScreen extends Component {
 
         this.setState({ lst_polyline: newRoute })
         setTimeout(() => {
-            this.map.fitToCoordinates(newRoute, {
-                edgePadding: {
-                    right: 20,
-                    bottom: height / 4 + 200,
-                    left: 20,
-                    top: 20,
-                }
-            });
+            if (this.map) {
+                this.map.fitToCoordinates(newRoute, {
+                    edgePadding: {
+                        right: 20,
+                        bottom: height / 4 + 200,
+                        left: 20,
+                        top: 20,
+                    }
+                });
+            }
             if (this.suggestion) {
                 this.suggestion.showCallout();
             }
@@ -358,9 +358,12 @@ class CreateTripScreen extends Component {
 
     _onPressBackIcon = () => {
         const { renderStep } = this.state;
-        const { componentId } = this.props;
+        const { componentId, currentBooking, updateCurrentBooking } = this.props;
 
         if (renderStep === 1) {
+            if (currentBooking && (currentBooking.status === constant_type_status_booking.USER_CANCEL || currentBooking.status === constant_type_status_booking.END)) {
+                updateCurrentBooking(null);
+            }
             Navigation.pop(componentId);
         } else {
             this.setState({ renderStep: 1, isPickWithGGMap: false });
@@ -390,14 +393,16 @@ class CreateTripScreen extends Component {
         });
         let route = convertRouteDataForShowRoute(lst_Point)
         setTimeout(() => {
-            this.map.fitToCoordinates(route, {
-                edgePadding: {
-                    right: width / 4,
-                    bottom: height / 4 + 200,
-                    left: width / 4,
-                    top: height / 4,
-                }
-            });
+            if (this.map) {
+                this.map.fitToCoordinates(route, {
+                    edgePadding: {
+                        right: width / 4,
+                        bottom: height / 4 + 200,
+                        left: width / 4,
+                        top: height / 4,
+                    }
+                });
+            }
         }, 100)
         this.setState({ lst_polyline: route, lineString: line_string })
 

@@ -247,10 +247,10 @@ class EditInfoScreen extends React.Component {
                     {this.renderPhone()}
                     <TouchableOpacity
                         disabled={isDisable}
-                        onPress={_.debounce(() => this.onSave(), 1000)}
+                        onPress={_.debounce(() => this.onSave(), 1000, { leading: true, trailing: false })}
                         activeOpacity={0.6}
                         style={{ marginHorizontal: scale(15), borderRadius: scale(20), borderColor: !isDisable ? color.RED_300 : color.GRAY_COLOR_400, height: scale(40), borderWidth: 2, alignItems: 'center', justifyContent: "center", marginVertical: scale(30), flexDirection: 'row' }}>
-                        {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{marginRight: scale(10)}} />}
+                        {this.state.isloading && <ActivityIndicator size="small" color={color.ORANGE_COLOR_400} style={{ marginRight: scale(10) }} />}
                         <Text style={{ fontSize: scale(15), fontWeight: "600", color: !isDisable ? color.RED_300 : color.GRAY_COLOR_400 }}>Lưu thông tin</Text>
                     </TouchableOpacity>
                 </ScrollView>

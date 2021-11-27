@@ -439,7 +439,7 @@ class AdditionalInfo extends React.Component {
         }
         const { data_diem_don, data_diem_den } = this.props?.route?.params;
         const { navigation } = this.props;
-
+        Keyboard.dismiss();
         navigation.push(
             "FindDriver",
             {

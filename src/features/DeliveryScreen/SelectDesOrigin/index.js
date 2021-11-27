@@ -91,9 +91,9 @@ class SelectDesOrigin extends React.Component {
             this.onComfirmDirection(diem_don, diem_den)
             return
         }
-        if (isInCreaseHeight) {
-            this.inPutDiemDen.focus();
-        }
+        // if (isInCreaseHeight) {
+        //     this.inPutDiemDen.focus();
+        // }
     }
     setLoadingPickWithGG = (isloading) => {
         this.setState({ isLoadingAPIPickGG: isloading })
@@ -118,29 +118,35 @@ class SelectDesOrigin extends React.Component {
         }, 100)
     }
 
-    onComfirmDirection = async (data_diem_don, data_diem_den) => {
-        const { navigation, setPolygon, coord } = this.props;
-        let lat_origin = data_diem_don ? data_diem_don.displayPosition.latitude : coord.lat
-        let lng_origin = data_diem_don ? data_diem_don.displayPosition.longitude : coord.lng
-        let lstPoint = [{ lat: lat_origin, lng: lng_origin }, { lat: data_diem_den.displayPosition.latitude, lng: data_diem_den.displayPosition.longitude }]
-        setPolygon(lstPoint, data_diem_don, data_diem_den);
-        const { isInCreaseHeight, inCreaseHeight } = this.props;
-        if (!isInCreaseHeight) {
-            setTimeout(() => {
-                inCreaseHeight();
-            }, 200)
-        }
-        navigation.push("AdditionalInfo", {
-            data_diem_don: data_diem_don,
-            data_diem_den: data_diem_den,
-            onbackCB: () => {
-                this.inPutDiemDen.focus();
-                if (!this.state.dataAutoComplete) {
-                    this.onChangeAutoComplete(this.state.data_diem_den?.address?.label, false)
-                }
+
+    onComfirmDirection = _.debounce(
+        async (data_diem_don, data_diem_den) => {
+            const { navigation, setPolygon, coord } = this.props;
+            let lat_origin = data_diem_don ? data_diem_don.displayPosition.latitude : coord.lat
+            let lng_origin = data_diem_don ? data_diem_don.displayPosition.longitude : coord.lng
+            let lstPoint = [{ lat: lat_origin, lng: lng_origin }, { lat: data_diem_den.displayPosition.latitude, lng: data_diem_den.displayPosition.longitude }]
+            setPolygon(lstPoint, data_diem_don, data_diem_den);
+            const { isInCreaseHeight, inCreaseHeight } = this.props;
+            if (!isInCreaseHeight) {
+                setTimeout(() => {
+                    inCreaseHeight();
+                }, 200)
             }
-        });
-    }
+            Keyboard.dismiss();
+            navigation.push("AdditionalInfo", {
+                data_diem_don: data_diem_don,
+                data_diem_den: data_diem_den,
+                onbackCB: () => {
+                    this.inPutDiemDen.focus();
+                    if (!this.state.dataAutoComplete) {
+                        this.onChangeAutoComplete(this.state.data_diem_den?.address?.label, false)
+                    }
+                }
+            });
+        },
+        1000,
+        { leading: true, trailing: false },
+    );
 
     onComfirmPickGG = () => {
         const { dataPickWithGG, select_origin_or_des, data_diem_den, data_diem_don } = this.state;
@@ -372,6 +378,7 @@ class SelectDesOrigin extends React.Component {
         return <ScrollView showsVerticalScrollIndicator={false}>
             {arr.map(vl => {
                 return <Placeholder
+                    key={vl}
                     Animation={Fade}
                     Left={props => <PlaceholderMedia isRound style={[{ marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
                     style={{ marginVertical: scale(12) }}

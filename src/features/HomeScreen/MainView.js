@@ -387,8 +387,9 @@ export default class MainView extends React.Component {
     renderLoading = () => {
         let arr = [1, 2, 3, 4];
         return <View style={{}}>
-            {arr.map(vl => {
+            {arr.map((vl, index) => {
                 return <Placeholder
+                    key={index}
                     Animation={Fade}
                     Left={props => <PlaceholderMedia style={[{ height: scale(40), width: scale(40), marginLeft: scale(10), marginTop: scale(5) }, props.style]} />}
                     style={{ marginVertical: scale(12) }}
