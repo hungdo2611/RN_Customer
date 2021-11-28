@@ -117,7 +117,8 @@ class OTPScreen extends React.Component {
                             flex: 1,
                             justifyContent: "space-between",
                         }}
-                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                        keyboardVerticalOffset={Platform.OS === 'android' ? 20 : 0}
+                        behavior={'padding'}>
                         <View style={{ margin: scale(12) }}>
                             <Icon
                                 onPress={this.onBack}

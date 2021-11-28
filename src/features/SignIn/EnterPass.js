@@ -39,7 +39,7 @@ class EnterPass extends React.Component {
         };
     }
     async componentDidMount() {
-        this.InputPhone.focus();
+        // this.InputPhone.focus();
     }
     onBack = () => {
         const { componentId } = this.props
@@ -91,7 +91,8 @@ class EnterPass extends React.Component {
                             flex: 1,
                             justifyContent: "space-between",
                         }}
-                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                        keyboardVerticalOffset={Platform.OS === 'android' ? 20 : 0}
+                        behavior={'padding'}>
                         <View style={{ margin: scale(12) }}>
                             <Icon
                                 onPress={this.onBack}
@@ -115,6 +116,7 @@ class EnterPass extends React.Component {
                                 }}>
 
                                     <TextInput
+                                        autoFocus
                                         ref={ref => this.InputPhone = ref}
                                         secureTextEntry={security}
                                         placeholder="Mật khẩu"

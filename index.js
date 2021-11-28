@@ -8,7 +8,9 @@ import { Platform } from 'react-native';
 import notificationProcessor from './src/notification'
 import 'moment/locale/vi';
 import moment from 'moment'
+import { enableScreens } from 'react-native-screens';
 
+enableScreens();
 
 moment.locale('vi');
 

@@ -43,7 +43,7 @@ class EnterInfo extends React.Component {
         };
     }
     async componentDidMount() {
-        this.InputName.focus();
+        // this.InputName.focus();
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
     }
@@ -90,7 +90,8 @@ class EnterInfo extends React.Component {
                             flex: 1,
                             justifyContent: "space-between",
                         }}
-                        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+                        keyboardVerticalOffset={Platform.OS === 'android' ? 20 : 0}
+                        behavior={'padding'}>
                         <View style={{ margin: scale(12) }}>
 
                             <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Cập nhật thông tin</Text>
@@ -110,6 +111,7 @@ class EnterInfo extends React.Component {
                                 }}>
 
                                     <TextInput
+                                        autoFocus
                                         ref={ref => this.InputName = ref}
                                         placeholder="Họ và tên"
                                         onFocus={() => {
