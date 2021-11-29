@@ -474,6 +474,8 @@ class WaitingDriverScreen extends React.Component {
                         <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin đơn hàng</Text>
                     </View>
                     {this.renderInfo()}
+                    {this.renderPrice()}
+                    {this.renderPayment()}
 
                 </KeyboardAwareScrollView>
 

@@ -407,6 +407,66 @@ class BookingProcessing extends React.Component {
         }
 
     }
+    renderStage = () => {
+        return <View style={{ alignItems: 'center', justifyContent: "center", marginHorizontal: scale(20), marginVertical: scale(4) }}>
+            <Text style={{ fontWeight: "500", fontSize: scale(18), marginVertical: scale(4) }} >Tài xế đã lấy hàng</Text>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ alignItems: "center" }}>
+                    <View
+                        style={{
+                            height: scale(16),
+                            width: scale(16),
+                            borderRadius: scale(8),
+                            backgroundColor: color.ORANGE_COLOR_400,
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}>
+                        <FontAwesomeIcon
+                            name='check'
+                            size={scale(10)}
+                            color='white'
+
+                        />
+                    </View>
+                    <Text style={{ fontSize: scale(11), fontWeight: '600', paddingTop: scale(5) }}>Đặt chuyến</Text>
+                </View>
+                <View style={{ height: 2, backgroundColor: color.GRAY_COLOR_200, flex: 1, marginHorizontal: scale(5), marginVertical: scale(8) }} />
+                <View style={{ alignItems: "center" }}>
+                    <View
+                        style={{
+                            height: scale(16),
+                            width: scale(16),
+                            borderRadius: scale(8),
+                            backgroundColor: color.ORANGE_COLOR_400,
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}>
+                        <FontAwesomeIcon
+                            name='check'
+                            size={scale(10)}
+                            color='white'
+
+                        />
+                    </View>
+                    <Text style={{ fontSize: scale(11), fontWeight: '400', paddingTop: scale(5) }}>Lấy hàng</Text>
+                </View>
+                <View style={{ height: 2, backgroundColor: color.GRAY_COLOR_200, flex: 1, marginHorizontal: scale(5), marginVertical: scale(8) }} />
+                <View style={{ alignItems: "center" }}>
+                    <View
+                        style={{
+                            height: scale(10),
+                            width: scale(10),
+                            borderRadius: scale(5), backgroundColor: color.GRAY_COLOR_200,
+                            marginVertical: scale(3)
+
+                        }}>
+                    </View>
+                    <Text style={{ fontSize: scale(11), fontWeight: '400', paddingTop: scale(5) }}>Trả hàng</Text>
+                </View>
+            </View>
+
+        </View>
+    }
 
     render() {
         const { onNavigationBack, isInCreaseHeight } = this.props;
@@ -415,7 +475,7 @@ class BookingProcessing extends React.Component {
                 <View style={{ flex: 1, backgroundColor: "#FFFFFF", borderRadius: scale(20) }}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Gửi hàng theo xe - Tài xế đã nhận đơn </Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Gửi hàng theo xe</Text>
 
                         </View>
 
@@ -429,7 +489,7 @@ class BookingProcessing extends React.Component {
                         <View style={{ flex: 1 }}>
 
                             <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
-
+                            {this.renderStage()}
                             <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
                                 <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin đơn hàng</Text>
                             </View>
@@ -472,17 +532,16 @@ class BookingProcessing extends React.Component {
                     showsVerticalScrollIndicator={false}>
                     <View style={{ marginBottom: scale(10), flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                         <View style={{ marginHorizontal: scale(10), flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Gửi hàng theo xe - Tài xế đã nhận đơn</Text>
+                            <Text style={{ fontSize: scale(20), fontWeight: 'bold' }}>Gửi hàng theo xe</Text>
 
                         </View>
 
                     </View>
                     <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
 
-                    <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
-                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin đơn hàng</Text>
-                    </View>
-                    {this.renderInfo()}
+                    {this.renderStage()}
+                    <View style={{ width: width - scale(20), height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5, margin: scale(10) }} />
+                    {this.renderInfoDriver()}
 
                 </KeyboardAwareScrollView>
 

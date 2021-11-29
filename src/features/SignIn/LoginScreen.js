@@ -36,6 +36,7 @@ class LoginScreen extends React.Component {
   }
   render() {
     const window = Dimensions.get('window');
+    const widthSize = scale(230)
     return (
       <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: color.ORANGE_COLOR_100, alignItems: 'center' }}>
 
@@ -61,9 +62,9 @@ class LoginScreen extends React.Component {
 
           </View>
         </View>
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: width / 2 + scale(50), justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ height: width / 2, width: width / 2, backgroundColor: color.ORANGE_COLOR_400, borderRadius: width / 4, alignItems: "center", justifyContent: "center" }}>
-            <Image style={{ width: width / 2.5, height: width / 2.5, resizeMode: "cover", tintColor: 'white' }} source={require('./res/ic_logo_trans.png')} />
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: widthSize + scale(50), justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ height: widthSize, width: widthSize, backgroundColor: color.ORANGE_COLOR_400, borderRadius: widthSize / 2, alignItems: "center", justifyContent: "center" }}>
+            <Image style={{ width: widthSize * 4 / 5, height: widthSize * 4 / 5, resizeMode: "cover", tintColor: 'white' }} source={require('./res/ic_logo_trans.png')} />
           </View>
           <Text style={{ fontSize: scale(16), fontWeight: "600", marginTop: scale(20) }}>Nhập số điện thoại để tiếp tục</Text>
           <TouchableOpacity

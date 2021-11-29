@@ -332,7 +332,7 @@ class WaitingDriverScreen extends React.Component {
                         <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
 
                         <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
-                            <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>
+                                <Text style={{ fontSize: scale(15), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến</Text>
                         </View>
                         {this.renderInfo()}
                         {this.renderSeat()}
@@ -420,10 +420,11 @@ class WaitingDriverScreen extends React.Component {
                     <View style={{ width: width, height: 1, backgroundColor: color.GRAY_COLOR_400, opacity: 0.5 }} />
 
                     <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
-                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>
+                            <Text style={{ fontSize: scale(15), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến</Text>
                     </View>
                     {this.renderInfo()}
-
+                    {this.renderPrice()}
+                    {this.renderPayment()}
                 </KeyboardAwareScrollView>
 
             </View >

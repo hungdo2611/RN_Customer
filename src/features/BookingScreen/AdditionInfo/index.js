@@ -720,7 +720,7 @@ class AdditionalInfo extends React.Component {
                     showsVerticalScrollIndicator={false}>
 
                     <View style={{ marginHorizontal: scale(10), marginTop: scale(5) }}>
-                        <Text style={{ fontSize: scale(13), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến xe</Text>
+                            <Text style={{ fontSize: scale(15), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>Thông tin chuyến</Text>
                     </View>
                     {this.renderInfo()}
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: scale(10), marginVertical: scale(5), alignItems: "center" }}>
