@@ -6,7 +6,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import handleNoti from './handleNoti'
 import { Navigation } from "react-native-navigation";
 import store from '../redux/store'
-import actionsBooking from '../features/BookingScreen/redux/actions'
+import actionsBooking from '../features/HomeScreen/redux/actions'
 import { constant_type_notify } from './handleNoti'
 import AsyncStorage from '@react-native-community/async-storage';
 import { KEY_ASYNC_NOTI } from '../constant'
@@ -118,6 +118,10 @@ class NotificationProcessor {
             if (remoteMessage.data.type == constant_type_notify.DRIVER_ACEEPT_BOOKING) {
                 store.dispatch(actionsBooking.action.getCurrentBooking())
             }
+            if (remoteMessage.data.type == constant_type_notify.SYSTEM_CANCLE_BOOKING) {
+                store.dispatch(actionsBooking.action.updateBookingCancel())
+
+            }
 
             PushNotification.localNotification({
                 message: remoteMessage.notification.body,
@@ -148,6 +152,9 @@ class NotificationProcessor {
                         notifee.setBadgeCount(new_count)
                     }
                 }
+            }
+            if (remoteMessage?.data?.type === constant_type_notify.SYSTEM_CANCLE_BOOKING) {
+                store.dispatch(actionsBooking.action.updateBookingCancel())
             }
 
             console.log("setBackgroundMessageHandler", remoteMessage)

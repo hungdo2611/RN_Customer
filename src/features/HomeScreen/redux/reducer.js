@@ -11,6 +11,11 @@ const initState = {
 };
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case actions.type.UPDATE_BOOKING_CANCEL:
+            return {
+                ...state,
+                currentBooking: state.currentBooking ? { ...state.currentBooking, status: 'USER_CANCEL' } : null
+            }
         case actions.type.UPDATE_CURRENT_COUPON:
             return {
                 ...state,

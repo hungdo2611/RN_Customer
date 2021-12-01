@@ -527,6 +527,22 @@ class OrderInfoScreen extends React.Component {
 
         </ScrollView>
     }
+    renderReason = (reason) => {
+        return <View style={{}}>
+            <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginTop: scale(10) }}>Lý do huỷ chuyến</Text>
+            <View style={{ flexDirection: 'row', marginTop: scale(10) }}>
+                <FontAwesomeIcon
+                    name="info"
+                    color={color.ORANGE_COLOR_400}
+                    size={scale(15)}
+                    style={{ marginLeft: scale(10), marginTop: scale(2) }}
+                />
+                <Text style={{ marginLeft: scale(14), fontSize: scale(14) }}>{reason}</Text>
+            </View>
+            <View style={{ height: scale(6), backgroundColor: color.GRAY_COLOR_200, marginTop: scale(10), opacity: 0.7 }} />
+
+        </View>
+    }
     render() {
         const { componentId, data } = this.props;
         const { price } = this.props?.data;
@@ -571,6 +587,7 @@ class OrderInfoScreen extends React.Component {
                     {this.renderOrderInfo()}
                     {orderInfo?.phone_take_order && <View style={{ height: scale(1.5), backgroundColor: color.GRAY_COLOR_200, marginVertical: scale(7) }} />}
                     {this.renderPayment()}
+                    {data?.reason_cancel && data?.reason_cancel !== '' && this.renderReason(data?.reason_cancel)}
                     {data.status === constant_type_status_booking.END && this.renderRating()}
                 </KeyboardAwareScrollView>
                 <Toast ref={(ref) => Toast.setRef(ref)} />

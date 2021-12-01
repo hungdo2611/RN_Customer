@@ -57,7 +57,7 @@ class NotiScreen extends React.Component {
             return
         }
         this.setState({ isloading: true })
-        const lst_notify = await getListNotification(page_number, 10);
+        const lst_notify = await getListNotification(page_number, 15);
         setTimeout(() => {
             this.setState({ isloading: false })
 
@@ -176,11 +176,7 @@ class NotiScreen extends React.Component {
                         keyExtractor={item => item._id}
                         showsVerticalScrollIndicator={false}
                         onScrollBeginDrag={() => Keyboard.dismiss()}
-                        onEndReached={({ distanceFromEnd }) => {
-                            if (distanceFromEnd < 0) return;
-                            this.getDataNotify(this.state.page_number)
-                        }}
-                        onEndReachedThreshold={0.5}
+                        
                         refreshing={this.state.refreshing}
                         onRefresh={() => {
                             this.setState({

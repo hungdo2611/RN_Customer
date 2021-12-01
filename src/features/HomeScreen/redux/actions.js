@@ -7,8 +7,8 @@ const type = {
     UPDATE_USER_INFO: prefix + "UPDATE_USER_INFO",
     UPDATE_ISLOADING_PRE: prefix + "UPDATE_ISLOADING_PRE",
     UPDATE_LST_COUPON: prefix + "UPDATE_LST_COUPON",
-    UPDATE_CURRENT_COUPON: prefix + 'UPDATE_CURRENT_COUPON'
-
+    UPDATE_CURRENT_COUPON: prefix + 'UPDATE_CURRENT_COUPON',
+    UPDATE_BOOKING_CANCEL: prefix + 'UPDATE_BOOKING_CANCEL'
 };
 
 const action = {
@@ -54,6 +54,11 @@ const action = {
 
         }
     },
+    updateBookingCancel: () => {
+        return {
+            type: type.UPDATE_BOOKING_CANCEL,
+        }
+    }
 
 
 
