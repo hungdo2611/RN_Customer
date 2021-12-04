@@ -238,6 +238,45 @@ export function showModalDriverInfo(props) {
         },
     });
 }
+
+export function pushToSupportScreen(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.SUPPORT_SCREEN}_id`,
+            name: constant_name.SUPPORT_SCREEN,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
+export function pushToTermPolicy(componentId, props) {
+    Navigation.push(componentId, {
+        component: {
+            id: `${constant_name.TERM_POLYCY}_id`,
+            name: constant_name.TERM_POLYCY,
+            passProps: props,
+            options: {
+                topBar: {
+                    animate: false,
+                    visible: false,
+                    height: 0,
+                },
+                bottomTabs: {
+                    visible: false,
+                },
+            },
+        },
+    });
+}
 export function pushToEditInfoScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {

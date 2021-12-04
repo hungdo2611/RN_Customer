@@ -22,6 +22,9 @@ import EditInfoScreen from './features/EditInfoScreen'
 import CouponScreen from './features/CouponScreen'
 import InfoDriverScreen from './features/InfoDriver'
 import NotiScreen from './features/NotificationScreen'
+import SupportScreen from './features/SupportScreen'
+import TermPolicy from './features/TermPolicyScreen'
+
 export const constant_name = {
     LOGIN_SCREEN: `Navigation.LoginScreen`,
     ENTER_PHONE_NUMBER: `Navigation.EnterPhoneNumber`,
@@ -39,10 +42,23 @@ export const constant_name = {
     EDIT_INFO_SCREEN: `Navigation.EDIT_INFO_SCREEN`,
     COUPON_SCREEN: `Navigation.COUPON_SCREEN`,
     INFO_DRIVER_SCREEN: `Navigation.INFO_DRIVER_SCREEN`,
-    NOTIFICATION_SCREEN: `Navigation.NOTIFICATION_SCREEN`
+    NOTIFICATION_SCREEN: `Navigation.NOTIFICATION_SCREEN`,
+    SUPPORT_SCREEN: `Naivgation.SUPPORT_SCREEN`,
+    TERM_POLYCY: `Navigation.TERM_POLYCY`
+
 }
 
 export const registerScreens = () => {
+    Navigation.registerComponent(constant_name.TERM_POLYCY, () => (props) =>
+        <Provider store={store}>
+            <TermPolicy {...props} />
+        </Provider>,
+        () => TermPolicy);
+    Navigation.registerComponent(constant_name.SUPPORT_SCREEN, () => (props) =>
+        <Provider store={store}>
+            <SupportScreen {...props} />
+        </Provider>,
+        () => SupportScreen);
     Navigation.registerComponent(constant_name.NOTIFICATION_SCREEN, () => (props) =>
         <Provider store={store}>
             <NotiScreen {...props} />

@@ -1,0 +1,1 @@
+self.__BUILD_MANIFEST = (function(a,b,c){return {"/":[a],"/[locale]":[b,c],"/index":[a],"/terms/[id]/[locale]":[b,c]}}("static\u002Fcss\u002Fdaa7e74a06e8b843682a.css","static\u002Fchunks\u002F62de1b54f5ba268737de4bf10f8d50e79e8fc888.c4b52897d219de0a880e.js","static\u002Fcss\u002F38f2a7909cf1217e57b3.css"));self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()

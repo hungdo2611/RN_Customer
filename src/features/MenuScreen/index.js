@@ -25,7 +25,7 @@ import { color } from '../../constant/color';
 import { Navigation } from 'react-native-navigation';
 import { logOutAPI } from '../../api/loginApi'
 import { deleteLocalData } from '../../model'
-import { setRootToLogin, pushToHistoryScreen, pushToEditInfoScreen, pushToCouponScreen } from '../../NavigationController'
+import { setRootToLogin, pushToHistoryScreen, pushToEditInfoScreen, pushToCouponScreen, pushToTermPolicy, pushToSupportScreen } from '../../NavigationController'
 const { width, height } = Dimensions.get('window')
 
 
@@ -104,7 +104,10 @@ class MenuScreen extends React.Component {
         </TouchableOpacity>
     }
     renderSupport = () => {
-        return <View style={{ flexDirection: 'row', alignItems: "center" }}>
+        return <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => pushToSupportScreen(this.props.componentId)}
+            style={{ flexDirection: 'row', alignItems: "center" }}>
             <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     name="question"
@@ -122,10 +125,13 @@ class MenuScreen extends React.Component {
                 />
             </View>
 
-        </View>
+        </TouchableOpacity>
     }
     renderAboutUs = () => {
-        return <View style={{ flexDirection: 'row', alignItems: "center" }}>
+        return <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => pushToTermPolicy(this.props.componentId)}
+            style={{ flexDirection: 'row', alignItems: "center" }}>
             <View style={{ width: scale(28), height: scale(28), borderRadius: scale(14), backgroundColor: color.ORANGE_COLOR_400, alignItems: "center", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     name="info"
@@ -143,7 +149,7 @@ class MenuScreen extends React.Component {
                 />
             </View>
 
-        </View>
+        </TouchableOpacity>
     }
     onLogOut = async () => {
         Alert.alert(

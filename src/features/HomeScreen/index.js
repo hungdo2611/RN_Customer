@@ -12,9 +12,10 @@ import {
     SafeAreaView,
     ActivityIndicator,
     Alert,
-    BackHandler
+    BackHandler,
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import NetInfo from "@react-native-community/netinfo";
 
 import { connect } from 'react-redux'
 import MainView from './MainView'
@@ -42,6 +43,13 @@ class HomeScreen extends React.Component {
             const data_lst = reqCoupon.data ? reqCoupon.data : []
             update_list_coupon(data_lst, length)
         }
+        NetInfo.addEventListener(state => {
+            console.log("Connection type", state.type);
+            console.log("Is connected?", state.isConnected);
+            if (!state.isConnected) {
+                Alert.alert("Kết nối không ổn định")
+            }
+        });
 
     }
 
