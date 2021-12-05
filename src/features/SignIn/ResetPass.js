@@ -95,11 +95,11 @@ class ResetPass extends React.Component {
                         keyboardVerticalOffset={Platform.OS === 'android' ? 20 : 0}
                         behavior={'padding'}>
                         <View style={{ margin: scale(12) }}>
-                            <Icon
+                            {/* <Icon
                                 onPress={this.onBack}
                                 name="arrowleft"
                                 size={scale(18)}
-                            />
+                            /> */}
                             <Text style={{ fontSize: scale(20), marginTop: scale(10), marginBottom: scale(10), fontWeight: "bold" }}>Đặt lại mật khẩu</Text>
                             <Text style={{ fontSize: scale(15), marginTop: scale(10), marginBottom: scale(10), fontWeight: "500", color: color.GRAY_COLOR }}>Số điện thoại đăng ký của bạn là {phone}</Text>
                             <View style={{
