@@ -24,11 +24,11 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
 import { color } from '../../constant/color'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { registerAPI } from '../../api/loginApi'
+import { registerAPI, registerWithFB } from '../../api/loginApi'
 import parsePhoneNumber from 'libphonenumber-js'
 import { typeOTP } from './constant'
-import { pushToEnterInfo, pushToResetPass } from '../../NavigationController';
-import { setToken } from '../../model'
+import { pushToEnterInfo, pushToResetPass, setRootToHome } from '../../NavigationController';
+import { setToken, setLocalData } from '../../model'
 const { width, height } = Dimensions.get('window')
 
 class OTPScreen extends React.Component {
@@ -74,11 +74,19 @@ class OTPScreen extends React.Component {
     }
     confirmCode = async (code) => {
         const { confirm } = this.state;
+        console.log('on comfirm code', confirm)
         const { phone, type, componentId } = this.props;
         this.setState({ isloading: true })
         try {
-            let data = await confirm.confirm(code);
-            const idTokenResult = await firebase.auth().currentUser.getIdTokenResult();
+            let currentUser = firebase.auth().currentUser;
+            let idTokenResult = null;
+            if (currentUser) {
+                idTokenResult = await currentUser.getIdTokenResult();
+            } else {
+                let data = await confirm.confirm(code);
+                idTokenResult = await firebase.auth().currentUser.getIdTokenResult();
+            }
+
             const body = {
                 phone: phone,
                 token: idTokenResult.token
@@ -92,10 +100,36 @@ class OTPScreen extends React.Component {
                 if (register && register.data && !register.err) {
                     setToken(register.token);
                     pushToEnterInfo(componentId)
+                } else {
+                    auth()
+                        .signOut()
+                        .then(() => console.log('User signed out!'));
                 }
             }
             if (type == typeOTP.FORGOT_PASSWORD) {
                 pushToResetPass(componentId, { phone: phone, tokenfirebase: idTokenResult.token })
+            }
+
+            if (type == typeOTP.LOGIN_FACEBOOK_OTP) {
+                const { data } = this.props;
+                const body = {
+                    fb_id: data?.id,
+                    phone: phone,
+                    authtoken: idTokenResult.token,
+                    name: data?.name
+                }
+                let reqRegisterFB = await registerWithFB(body);
+                if (reqRegisterFB && reqRegisterFB.data && !reqRegisterFB.err) {
+                    //Login OK
+                    setToken(reqRegisterFB.token)
+                    await setLocalData(JSON.stringify(reqRegisterFB.data))
+                    setTimeout(() => { this.setState({ isloading: false }) }, 1000)
+                    setRootToHome()
+                } else {
+                    auth()
+                        .signOut()
+                        .then(() => console.log('User signed out!'));
+                }
             }
 
         } catch (error) {

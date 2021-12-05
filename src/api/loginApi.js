@@ -59,3 +59,18 @@ export const logOutAPI = () => {
         method: 'POST',
     })
 }
+export const loginByFaceBookAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/users/login/facebook`,
+        method: 'POST',
+        data: body
+    })
+}
+
+export const registerWithFB = (body) => {
+    return api.makeAuthRequest({
+        url: `/users/register/facebook`,
+        method: 'POST',
+        data: body
+    })
+}

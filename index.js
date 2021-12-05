@@ -9,6 +9,9 @@ import notificationProcessor from './src/notification'
 import 'moment/locale/vi';
 import moment from 'moment'
 import { enableScreens } from 'react-native-screens';
+import { Settings } from 'react-native-fbsdk-next';
+
+Settings.initializeSDK();
 
 enableScreens();
 
@@ -60,7 +63,11 @@ if (Platform.OS === 'android') {
             drawBehind: true,
             style: 'dark',
             backgroundColor: 'rgba(0,0,0,0)'
-
+        },
+        animations: {
+            push: {
+                waitForRender: true
+            }
         }
     })
 

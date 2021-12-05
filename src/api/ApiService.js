@@ -53,7 +53,7 @@ const _makeAuthRequest = createRequest => async args => {
 }
 
 export default (options = {}) => {
-    let BaseURL = Platform.OS == 'android' ? 'http://192.168.2.9:3000' : 'http://192.168.2.9:3000'
+    let BaseURL = Platform.OS == 'android' ? 'http://192.168.1.7:3000' : 'http://192.168.1.7:3000'
     // let BaseURL = 'http://localhost:3000'
 
     if (options.BaseURL)

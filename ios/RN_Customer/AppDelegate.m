@@ -7,11 +7,15 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
   
@@ -21,6 +25,15 @@
   [GMSServices provideAPIKey:@"AIzaSyB1lTe_-nm39EAz6-NhO0hWUMdBVgQd2_U"];
   [ReactNativeNavigation bootstrapWithDelegate:self launchOptions:launchOptions];
 
+  return YES;
+}
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(nonnull NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
+{
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                 openURL:url
+                                                 options:options];
   return YES;
 }
 // Required for the register event.

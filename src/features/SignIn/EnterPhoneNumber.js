@@ -35,6 +35,7 @@ class EnterPhoneNumber extends React.Component {
             enableButton: false,
             isvalidate: true,
             isloading: false,
+            error: false
         };
     }
     async componentDidMount() {
@@ -46,18 +47,27 @@ class EnterPhoneNumber extends React.Component {
     }
     onContinue = async () => {
         let { phone } = this.state;
-        const { componentId } = this.props;
+        const { componentId, type, data } = this.props;
 
         const isvalidate = isValidPhoneNumber(phone, 'VN');
         if (!isvalidate) {
             this.setState({ isvalidate: isvalidate, enableButton: false })
             return
         }
+
         this.setState({ isloading: true })
         let checkPhone = await checkPhoneExist(phone)
         setTimeout(() => {
             this.setState({ isloading: false })
         }, 1000)
+        if (type == typeOTP.LOGIN_FACEBOOK_OTP) {
+            if (checkPhone && checkPhone.data && checkPhone.err == false) {
+                this.setState({ error: true });
+            } else {
+                pushToOTPScreen(componentId, { phone: phone, type: typeOTP.LOGIN_FACEBOOK_OTP, data: data });
+            }
+            return
+        }
 
         console.log("checkPhone", checkPhone)
         if (checkPhone && checkPhone.data && checkPhone.err == false) {
@@ -111,7 +121,7 @@ class EnterPhoneNumber extends React.Component {
                                         placeholder="Số điện thoại"
                                         style={{ fontSize: scale(14), color: 'black', padding: 5, height: scale(40), flex: 1 }}
                                         onChangeText={vl => {
-                                            this.setState({ phone: vl, enableButton: vl ? true : false, isvalidate: true })
+                                            this.setState({ phone: vl, enableButton: vl ? true : false, isvalidate: true, error: false })
                                         }}
                                         value={phone}
 
@@ -127,6 +137,7 @@ class EnterPhoneNumber extends React.Component {
                                     />}
                                 </View>
                             </View>
+                            {this.state.error && !isloading && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>Số điện thoại đã có người khác sử dụng. Vui lòng nhập số khác để có thể liên kết tài khoản Facebook</Text>}
                             {!isvalidate && <Text style={{ fontSize: scale(11), color: color.RED_COLOR, marginTop: scale(7) }}>Số điện thoại không đúng. Hãy thử lại</Text>}
                             {isloading && <ActivityIndicator size="large" color={color.MAIN_COLOR} style={{ padding: scale(5), marginTop: scale(10) }} />}
 

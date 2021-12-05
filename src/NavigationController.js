@@ -1,12 +1,12 @@
 import { Navigation } from 'react-native-navigation';
 import { constant_name } from './registerScreen'
 
-export function pushToEnterPhoneNumberScreen(componentId) {
+export function pushToEnterPhoneNumberScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {
             id: `${constant_name.ENTER_PHONE_NUMBER}_id`,
             name: constant_name.ENTER_PHONE_NUMBER,
-
+            passProps: props,
             options: {
                 topBar: {
                     animate: false,

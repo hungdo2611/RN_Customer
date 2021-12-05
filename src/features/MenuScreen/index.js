@@ -25,6 +25,7 @@ import { color } from '../../constant/color';
 import { Navigation } from 'react-native-navigation';
 import { logOutAPI } from '../../api/loginApi'
 import { deleteLocalData } from '../../model'
+import auth from '@react-native-firebase/auth';
 import { setRootToLogin, pushToHistoryScreen, pushToEditInfoScreen, pushToCouponScreen, pushToTermPolicy, pushToSupportScreen } from '../../NavigationController'
 const { width, height } = Dimensions.get('window')
 
@@ -169,6 +170,9 @@ class MenuScreen extends React.Component {
                         await logOutAPI();
                         deleteLocalData();
                         setRootToLogin();
+                        auth()
+                            .signOut()
+                            .then(() => console.log('User signed out!'));
                     },
                 },
             ],

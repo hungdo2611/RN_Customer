@@ -44,7 +44,7 @@ class ResetPass extends React.Component {
     }
     onBack = () => {
         const { componentId } = this.props
-        Navigation.pop(componentId)
+        Navigation.popToRoot(componentId)
     }
     onContinue = async () => {
         let { password } = this.state;
