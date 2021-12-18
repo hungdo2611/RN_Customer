@@ -27,6 +27,7 @@ import { setToken, setLocalData } from '../../model'
 import { pushToOTPScreen, setRootToHome } from '../../NavigationController'
 import { typeOTP } from './constant'
 import Spinner from 'react-native-loading-spinner-overlay';
+import SplashScreen from 'react-native-splash-screen'
 
 const { width, height } = Dimensions.get('window')
 
@@ -40,7 +41,7 @@ class LoginScreen extends React.Component {
     };
   }
   async componentDidMount() {
-
+    SplashScreen.hide();
   }
   onClickPhoneNumber = () => {
     const { componentId } = this.props;
@@ -55,11 +56,13 @@ class LoginScreen extends React.Component {
 
     LoginManager.logInWithPermissions(["public_profile"]).then(
       async function (result) {
+
         if (result.isCancelled) {
           console.log("Login cancelled");
           instance.setState({ isloading: false })
         } else {
           const result = await AccessToken.getCurrentAccessToken();
+          console.log("accesstoken", result)
           let req_login = await loginByFaceBookAPI({ access_token: result?.accessToken });
           if (!req_login) {
             instance.setState({ isloading: false })

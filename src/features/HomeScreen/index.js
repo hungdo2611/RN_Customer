@@ -24,6 +24,7 @@ import { scale } from '../../ultis/scale'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { getListCoupon } from '../../api/couponAPI'
 import _ from 'lodash';
+import SplashScreen from 'react-native-splash-screen'
 
 const { width, height } = Dimensions.get('window')
 
@@ -36,6 +37,7 @@ class HomeScreen extends React.Component {
     }
     async componentDidMount() {
         const { update_list_coupon } = this.props;
+        SplashScreen.hide();
         const reqCoupon = await getListCoupon();
         console.log("reqCoupon", reqCoupon)
         if (reqCoupon && !reqCoupon.err) {

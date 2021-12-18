@@ -11,6 +11,8 @@ import {
 import actions from "./actions";
 import { getCurrentBookingAPI, getBookingWithIdAPI } from '../../../api/bookingApi'
 import { getDetailCoupon } from '../../../api/couponAPI'
+import { getListBanner } from '../../../api/BannerAPI'
+import { instanceData } from "../../../model";
 function* saga_getCurrentBooking(action) {
     try {
         const { _id } = action.payload;
@@ -28,6 +30,11 @@ function* saga_getCurrentBooking(action) {
                 }
             }
         } else {
+            let reqLstBanner = yield call(getListBanner)
+            console.log("reqLstBanner", reqLstBanner)
+            if (!reqLstBanner.err) {
+                instanceData.lst_banner = reqLstBanner.data;
+            }
             let reqCrrBooking = yield call(getCurrentBookingAPI);
             console.log("reqCrrBooking", reqCrrBooking)
 

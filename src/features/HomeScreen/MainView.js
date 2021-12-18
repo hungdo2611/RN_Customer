@@ -52,6 +52,8 @@ import { constant_type_status_booking } from '../BookingScreen/constant';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import notifee from '@notifee/react-native';
 import AsyncStorage from '@react-native-community/async-storage'
+import { instanceData } from '../../model'
+import FastImage from 'react-native-fast-image'
 
 const { width, height } = Dimensions.get('window')
 export let homeInstance = null;
@@ -301,12 +303,46 @@ export default class MainView extends React.Component {
         this.crrNear = data;
         this.ActionSheet.show()
     }
+    onPressBanner = (dt) => {
+        console.log("onPressBanner", dt)
+        const constant_banner = {
+            ALL: 'ALL',
+            PROMOTION: 'PROMOTION',
+            HYBIRD_CAR: 'HYBIRD_CAR',
+            SHIPPING: 'SHIPPING',
+            COACH_CAR: 'COACH_CAR'
+        }
+        switch (dt?.type) {
+            case constant_banner.ALL:
+                this.ActionSheetExplore.show()
+                return
+            case constant_banner.PROMOTION:
+                return
+            case constant_banner.HYBIRD_CAR:
+                return
+            case constant_banner.SHIPPING:
+                return
+            case constant_banner.COACH_CAR:
+                return
+
+        }
+    }
     renderExplore = () => {
-        return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5) }}>
+        console.log("instanceData.lst_banner", instanceData.lst_banner)
+        return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5), flex: 1 }}>
             <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Khám phá</Text>
             <View>
-                <Image style={{ height: scale(170), borderRadius: scale(15), width: '100%', marginTop: scale(10) }} source={require('../DeliveryScreen/res/ic_letgo.jpg')} />
-                <Image style={{ height: scale(170), borderRadius: scale(15), width: '100%', marginTop: scale(20) }} source={require('../DeliveryScreen/res/ic_letgo.jpg')} />
+                {instanceData.lst_banner.map(banner => {
+                    return <TouchableOpacity onPress={() => this.onPressBanner(banner)} activeOpacity={0.6}>
+                        <FastImage
+                            resizeMode="cover"
+                            source={{ uri: banner.linkImage }}
+                            style={{ height: (width - scale(30)) / 2, borderRadius: scale(15), width: width - scale(30), marginTop: scale(10) }}
+                        />
+                    </TouchableOpacity>
+                })}
+                {/* <Image style={{ height: scale(170), borderRadius: scale(15), width: '100%', marginTop: scale(10) }} source={require('../DeliveryScreen/res/ic_letgo.jpg')} />
+                <Image style={{ height: scale(170), borderRadius: scale(15), width: '100%', marginTop: scale(20) }} source={require('../DeliveryScreen/res/ic_letgo.jpg')} /> */}
 
             </View>
         </View>
@@ -642,6 +678,24 @@ export default class MainView extends React.Component {
                             } else {
                                 pushToBookingScreen(this.props.componentId, { from: from, to: to })
                             }
+                        }
+                    }}
+                />
+                <ActionSheet
+                    ref={o => this.ActionSheetExplore = o}
+                    title={'Chọn dịch vụ ?'}
+                    options={['Gửi hàng', 'Xe Tiện chuyến', 'Xe tuyến cố định', 'Huỷ']}
+                    cancelButtonIndex={3}
+                    // destructiveButtonIndex={2}
+                    onPress={(index) => {
+                        if (index == 0) {
+                            pushToDeliveryScreen(this.props.componentId)
+                        }
+                        if (index == 1) {
+                            pushToBookingHybirdScreen(this.props.componentId)
+                        }
+                        if (index == 2) {
+                            pushToBookingScreen(this.props.componentId)
                         }
                     }}
                 />

@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">RN_Customer</string>
+    <string name="app_name">9TRIP</string>
     <string name="google_maps_key">AIzaSyB1lTe_-nm39EAz6-NhO0hWUMdBVgQd2_U</string>
-
+    <string name="facebook_app_id">782584742587351</string>
+    <string name="facebook_client_token">Facebook Client ID</string>
 </resources>
   

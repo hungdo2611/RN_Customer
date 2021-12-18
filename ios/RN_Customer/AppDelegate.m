@@ -8,6 +8,7 @@
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import "RNSplashScreen.h"  // here
 
 
 @implementation AppDelegate

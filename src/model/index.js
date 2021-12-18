@@ -33,6 +33,7 @@ export let instanceData = {
         hybird: true,
         delivery: true
     },
+    lst_banner: []
 }
 export const setToken = (token) => {
     instanceData.token = token;

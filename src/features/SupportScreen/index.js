@@ -203,15 +203,6 @@ export class SupportScreen extends React.Component {
                         size={scale(20)} />,
                         'Gọi tổng đài',
                         this.onClickCall)}
-                    {this.renderButton(<MaterialCommunityIcons
-                        name="account-group"
-                        size={scale(20)} />,
-                        'Tham gia cộng đồng trên FaceBook',
-                        this.onClickGroupFB
-                    )}
-                    {this.renderButton(<Image style={{ width: scale(20), height: scale(20) }} source={require('./zalo.png')} />,
-                        'Tham gia cộng đồng trên Zalo',
-                        this.onClickGroupZalo)}
                 </KeyboardAwareScrollView>
                 <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
             </SafeAreaView>
