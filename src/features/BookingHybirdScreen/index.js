@@ -182,7 +182,7 @@ class CreateTripScreen extends Component {
                             this.map.animateToRegion(r, 500);
                         },
                         error => console.log('error', error),
-                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                        { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
                     );
                 } else {
                     if (Platform.OS === "ios" || res == 'blocked') {
@@ -280,7 +280,7 @@ class CreateTripScreen extends Component {
                     });
                 },
                 error => console.log('error', error),
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
             );
 
         }
@@ -346,7 +346,7 @@ class CreateTripScreen extends Component {
                 this.setState({ latitude: position.coords.latitude, longitude: position.coords.longitude });
             },
             error => console.log('get current location false', error),
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
         );
     };
 

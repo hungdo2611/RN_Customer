@@ -53,8 +53,8 @@ const _makeAuthRequest = createRequest => async args => {
 }
 
 export default (options = {}) => {
-    let BaseURL = Platform.OS == 'android' ? 'http://192.168.2.9:3000' : 'http://192.168.2.9:3000/api'
-    // let BaseURL = 'https://vn-9trip.com/api'
+    // let BaseURL = Platform.OS == 'android' ? 'http://192.168.2.9:3000' : 'http://192.168.2.9:3000/api'
+    let BaseURL = 'https://vn-9trip.com/api'
 
     if (options.BaseURL)
         BaseURL = options.BaseURL

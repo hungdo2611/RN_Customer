@@ -100,7 +100,7 @@ export default class MainView extends React.Component {
                             this.getCrrLocation(location)
                         },
                         error => console.log('error', error),
-                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                        { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
                     );
                 } else {
                     if (Platform.OS === "ios" || res == 'blocked') {
@@ -140,7 +140,10 @@ export default class MainView extends React.Component {
 
     }
     getCrrLocation = async (location) => {
-        const req = await getAdressFromLatLng(location.lat, location.lng)
+        // const req = await getAdressFromLatLng(location.lat, location.lng)
+        const req = await getAdressFromLatLng(21.019480339716022, 105.77197689840669)
+
+        console.log('getCrrLocation', req)
         if (req.items && req.items[0]) {
             this.setState({ txt_crrAddress: req.items[0].address.county })
         }
@@ -314,15 +317,19 @@ export default class MainView extends React.Component {
         }
         switch (dt?.type) {
             case constant_banner.ALL:
-                this.ActionSheetExplore.show()
+                this.ActionSheetExplore.show();
                 return
             case constant_banner.PROMOTION:
+                pushToCouponScreen(this.props.componentId);
                 return
             case constant_banner.HYBIRD_CAR:
+                pushToBookingHybirdScreen(this.props.componentId);
                 return
             case constant_banner.SHIPPING:
+                pushToDeliveryScreen(this.props.componentId);
                 return
             case constant_banner.COACH_CAR:
+                pushToBookingScreen(this.props.componentId);
                 return
 
         }
@@ -333,11 +340,11 @@ export default class MainView extends React.Component {
             <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Khám phá</Text>
             <View>
                 {instanceData.lst_banner.map(banner => {
-                    return <TouchableOpacity onPress={() => this.onPressBanner(banner)} activeOpacity={0.6}>
+                    return <TouchableOpacity style={{ marginTop: scale(20) }} onPress={() => this.onPressBanner(banner)} activeOpacity={0.6}>
                         <FastImage
                             resizeMode="cover"
                             source={{ uri: banner.linkImage }}
-                            style={{ height: (width - scale(30)) / 2, borderRadius: scale(15), width: width - scale(30), marginTop: scale(10) }}
+                            style={{ height: (width - scale(30)) / 2, borderRadius: scale(15), width: width - scale(30) }}
                         />
                     </TouchableOpacity>
                 })}
@@ -653,7 +660,7 @@ export default class MainView extends React.Component {
                         </View>
                     </View>
 
-                    {!currentBooking && this.renderService()}
+                    {(!currentBooking || currentBooking?.status == constant_type_status_booking.USER_CANCEL) && this.renderService()}
                     {currentBooking && this.renderCurrentBooking(currentBooking)}
                     {this.renderCoupon()}
                     {!currentBooking && this.state.near_journey.length > 0 && this.renderNearJourney()}
