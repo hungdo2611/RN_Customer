@@ -12,7 +12,7 @@ import {
     SafeAreaView,
     ActivityIndicator,
     Alert,
-    BackHandler,
+    AppState,
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NetInfo from "@react-native-community/netinfo";
@@ -32,7 +32,7 @@ class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            appState: AppState.currentState,
         };
     }
     async componentDidMount() {
@@ -52,7 +52,24 @@ class HomeScreen extends React.Component {
                 Alert.alert("Kết nối không ổn định")
             }
         });
+        AppState.addEventListener('change', this._handleAppStateChange);
 
+    }
+    componentWillUnmount() {
+        AppState.removeEventListener('change', this._handleAppStateChange);
+
+    }
+    _handleAppStateChange = (nextAppState) => {
+        if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+            console.log('App has come to the foreground!')
+            const { getCurrentBooking, currentBooking } = this.props;
+            if (currentBooking) {
+                getCurrentBooking(currentBooking._id);
+            }
+
+
+        }
+        this.setState({ appState: nextAppState });
     }
 
     render() {
@@ -81,7 +98,8 @@ const mapStateToProps = (state) => {
         isLoadingPre: state.HomeReducer.isLoadingPre,
         currentBooking: state.HomeReducer.currentBooking,
         lst_coupon: state.HomeReducer.lst_coupon,
-        total_coupon: state.HomeReducer.total_coupon
+        total_coupon: state.HomeReducer.total_coupon,
+        
     }
 }
 
@@ -89,6 +107,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         update_list_coupon: (coupon, total) => {
             dispatch(actions.action.updateListCoupon(coupon, total));
+        },
+        getCurrentBooking: (_id) => {
+            dispatch(actions.action.getCurrentBooking(_id));
         },
     }
 }

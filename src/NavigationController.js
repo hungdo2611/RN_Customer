@@ -191,6 +191,35 @@ export function pushToOrderInfoScreen(componentId, props) {
         },
     });
 }
+export function ShowModallOrderInfoScreen(componentId, props) {
+    Navigation.showModal({
+        stack: {
+            children: [
+                {
+                    component: {
+                        id: `${constant_name.ORDER_INFO_SCREEN}_id`,
+                        name: constant_name.ORDER_INFO_SCREEN,
+                        passProps: props,
+                        options: {
+                            modal: {
+                                swipeToDismiss: false
+                            },
+                            topBar: {
+                                animate: false,
+                                visible: false,
+                                height: 0,
+                            },
+                            bottomTabs: {
+                                visible: false,
+                            },
+                        },
+                    },
+                },
+            ],
+        },
+    });
+
+}
 export function pushToCouponScreen(componentId, props) {
     Navigation.push(componentId, {
         component: {

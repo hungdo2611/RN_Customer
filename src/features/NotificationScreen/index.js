@@ -58,6 +58,7 @@ class NotiScreen extends React.Component {
         }
         this.setState({ isloading: true })
         const lst_notify = await getListNotification(page_number, 15);
+        console.log("lst_notify", lst_notify)
         setTimeout(() => {
             this.setState({ isloading: false })
 
@@ -133,6 +134,8 @@ class NotiScreen extends React.Component {
                 return require('./res/bell.png')
             case 'PROMOTION_NOTIFICATION':
                 return require('./res/gift.png')
+            default:
+                return require('./res/bell.png')
         }
     }
     renderItem = ({ item, index }) => {
@@ -150,7 +153,7 @@ class NotiScreen extends React.Component {
         return <View >
             <View style={{ height: 1, backgroundColor: color.GRAY_COLOR_200 }} />
             <TouchableOpacity onPress={() => this.onPressItem(item)} style={{ flexDirection: 'row', marginVertical: scale(10) }} activeOpacity={0.5} >
-                <Image style={{ width: scale(30), height: scale(30), marginHorizontal: scale(15) }} source={this.getImageSrc(item.data.type)} />
+                <Image style={{ width: scale(30), height: scale(30), marginHorizontal: scale(15) }} source={this.getImageSrc(item?.data?.type)} />
                 <View style={{ flex: 1 }}>
                     <Text numberOfLines={1} style={{ fontSize: scale(15), fontWeight: '600', width: '95%' }}>{item.title}</Text>
                     <Text style={{ fontSize: scale(13), paddingTop: scale(3), width: '95%' }}>{item.content}</Text>
@@ -176,7 +179,7 @@ class NotiScreen extends React.Component {
                         keyExtractor={item => item._id}
                         showsVerticalScrollIndicator={false}
                         onScrollBeginDrag={() => Keyboard.dismiss()}
-                        
+
                         refreshing={this.state.refreshing}
                         onRefresh={() => {
                             this.setState({

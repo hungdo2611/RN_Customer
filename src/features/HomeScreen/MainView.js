@@ -500,23 +500,24 @@ export default class MainView extends React.Component {
     }
     onPressJourney = (crrJourneys) => {
         const { componentId } = this.props;
-        if (crrJourneys.status == constant_type_status_booking.WAITING_DRIVER
-            || crrJourneys.status == constant_type_status_booking.PROCESSING
-            || crrJourneys.status == constant_type_status_booking.FINDING_DRIVER) {
-            if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.HYBIRD_CAR) {
-                pushToBookingHybirdScreen(componentId)
-            } else if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.COACH_CAR) {
-                pushToBookingScreen(componentId)
-
-            } else {
-                pushToDeliveryScreen(componentId)
-
-            }
-
+        if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.HYBIRD_CAR) {
+            pushToBookingHybirdScreen(componentId)
+        } else if (crrJourneys.booking_type === CONSTANT_TYPE_BOOKING.COACH_CAR) {
+            pushToBookingScreen(componentId)
 
         } else {
-            pushToOrderInfoScreen(componentId, { data: crrJourneys })
+            pushToDeliveryScreen(componentId)
+
         }
+        // if (crrJourneys.status == constant_type_status_booking.WAITING_DRIVER
+        //     || crrJourneys.status == constant_type_status_booking.PROCESSING
+        //     || crrJourneys.status == constant_type_status_booking.FINDING_DRIVER) {
+
+
+
+        // } else {
+        //     pushToOrderInfoScreen(componentId, { data: crrJourneys })
+        // }
 
     }
     getBookingTypeName = (type) => {
@@ -660,7 +661,7 @@ export default class MainView extends React.Component {
                         </View>
                     </View>
 
-                    {(!currentBooking || currentBooking?.status == constant_type_status_booking.USER_CANCEL) && this.renderService()}
+                    {!currentBooking && this.renderService()}
                     {currentBooking && this.renderCurrentBooking(currentBooking)}
                     {this.renderCoupon()}
                     {!currentBooking && this.state.near_journey.length > 0 && this.renderNearJourney()}

@@ -115,8 +115,13 @@ class NotificationProcessor {
         });
         messaging().onMessage(async remoteMessage => {
             console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-            if (remoteMessage.data.type == constant_type_notify.DRIVER_ACEEPT_BOOKING) {
-                store.dispatch(actionsBooking.action.getCurrentBooking())
+            const { data } = remoteMessage;
+
+            if (data.type == constant_type_notify.DRIVER_ACEEPT_BOOKING
+                || data.type == constant_type_notify.DRIVER_PICK_UP_CUSTOMER
+                || data.type == constant_type_notify.DRIVER_DROP_OFF_CUSTOMER
+            ) {
+                store.dispatch(actionsBooking.action.getCurrentBooking(data?.booking_id))
             }
             if (remoteMessage.data.type == constant_type_notify.SYSTEM_CANCLE_BOOKING) {
                 store.dispatch(actionsBooking.action.updateBookingCancel())
@@ -157,7 +162,6 @@ class NotificationProcessor {
                 store.dispatch(actionsBooking.action.updateBookingCancel())
             }
 
-            console.log("setBackgroundMessageHandler", remoteMessage)
 
         });
 

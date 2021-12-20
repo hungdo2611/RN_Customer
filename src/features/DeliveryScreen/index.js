@@ -261,11 +261,7 @@ class CreateTripScreen extends Component {
     _handleAppStateChange = (nextAppState) => {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log('App has come to the foreground!')
-            BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-            const { getCurrentBooking, currentBooking } = this.props;
-            if (currentBooking) {
-                getCurrentBooking(currentBooking._id);
-            }
+
             Geolocation.getCurrentPosition(
                 position => {
                     console.log(position);
