@@ -22,13 +22,18 @@ import {
   LoginManager,
 } from 'react-native-fbsdk-next';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { loginByFaceBookAPI } from '../../api/loginApi'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+
+import { loginByFaceBookAPI, loginByAppleAPI } from '../../api/loginApi'
 import { setToken, setLocalData } from '../../model'
 import { pushToOTPScreen, setRootToHome } from '../../NavigationController'
 import { typeOTP } from './constant'
 import Spinner from 'react-native-loading-spinner-overlay';
 import SplashScreen from 'react-native-splash-screen'
-
+import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { checkPhoneExist } from '../../api/loginApi'
+import axios from 'axios'
 const { width, height } = Dimensions.get('window')
 
 
@@ -58,7 +63,7 @@ class LoginScreen extends React.Component {
       async function (result) {
 
         if (result.isCancelled) {
-          console.log("Login cancelled");
+          console.log("Login cancelled123");
           instance.setState({ isloading: false })
         } else {
           const result = await AccessToken.getCurrentAccessToken();
@@ -90,6 +95,49 @@ class LoginScreen extends React.Component {
         console.log("Login fail with error: " + error);
       }
     );
+  }
+  onLoginByApple = async () => {
+    const { componentId } = this.props;
+
+    this.setState({ isloading: true })
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [
+        appleAuth.Scope.EMAIL,
+        appleAuth.Scope.FULL_NAME,
+      ],
+    });
+    console.log("appleAuthRequestResponse", appleAuthRequestResponse)
+    // get current authentication state for user
+    // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+    const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
+
+    // use credentialState response to ensure the user is authenticated
+    if (credentialState === appleAuth.State.AUTHORIZED) {
+      console.log("credentialState", credentialState)
+      let req_login = await loginByAppleAPI(
+        {
+          apple_id: appleAuthRequestResponse?.user,
+          authorization_code: appleAuthRequestResponse?.authorizationCode
+        })
+      if (!req_login) {
+        this.setState({ isloading: false })
+        return
+      }
+      if (req_login && !req_login.err && req_login.data) {
+        setToken(req_login.token)
+        await setLocalData(JSON.stringify(req_login.data))
+        this.setState({ isloading: false })
+        setRootToHome()
+        return
+      }
+      if (req_login && req_login?.err && req_login.data == 'Customer not found') {
+        pushToEnterPhoneNumberScreen(componentId, { type: typeOTP.LOGIN_APPLE_OTP, data: appleAuthRequestResponse })
+        this.setState({ isloading: false })
+        return
+      }
+      Alert.alert('Đã có lỗi xảy ra vui lòng thử lại sau')
+    }
   }
   render() {
     const window = Dimensions.get('window');
@@ -146,17 +194,48 @@ class LoginScreen extends React.Component {
             <Text style={{ fontWeight: '500', color: color.GRAY_COLOR_400 }} >Tiếp tục với</Text>
             <View style={{ flex: 1, height: 1, backgroundColor: color.GRAY_COLOR_200, marginHorizontal: scale(20) }} />
           </View>
-          <TouchableOpacity
-            onPress={this.onLoginByFacebook}
-            activeOpacity={0.7}
-            style={{ marginTop: scale(10) }}
-          >
-            <MaterialCommunityIcons
-              name='facebook'
-              size={scale(50)}
-              color='#276EF1'
-            />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={this.onLoginByFacebook}
+              activeOpacity={0.7}
+              style={{
+                marginTop: scale(10),
+                backgroundColor: '#276EF1',
+                width: scale(45),
+                height: scale(45),
+                borderRadius: scale(25),
+                alignItems: "center",
+                justifyContent: "center",
+                marginHorizontal: scale(10)
+              }}
+            >
+              <FontAwesome
+                name='facebook'
+                size={scale(25)}
+                color='#FFFFFF'
+              />
+            </TouchableOpacity>
+            {Platform.OS == 'ios' && <TouchableOpacity
+              onPress={this.onLoginByApple}
+              activeOpacity={0.7}
+              style={{
+                marginTop: scale(10),
+                backgroundColor: 'black',
+                width: scale(45),
+                height: scale(45),
+                borderRadius: scale(25),
+                alignItems: "center",
+                justifyContent: "center",
+                marginHorizontal: scale(10)
+              }}            >
+              <MaterialCommunityIcons
+                name='apple'
+                size={scale(25)}
+                color='#FFFFFF'
+              />
+            </TouchableOpacity>}
+          </View>
+
         </View>
         <Spinner
           visible={this.state.isloading}

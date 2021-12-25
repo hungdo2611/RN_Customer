@@ -24,7 +24,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { Navigation } from 'react-native-navigation';
 import { color } from '../../constant/color'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { registerAPI, registerWithFB } from '../../api/loginApi'
+import { registerAPI, registerWithFB, registerWithAppleAPI } from '../../api/loginApi'
 import parsePhoneNumber from 'libphonenumber-js'
 import { typeOTP } from './constant'
 import { pushToEnterInfo, pushToResetPass, setRootToHome } from '../../NavigationController';
@@ -123,6 +123,33 @@ class OTPScreen extends React.Component {
                     //Login OK
                     setToken(reqRegisterFB.token)
                     await setLocalData(JSON.stringify(reqRegisterFB.data))
+                    setTimeout(() => { this.setState({ isloading: false }) }, 1000)
+                    setRootToHome()
+                } else {
+                    auth()
+                        .signOut()
+                        .then(() => console.log('User signed out!'));
+                }
+            }
+            if (type == typeOTP.LOGIN_APPLE_OTP) {
+                const { data } = this.props;
+                console.log("data props", data)
+                const name1 = data?.fullName?.familyName ? data?.fullName?.familyName : '';
+                const name2 = data?.fullName?.givenName ? data?.fullName?.givenName : ''
+                const last_name = name1 + ' ' + name2;
+                const body = {
+                    apple_id: data?.user,
+                    phone: phone,
+                    authtoken: idTokenResult.token,
+                    name: last_name.trim() ? last_name : 'Người dùng ẩn danh',
+                    authorization_code: data?.authorizationCode
+                }
+                let reqRegisterApple = await registerWithAppleAPI(body);
+                console.log("reqRegisterApple", reqRegisterApple)
+                if (reqRegisterApple && reqRegisterApple.data && !reqRegisterApple.err) {
+                    //Login OK
+                    setToken(reqRegisterApple.token)
+                    await setLocalData(JSON.stringify(reqRegisterApple.data))
                     setTimeout(() => { this.setState({ isloading: false }) }, 1000)
                     setRootToHome()
                 } else {

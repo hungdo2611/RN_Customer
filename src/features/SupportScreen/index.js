@@ -167,6 +167,14 @@ export class SupportScreen extends React.Component {
             .catch(err => console.log(err));
     };
     onClickPageFB = () => {
+        Linking.canOpenURL("fb://page?id=234623767452417").then(supported => {
+            if (supported) {
+                return Linking.openURL("fb://page?id=234623767452417");
+            } else {
+                return Linking.openURL("https://www.facebook.com/9tripHD");
+            }
+        })
+
     }
     onClickCall = () => {
         this.callNumber('0357519390')

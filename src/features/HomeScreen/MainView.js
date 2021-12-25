@@ -405,7 +405,7 @@ export default class MainView extends React.Component {
     renderNearJourney = () => {
         const { near_journey, activeSlide } = this.state;
         return <View style={{ marginVertical: scale(10), marginHorizontal: scale(5) }}>
-            <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Hành trình gần bạn</Text>
+            <Text style={{ fontSize: scale(18), fontWeight: 'bold' }}>Chuyến sắp bắt đầu</Text>
             <Carousel
                 layout={'default'}
                 ref={(c) => { this._carousel = c; }}

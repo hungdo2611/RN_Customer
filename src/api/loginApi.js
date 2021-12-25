@@ -74,3 +74,18 @@ export const registerWithFB = (body) => {
         data: body
     })
 }
+
+export const loginByAppleAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/users/login/apple`,
+        method: 'POST',
+        data: body
+    })
+}
+export const registerWithAppleAPI = (body) => {
+    return api.makeAuthRequest({
+        url: `/users/register/apple`,
+        method: 'POST',
+        data: body
+    })
+}

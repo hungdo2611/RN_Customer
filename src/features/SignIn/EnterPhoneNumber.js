@@ -68,6 +68,15 @@ class EnterPhoneNumber extends React.Component {
             }
             return
         }
+        if (type == typeOTP.LOGIN_APPLE_OTP) {
+            if (checkPhone && checkPhone.data && checkPhone.err == false) {
+                this.setState({ error: true });
+            } else {
+                pushToOTPScreen(componentId, { phone: phone, type: typeOTP.LOGIN_APPLE_OTP, data: data });
+            }
+            return
+        }
+
 
         console.log("checkPhone", checkPhone)
         if (checkPhone && checkPhone.data && checkPhone.err == false) {

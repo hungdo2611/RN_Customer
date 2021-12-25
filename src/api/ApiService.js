@@ -29,6 +29,7 @@ const _makeAuthRequest = createRequest => async args => {
     let headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
+        
     }
 
     args = {
@@ -56,8 +57,8 @@ export default (options = {}) => {
     // let BaseURL = Platform.OS == 'android' ? 'http://192.168.2.9:3000' : 'http://192.168.2.9:3000/api'
     let BaseURL = 'https://vn-9trip.com/api'
 
-    if (options.BaseURL)
-        BaseURL = options.BaseURL
+    // if (options.BaseURL)
+    //     BaseURL = options.BaseURL
 
     //const baseUrlValidated = options.baseUrl || getEnv('baseAPIUrl')
     const instance = Axios.create({
