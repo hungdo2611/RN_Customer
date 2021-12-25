@@ -11,11 +11,11 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1469A0E8CB7B35C1914A54BF /* libPods-RN_Customer-RN_CustomerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3498EF6847FAEEB227E9BB7D /* libPods-RN_Customer-RN_CustomerTests.a */; };
-		216ED67313963D5F7A28D088 /* libPods-RN_Customer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 98E39A454E6E5D38C148E31B /* libPods-RN_Customer.a */; };
 		5286FEBE26A30AD0004CBA0E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5286FEBD26A30AD0004CBA0E /* GoogleService-Info.plist */; };
 		5286FF0726A314BD004CBA0E /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5286FF0626A314BD004CBA0E /* libRNVectorIcons.a */; };
+		68CB90B56D543B43004891B1 /* libPods-9Trip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81B101908505E4EE904A8F4E /* libPods-9Trip.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		DA25C090885C5B7DBD5930A9 /* libPods-9Trip-9TripTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC924264C28B1B7E08F135A /* libPods-9Trip-9TripTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,25 +29,29 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* RN_CustomerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RN_CustomerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* 9TripTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = 9TripTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RN_CustomerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RN_CustomerTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* RN_Customer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RN_Customer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* 9Trip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 9Trip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RN_Customer/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = RN_Customer/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = RN_Customer/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RN_Customer/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RN_Customer/main.m; sourceTree = "<group>"; };
 		15396161411BDDE55884760F /* Pods-RN_Customer-RN_CustomerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RN_Customer-RN_CustomerTests.debug.xcconfig"; path = "Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests.debug.xcconfig"; sourceTree = "<group>"; };
-		3498EF6847FAEEB227E9BB7D /* libPods-RN_Customer-RN_CustomerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RN_Customer-RN_CustomerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BC924264C28B1B7E08F135A /* libPods-9Trip-9TripTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-9Trip-9TripTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5286FEBD26A30AD0004CBA0E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5286FF0626A314BD004CBA0E /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D3A4CD26CE3FCD004B3909 /* RN_Customer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RN_Customer.entitlements; path = RN_Customer/RN_Customer.entitlements; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RN_Customer/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		81B101908505E4EE904A8F4E /* libPods-9Trip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-9Trip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F7FEFD6CBAB92CA1696C648 /* Pods-RN_Customer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RN_Customer.release.xcconfig"; path = "Target Support Files/Pods-RN_Customer/Pods-RN_Customer.release.xcconfig"; sourceTree = "<group>"; };
-		98E39A454E6E5D38C148E31B /* libPods-RN_Customer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RN_Customer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A38A409C1EE7530D35D2E9F8 /* Pods-RN_Customer-RN_CustomerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RN_Customer-RN_CustomerTests.release.xcconfig"; path = "Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests.release.xcconfig"; sourceTree = "<group>"; };
+		A8EEF25CC3596C3BABEEBD4D /* Pods-9Trip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-9Trip.release.xcconfig"; path = "Target Support Files/Pods-9Trip/Pods-9Trip.release.xcconfig"; sourceTree = "<group>"; };
+		C38E14D8A95D9765EF36F7B4 /* Pods-9Trip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-9Trip.debug.xcconfig"; path = "Target Support Files/Pods-9Trip/Pods-9Trip.debug.xcconfig"; sourceTree = "<group>"; };
+		E1AA29A22D5E80DD87EF6315 /* Pods-9Trip-9TripTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-9Trip-9TripTests.debug.xcconfig"; path = "Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		ED64C34CE3C413AF9F74DACC /* Pods-9Trip-9TripTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-9Trip-9TripTests.release.xcconfig"; path = "Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests.release.xcconfig"; sourceTree = "<group>"; };
 		FAD96CEBE1D5056CF5CC2A83 /* Pods-RN_Customer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RN_Customer.debug.xcconfig"; path = "Target Support Files/Pods-RN_Customer/Pods-RN_Customer.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1469A0E8CB7B35C1914A54BF /* libPods-RN_Customer-RN_CustomerTests.a in Frameworks */,
+				DA25C090885C5B7DBD5930A9 /* libPods-9Trip-9TripTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,8 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				216ED67313963D5F7A28D088 /* libPods-RN_Customer.a in Frameworks */,
 				5286FF0726A314BD004CBA0E /* libRNVectorIcons.a in Frameworks */,
+				68CB90B56D543B43004891B1 /* libPods-9Trip.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,8 +113,8 @@
 			children = (
 				5286FF0626A314BD004CBA0E /* libRNVectorIcons.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				98E39A454E6E5D38C148E31B /* libPods-RN_Customer.a */,
-				3498EF6847FAEEB227E9BB7D /* libPods-RN_Customer-RN_CustomerTests.a */,
+				81B101908505E4EE904A8F4E /* libPods-9Trip.a */,
+				3BC924264C28B1B7E08F135A /* libPods-9Trip-9TripTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -140,8 +144,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* RN_Customer.app */,
-				00E356EE1AD99517003FC87E /* RN_CustomerTests.xctest */,
+				13B07F961A680F5B00A75B9A /* 9Trip.app */,
+				00E356EE1AD99517003FC87E /* 9TripTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,6 +157,10 @@
 				8F7FEFD6CBAB92CA1696C648 /* Pods-RN_Customer.release.xcconfig */,
 				15396161411BDDE55884760F /* Pods-RN_Customer-RN_CustomerTests.debug.xcconfig */,
 				A38A409C1EE7530D35D2E9F8 /* Pods-RN_Customer-RN_CustomerTests.release.xcconfig */,
+				C38E14D8A95D9765EF36F7B4 /* Pods-9Trip.debug.xcconfig */,
+				A8EEF25CC3596C3BABEEBD4D /* Pods-9Trip.release.xcconfig */,
+				E1AA29A22D5E80DD87EF6315 /* Pods-9Trip-9TripTests.debug.xcconfig */,
+				ED64C34CE3C413AF9F74DACC /* Pods-9Trip-9TripTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -160,9 +168,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* RN_CustomerTests */ = {
+		00E356ED1AD99517003FC87E /* 9TripTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RN_CustomerTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "9TripTests" */;
 			buildPhases = (
 				D428E94DA8FEF580090510DA /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -176,14 +184,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = RN_CustomerTests;
+			name = 9TripTests;
 			productName = RN_CustomerTests;
-			productReference = 00E356EE1AD99517003FC87E /* RN_CustomerTests.xctest */;
+			productReference = 00E356EE1AD99517003FC87E /* 9TripTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* RN_Customer */ = {
+		13B07F861A680F5B00A75B9A /* 9Trip */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RN_Customer" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "9Trip" */;
 			buildPhases = (
 				F403347BF849926A19B8F92A /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -199,9 +207,9 @@
 			);
 			dependencies = (
 			);
-			name = RN_Customer;
+			name = 9Trip;
 			productName = RN_Customer;
-			productReference = 13B07F961A680F5B00A75B9A /* RN_Customer.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* 9Trip.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -221,7 +229,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RN_Customer" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "9Trip" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -234,8 +242,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* RN_Customer */,
-				00E356ED1AD99517003FC87E /* RN_CustomerTests */,
+				13B07F861A680F5B00A75B9A /* 9Trip */,
+				00E356ED1AD99517003FC87E /* 9TripTests */,
 			);
 		};
 /* End PBXProject section */
@@ -281,15 +289,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3B2AA7B76BB70C9B22D1882F /* [CP] Copy Pods Resources */ = {
@@ -298,15 +306,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer/Pods-RN_Customer-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip/Pods-9Trip-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer/Pods-RN_Customer-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip/Pods-9Trip-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RN_Customer/Pods-RN_Customer-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-9Trip/Pods-9Trip-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		45F00C6B6787A175DC367F52 /* [CP] Embed Pods Frameworks */ = {
@@ -315,15 +323,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RN_Customer-RN_CustomerTests/Pods-RN_Customer-RN_CustomerTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-9Trip-9TripTests/Pods-9Trip-9TripTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		4FE8391C13D4963EC47475D0 /* [CP-User] [RNFB] Core Configuration */ = {
@@ -345,15 +353,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer/Pods-RN_Customer-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip/Pods-9Trip-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RN_Customer/Pods-RN_Customer-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-9Trip/Pods-9Trip-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RN_Customer/Pods-RN_Customer-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-9Trip/Pods-9Trip-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D428E94DA8FEF580090510DA /* [CP] Check Pods Manifest.lock */ = {
@@ -371,7 +379,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RN_Customer-RN_CustomerTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-9Trip-9TripTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -393,7 +401,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RN_Customer-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-9Trip-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -444,7 +452,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* RN_Customer */;
+			target = 13B07F861A680F5B00A75B9A /* 9Trip */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -452,7 +460,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 15396161411BDDE55884760F /* Pods-RN_Customer-RN_CustomerTests.debug.xcconfig */;
+			baseConfigurationReference = E1AA29A22D5E80DD87EF6315 /* Pods-9Trip-9TripTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -473,13 +481,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RN_Customer.app/RN_Customer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/9Trip.app/9Trip";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A38A409C1EE7530D35D2E9F8 /* Pods-RN_Customer-RN_CustomerTests.release.xcconfig */;
+			baseConfigurationReference = ED64C34CE3C413AF9F74DACC /* Pods-9Trip-9TripTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -497,18 +505,18 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RN_Customer.app/RN_Customer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/9Trip.app/9Trip";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FAD96CEBE1D5056CF5CC2A83 /* Pods-RN_Customer.debug.xcconfig */;
+			baseConfigurationReference = C38E14D8A95D9765EF36F7B4 /* Pods-9Trip.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = RN_Customer/RN_Customer.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = TL33VX6NK4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RN_Customer/Info.plist;
@@ -523,7 +531,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hd.booking;
-				PRODUCT_NAME = RN_Customer;
+				PRODUCT_NAME = 9Trip;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -533,12 +541,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F7FEFD6CBAB92CA1696C648 /* Pods-RN_Customer.release.xcconfig */;
+			baseConfigurationReference = A8EEF25CC3596C3BABEEBD4D /* Pods-9Trip.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = RN_Customer/RN_Customer.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = TL33VX6NK4;
 				INFOPLIST_FILE = RN_Customer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -552,7 +560,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hd.booking;
-				PRODUCT_NAME = RN_Customer;
+				PRODUCT_NAME = 9Trip;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -685,7 +693,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RN_CustomerTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "9TripTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -694,7 +702,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RN_Customer" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "9Trip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -703,7 +711,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RN_Customer" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "9Trip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

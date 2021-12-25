@@ -33,7 +33,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
 	<string>782584742587351</string>
 	<key>FacebookClientToken</key>
@@ -71,10 +71,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>ứng dụng cần quyền truy cập thư viện để lấy hình ảnh cho đơn hàng</string>
 	<key>NSCameraUsageDescription</key>
 	<string>ứng dụng cần quyền truy cập camera để lấy hình ảnh cho đơn hàng</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Ứng dụng cần quyền truy cập vị trí để có thể tìm kiếm tài xế</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ứng dụng cần quyền truy cập camera để lấy hình ảnh cho đơn hàng</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -109,6 +111,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
