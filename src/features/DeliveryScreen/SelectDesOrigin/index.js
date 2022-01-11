@@ -95,6 +95,16 @@ class SelectDesOrigin extends React.Component {
         //     this.inPutDiemDen.focus();
         // }
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps?.isInCreaseHeight !== this.props.isInCreaseHeight) {
+            if (this.props.isInCreaseHeight == true) {
+                setTimeout(() => {
+                    this.inPutDiemDen.focus();
+                }, 100)
+            }
+        }
+
+    }
     setLoadingPickWithGG = (isloading) => {
         this.setState({ isLoadingAPIPickGG: isloading })
     }
@@ -231,9 +241,6 @@ class SelectDesOrigin extends React.Component {
                     activeOpacity={0.7}
                     onPress={() => {
                         inCreaseHeight();
-                        setTimeout(() => {
-                            this.inPutDiemDen.focus();
-                        }, 500)
                     }}
                     style={{
                         flexDirection: "row",
@@ -446,7 +453,7 @@ class SelectDesOrigin extends React.Component {
                         style={{
                             flexDirection: "row",
                             alignItems: "center",
-                            height: scale(80),
+                            height: Platform.OS == 'android' ? scale(100) : scale(90),
                             borderRadius: scale(15),
                             borderColor: color.GRAY_COLOR_400,
                             backgroundColor: color.GRAY_COLOR_100,

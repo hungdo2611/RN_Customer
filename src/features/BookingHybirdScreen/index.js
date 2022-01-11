@@ -260,7 +260,7 @@ class CreateTripScreen extends Component {
     _handleAppStateChange = (nextAppState) => {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log('App has come to the foreground!')
-            
+
             Geolocation.getCurrentPosition(
                 position => {
                     console.log(position);
@@ -475,6 +475,9 @@ class CreateTripScreen extends Component {
         console.log("currentBooking", currentBooking)
         const { lst_polyline, diem_don, diem_den, latitude, longitude } = this.state;
         if (!currentBooking) {
+            if (!diem_den) {
+                return { latitude: 0, longitude: 0 }
+            }
             if (diem_den) {
                 return { latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }
             }

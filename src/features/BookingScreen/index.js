@@ -474,6 +474,9 @@ class CreateTripScreen extends Component {
         console.log("currentBooking", currentBooking)
         const { lst_polyline, diem_don, diem_den, latitude, longitude } = this.state;
         if (!currentBooking) {
+            if (!diem_den) {
+                return { latitude: 0, longitude: 0 }
+            }
             if (diem_den) {
                 return { latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }
             }
@@ -713,7 +716,10 @@ class CreateTripScreen extends Component {
                                             coord={{ lat: this.state.latitude, lng: this.state.longitude }}
                                             from={this.props.from}
                                             to={this.props.to}
-                                            inCreaseHeight={() => this.BottomView.IncreaseHeightBtmView()}
+                                            inCreaseHeight={() => {
+                                                this.BottomView.IncreaseHeightBtmView();
+
+                                            }}
                                             inDecreaseHeiht={() => this.BottomView.DecreaseHeightBtmView()}
                                             AnimateHeightTovalue={vl => this.BottomView.AnimateHeightToValue(vl)}
                                             isInCreaseHeight={isInCreaseHeight}

@@ -473,9 +473,13 @@ class CreateTripScreen extends Component {
     }
     getCoordTo = () => {
         const { currentBooking } = this.props;
-        console.log("currentBooking", currentBooking)
         const { lst_polyline, diem_don, diem_den, latitude, longitude } = this.state;
+        console.log("diem_den", diem_den)
+
         if (!currentBooking) {
+            if (!diem_den) {
+                return { latitude: 0, longitude: 0 }
+            }
             if (diem_den) {
                 return { latitude: diem_den.displayPosition.latitude, longitude: diem_den.displayPosition.longitude }
             }
