@@ -283,7 +283,7 @@ class AdditionalInfo extends React.Component {
     renderPhoneTakeOrder = () => {
         return <View style={{ marginHorizontal: scale(10) }}>
             <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginVertical: scale(10) }}>Số điện thoại người nhận <Text style={{ color: color.RED_COLOR }}>*</Text></Text>
-            <View style={{ flexDirection: 'row', alignItems: "center", paddingVertical: scale(10), borderRadius: scale(7), borderWidth:(0.7), borderColor: color.GRAY_COLOR_400 }}>
+            <View style={{ flexDirection: 'row', alignItems: "center", paddingVertical: Platform.OS == 'ios' ? scale(10) : 0, borderRadius: scale(7), borderWidth: (0.7), borderColor: color.GRAY_COLOR_400 }}>
                 <Image style={{ width: scale(20), height: scale(16), marginHorizontal: scale(10) }} source={require('./res/ic_flag_vn.png')} />
                 <TextInput onChangeText={txt => this.setState({ phone_number: txt })} placeholderTextColor={color.GRAY_COLOR_400} keyboardType="number-pad" style={{ fontSize: scale(14), fontWeight: '500', flex: 1 }} placeholder="Số điện thoại người nhận" />
             </View>
@@ -293,7 +293,7 @@ class AdditionalInfo extends React.Component {
     renderWeight = () => {
         return <View style={{ marginHorizontal: scale(10) }}>
             <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginVertical: scale(10) }}>Trọng lượng (kg) <Text style={{ color: color.RED_COLOR }}>*</Text></Text>
-            <View style={{ flexDirection: 'row', alignItems: "center", paddingVertical: scale(10), borderRadius: scale(7), borderWidth:(0.7), borderColor: color.GRAY_COLOR_400 }}>
+            <View style={{ flexDirection: 'row', alignItems: "center", paddingVertical: Platform.OS == 'ios' ? scale(10) : 0, borderRadius: scale(7), borderWidth: (0.7), borderColor: color.GRAY_COLOR_400 }}>
                 <MaterialCommunityIcons
                     name='weight-kilogram'
                     size={scale(20)}
@@ -307,7 +307,7 @@ class AdditionalInfo extends React.Component {
     renderNote = () => {
         return <View style={{ marginHorizontal: scale(10) }}>
             <Text style={{ fontSize: scale(15), fontWeight: '600', color: color.GRAY_COLOR_500, marginVertical: scale(10) }}>Lưu ý với tài xế</Text>
-            <View style={{ flexDirection: 'row', alignItems: "center", paddingVertical: scale(10), borderRadius: scale(7), borderWidth:(0.7), borderColor: color.GRAY_COLOR_400 }}>
+            <View style={{ flexDirection: 'row', alignItems: "center", paddingVertical: Platform.OS == 'ios' ? scale(10) : 0, borderRadius: scale(7), borderWidth: (0.7), borderColor: color.GRAY_COLOR_400 }}>
                 <MaterialCommunityIcons
                     name='note'
                     size={scale(20)}
