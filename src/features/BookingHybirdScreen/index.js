@@ -260,7 +260,7 @@ class CreateTripScreen extends Component {
     _handleAppStateChange = (nextAppState) => {
         if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
             console.log('App has come to the foreground!')
-            
+
             Geolocation.getCurrentPosition(
                 position => {
                     console.log(position);
@@ -689,7 +689,7 @@ class CreateTripScreen extends Component {
 
 
                 </View>
-                {isInCreaseHeight && <TouchableOpacity activeOpacity={1} onPress={() => this.BottomView.DecreaseHeightBtmView()} style={{ width: width, height: height, position: 'absolute', backgroundColor: 'rgba(52, 52, 52, 0.3)' }}></TouchableOpacity>}
+                {isInCreaseHeight && <TouchableOpacity disabled={!this.state.EnablePull} activeOpacity={1} onPress={() => this.BottomView.DecreaseHeightBtmView()} style={{ width: width, height: height, position: 'absolute', backgroundColor: 'rgba(52, 52, 52, 0.3)' }}></TouchableOpacity>}
                 <View style={{}}>
                     {!currentBooking && <BottomTab
                         ref={e => {
