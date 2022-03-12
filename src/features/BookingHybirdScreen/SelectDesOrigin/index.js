@@ -24,7 +24,7 @@ import EvilIconsIcon from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { AutoCompleteAPI, getFromLocationId } from '../../../api/MapApi';
+import { AutoCompleteAPI, getFromLocationId, AutoSuggestAPI } from '../../../api/MapApi';
 import { scale } from '../../../ultis/scale'
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
@@ -341,26 +341,26 @@ class SelectDesOrigin extends React.Component {
         }
 
         if (txt.trim().length > 2 && txt.trim() != '' && !isloadingAPI) {
-            console.log("text", txt)
             this.setState({ isloadingAPI: true })
+            let autoSuggest = await AutoSuggestAPI(txt, lat, lng);
+            if (autoSuggest && autoSuggest?.results) {
+                this.setState({ dataAutoComplete: autoSuggest?.results })
+            }
+            this.setState({ isloading: false, isloadingAPI: false })
 
-            let autocomplete = await AutoCompleteAPI(txt, lat, lng);
-            setTimeout(() => {
-                if (autocomplete && autocomplete.suggestions) {
-                    console.log("autocomplete.suggestions", autocomplete.suggestions)
-                    this.setState({ dataAutoComplete: autocomplete.suggestions })
-                }
-                this.setState({ isloading: false, isloadingAPI: false })
-
-            }, 500)
         }
     }
     onChooseLocation = async (item) => {
-        const location_id = item?.locationId;
         const { select_origin_or_des, data_diem_den, data_diem_don } = this.state;
-        let localtion = await getFromLocationId(location_id)
-        const result = localtion?.response?.view[0].result;
-        const dataLocation = localtion?.response?.view[0]?.result[0]?.location
+        const dataLocation = {
+            address: {
+                label: item?.title,
+            },
+            displayPosition: {
+                latitude: item?.position[0],
+                longitude: item?.position[1],
+            }
+        }
         if (select_origin_or_des === CONSTANT_SELECT.ORIGIN) {
             this.setState({ data_diem_don: dataLocation, text_temp: dataLocation?.address?.label })
             if (!data_diem_den) {
@@ -376,7 +376,7 @@ class SelectDesOrigin extends React.Component {
     }
     renderItem = ({ item }) => {
         const distance = item.distance / 1000;
-        const label = item.label.split(',')
+        const label = item?.title;
         return <TouchableOpacity onPress={() => this.onChooseLocation(item)} activeOpacity={0.7}>
             <View style={{ flexDirection: "row", alignItems: 'center' }}>
                 <View style={{ width: scale(65), alignItems: "center", justifyContent: "center", height: scale(60) }}>
@@ -396,9 +396,9 @@ class SelectDesOrigin extends React.Component {
                     </View>
                     <Text style={{ fontSize: scale(10), marginTop: scale(4), paddingHorizontal: scale(5), textAlign: "center" }}>{distance.toFixed(2)} km</Text>
                 </View>
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <Text style={{ fontSize: scale(12), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>{label[label.length - 1]}</Text>
-                    <Text numberOfLines={1} style={{ fontSize: scale(11), color: color.GRAY_COLOR_500, paddingTop: scale(3), paddingLeft: scale(3) }}>{item.label}</Text>
+                <View style={{ flex: 1, justifyContent: 'center', marginRight: scale(10) }}>
+                    <Text numberOfLines={1} style={{ fontSize: scale(12), fontWeight: 'bold', color: color.GRAY_COLOR_500 }}>{label}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: scale(11), color: color.GRAY_COLOR_500, paddingTop: scale(3) }}>{item?.vicinity}</Text>
                 </View>
             </View>
             <View style={{ height: 0.5, width: width, backgroundColor: color.GRAY_COLOR_500, opacity: 0.3 }}></View>

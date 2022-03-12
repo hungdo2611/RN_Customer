@@ -162,7 +162,7 @@ class CouponScreen extends React.Component {
                 <Image
                     style={{ width: scale(28), height: scale(28), marginLeft: scale(7) }}
                     source={require('../HomeScreen/res/ic_coupon.png')} />
-                <View style={{ marginLeft: scale(10), flex: 1 }}>
+                <View style={{ marginHorizontal: scale(10), flex: 1 }}>
                     <Text style={{ fontSize: scale(13), fontWeight: '600', color: color.GRAY_COLOR_500 }}>{item.code}</Text>
                     <Text style={{ fontSize: scale(13), fontWeight: '500', paddingTop: scale(3) }}>{item.content}</Text>
                     <Text style={{ fontSize: scale(13), color: color.GRAY_COLOR_500, paddingTop: scale(3) }}>
@@ -187,7 +187,7 @@ class CouponScreen extends React.Component {
                     }}
                     behavior={Platform.OS == 'ios' ? 'padding' : ''}>
                     <FlatList
-                        data={[{ type: "header",_id: 'header' }, ...lst_coupon, { type: "loading", _id: 'loading' }]}
+                        data={[{ type: "header", _id: 'header' }, ...lst_coupon, { type: "loading", _id: 'loading' }]}
                         renderItem={this.renderItem}
                         style={{ flex: 1 }}
                         keyExtractor={item => item._id}

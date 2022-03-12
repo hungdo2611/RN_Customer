@@ -3,7 +3,12 @@ const API_KEY = 'NhNOeG_8-1IEym3KD92F8YWohmMCbQ99NvEjgmeZzuc'
 
 
 export const AutoCompleteAPI = async (text, lat, lng) => {
-    let request = await Axios.get(`https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?apiKey=${API_KEY}&query=${text}&maxresults=10&&country=VNM&prox=${lat},${lng},500000&language=VI&resultType=areas`);
+    let request = await Axios.get(`https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?apiKey=${API_KEY}&query=${text}&maxresults=10&&country=VNM&prox=${lat},${lng},500000&language=VI&resultType=city`);
+    return request.data
+}
+
+export const AutoSuggestAPI = async (text, lat, lng) => {
+    let request = await Axios.get(`https://places.sit.ls.hereapi.com/places/v1/autosuggest?apiKey=${API_KEY}&q=${text}&at=${lat},${lng}&pretty&lang=vi-VN&result_types=address,place&size=7&tf=plain`);
     return request.data
 }
 
